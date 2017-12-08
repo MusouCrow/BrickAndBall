@@ -1,0 +1,10 @@
+{
+	"script": "Brick_Elast",
+	"scale": {
+		"start": 0.5,
+		"end": 2,
+		"time": 0.1
+	},
+	"power": 10,
+	"nextState": "Normal"
+}
