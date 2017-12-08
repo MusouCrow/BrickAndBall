@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace Game.Component {
 	public class Mark : Controller {
+		public Shooter shooter;
+
 		[SerializeField]
 		private Protector protector;
 
@@ -13,6 +15,10 @@ namespace Game.Component {
 
 		public float GetTime() {
 			return this.protector.time;
+		}
+
+		void OnMouseDown () {
+			this.shooter.Shoot ();
 		}
 	}
 }
