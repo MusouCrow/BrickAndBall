@@ -10,6 +10,9 @@ namespace Game.Component {
 
 		private Rigidbody rigidbody;
 
+		public delegate void OnDestroyDelegate (Vector3 position);
+		public event OnDestroyDelegate OnDestroyEvent;
+
 		// Use this for initialization
 		void Start () {
 			this.rigidbody = this.GetComponent<Rigidbody> ();
@@ -42,6 +45,12 @@ namespace Game.Component {
 			}
 
 			this.rigidbody.velocity = velocity;
+		}
+
+		void OnDestroy() {
+			if (this.OnDestroyEvent != null) {
+				this.OnDestroyEvent (this.transform.localPosition);
+			}
 		}
 	}
 }

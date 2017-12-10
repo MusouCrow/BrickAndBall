@@ -13,6 +13,7 @@ namespace Game.Component {
 		public float powerXMax;
 		public float powerZMin;
 		public float powerZMax;
+		public int direction;
 
 		private Transform transform;
 		private Statemgr statemgr;
@@ -35,11 +36,10 @@ namespace Game.Component {
 
 		void OnMouseDrag () {
 			Vector3 mousePos = this.ToWorldPoint (Input.mousePosition);
-			float delta = mousePos.z - this.mousePos.z;
-			this.mousePos = mousePos;
-
+			
 			Vector3 pos = this.transform.position;
-			pos.z += delta;
+			pos.z += mousePos.z - this.mousePos.z;
+			this.mousePos = mousePos;
 
 			if (pos.z > RANGE) {
 				pos.z = RANGE;
