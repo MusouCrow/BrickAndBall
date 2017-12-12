@@ -6,6 +6,7 @@ public class Controller : MonoBehaviour {
 	public Color targetColor;
 	[System.NonSerialized]
 	public Color originColor;
+	public int direction;
 
 	protected MeshRenderer renderer;
 

@@ -10,17 +10,21 @@ namespace Game.State {
 		private Controller controller;
 		private float clickTime;
 		private float coolDownTime;
+		private float dragValue;
 		private bool coolDown;
 		private Timer timer;
 		private int process;
 		private Color originColor;
 		private Color targetColor;
+		private Dragging dragging;
 
 		public Normal (GameObject gameObject, Utility.SimpleJSON.JSONNode param) : base (gameObject, param) {
 			this.controller = gameObject.GetComponent<Controller> ();
 			this.coolDownTime = param ["coolDownTime"].AsFloat;
+			this.dragValue = 0.5f;
 			this.coolDown = false;
 			this.timer = new Timer ();
+			this.dragging = new Dragging ();
 		}
 
 		public override void Update() {
@@ -46,6 +50,7 @@ namespace Game.State {
 					}
 				} else {
 					this.coolDown = false;
+					this.dragging.Update (Input.mousePosition);
 				}
 			}
 		}
@@ -66,11 +71,34 @@ namespace Game.State {
 				return;
 			}
 
+			this.dragging.Update (Input.mousePosition);
+
+			/*
+			if (this.coolDown) {
+				return;
+			}
+
 			if (Time.fixedTime - this.clickTime <= 0.2f) {
 				this.statemgr.Play ("Elast");
 			}
 
 			this.clickTime = Time.fixedTime;
+			*/
+		}
+
+		public override void OnMouseDrag () {
+			if (this.coolDown) {
+				return;
+			}
+
+			Vector3 oldPos = this.dragging.GetPosition ();
+			this.dragging.Update (Input.mousePosition);
+			Vector3 newPos = this.dragging.GetPosition ();
+			float delta = newPos.x - oldPos.x;
+
+			if ((this.controller.direction > 0 && delta > this.dragValue) || (this.controller.direction < 0 && delta < -this.dragValue)) {
+				this.statemgr.Play ("Elast");
+			}
 		}
 	}
 }

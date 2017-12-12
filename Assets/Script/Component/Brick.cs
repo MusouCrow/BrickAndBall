@@ -5,41 +5,41 @@ using UnityEngine;
 using Random = System.Random;
 
 namespace Game.Component {
+	using Utility;
+
 	public class Brick : Controller {
 		private const float RANGE = 2.5f;
-		private const float DEPTH = 10;
 
 		public float powerXMin;
 		public float powerXMax;
 		public float powerZMin;
 		public float powerZMax;
-		public int direction;
 
 		private Transform transform;
 		private Statemgr statemgr;
-		private Camera camera;
-		private Vector3 mousePos;
 		private Random random;
+		private Dragging dragging;
 
 		void Awake () {
 			base.Awake ();
 
 			this.transform = this.GetComponent<Transform> ();
 			this.statemgr = this.GetComponent<Statemgr> ();
-			this.camera = Camera.main;
 			this.random = new Random ();
+			this.dragging = new Dragging ();
 		}
 
-		void OnMouseDown () {
-			this.mousePos = this.ToWorldPoint (Input.mousePosition);
+		void OnMouseDown() {
+			this.dragging.Update (Input.mousePosition);
 		}
 
 		void OnMouseDrag () {
-			Vector3 mousePos = this.ToWorldPoint (Input.mousePosition);
-			
+			Vector3 oldPos = this.dragging.GetPosition ();
+			this.dragging.Update (Input.mousePosition);
+			Vector3 newPos = this.dragging.GetPosition ();
+
 			Vector3 pos = this.transform.position;
-			pos.z += mousePos.z - this.mousePos.z;
-			this.mousePos = mousePos;
+			pos.z += newPos.z - oldPos.z;
 
 			if (pos.z > RANGE) {
 				pos.z = RANGE;
@@ -48,10 +48,6 @@ namespace Game.Component {
 			}
 
 			this.transform.position = pos;
-		}
-
-		private Vector3 ToWorldPoint (Vector3 pos) {
-			return this.camera.ScreenToWorldPoint (new Vector3 (pos.x, pos.y, DEPTH));
 		}
 
 		void OnCollisionEnter(Collision collision) {

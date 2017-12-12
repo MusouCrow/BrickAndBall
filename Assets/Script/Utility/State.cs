@@ -19,6 +19,7 @@ namespace Game.Utility {
 		public virtual void Enter() {}
 		public virtual void Exit() {}
 		public virtual void OnMouseDown() {}
+		public virtual void OnMouseDrag() {}
 		public virtual void OnCollisionEnter(Collision collision) {}
 	}
 }

@@ -60,6 +60,12 @@ namespace Game.Component {
 			}
 		}
 
+		void OnMouseDrag () {
+			if (this.nowState != null) {
+				this.nowState.OnMouseDrag ();
+			}
+		}
+
 		void OnCollisionEnter(Collision collision) {
 			if (this.nowState != null) {
 				this.nowState.OnCollisionEnter (collision);
