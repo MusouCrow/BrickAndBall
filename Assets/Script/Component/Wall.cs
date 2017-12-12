@@ -10,25 +10,31 @@ namespace Game.Component {
 		private float target;
 		private Timer timer;
 		private Vector3 localScale;
+		private Shaking shaking;
 
 		void Awake() {
 			this.timer = new Timer ();
+			this.shaking = new Shaking (this.transform);
 		}
 
 		void FixedUpdate() {
-			if (!this.timer.isRunning) {
-				return;
-			}
+			this.shaking.Update (Time.fixedDeltaTime);
 
-			this.timer.Update (Time.fixedDeltaTime);
-			this.localScale = this.barTransform.localScale;
-			this.localScale.x = Mathf.Lerp (this.localScale.x, this.target, this.timer.value);
-			this.barTransform.localScale = this.localScale;
+			if (this.timer.isRunning) {
+				this.timer.Update (Time.fixedDeltaTime);
+				this.localScale = this.barTransform.localScale;
+				this.localScale.x = Mathf.Lerp (this.localScale.x, this.target, this.timer.value);
+				this.barTransform.localScale = this.localScale;
+			}
 		}
 
 		public void SetLength(float value) {
 			this.target = value;
 			this.timer.Enter (1);
+		}
+
+		void OnCollisionEnter(Collision collision) {
+			this.shaking.Enter (2, 0.05f, 0.3f);
 		}
 	}
 }

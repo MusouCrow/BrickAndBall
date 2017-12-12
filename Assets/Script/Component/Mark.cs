@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Component {
+	using Utility;
+
 	public class Mark : Controller {
 		[SerializeField]
 		private Protector protector;

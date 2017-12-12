@@ -19,6 +19,7 @@ namespace Game.Component {
 		private Statemgr statemgr;
 		private Random random;
 		private Dragging dragging;
+		private Shaking shaking;
 
 		void Awake () {
 			base.Awake ();
@@ -27,6 +28,11 @@ namespace Game.Component {
 			this.statemgr = this.GetComponent<Statemgr> ();
 			this.random = new Random ();
 			this.dragging = new Dragging ();
+			this.shaking = new Shaking (this.transform);
+		}
+
+		void FixedUpdate() {
+			this.shaking.Update (Time.fixedDeltaTime);
 		}
 
 		void OnMouseDown() {
@@ -70,6 +76,8 @@ namespace Game.Component {
 
 				collision.rigidbody.velocity = velocity;
 			}
+
+			this.shaking.Enter (0, 0.1f, 0.05f);
 		}
 	}
 }
