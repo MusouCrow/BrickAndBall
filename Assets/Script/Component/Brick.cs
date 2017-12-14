@@ -57,24 +57,15 @@ namespace Game.Component {
 		}
 
 		void OnCollisionEnter(Collision collision) {
-			if (collision.rigidbody != null) {
-				Vector3 velocity = collision.rigidbody.velocity;
+			Ball ball = collision.gameObject.GetComponent<Ball> ();
+
+			if (ball != null) {
 				float valueX = Mathf.Lerp (this.powerXMin, this.powerXMax, (float)this.random.NextDouble ());
 				float valueZ = Mathf.Lerp (this.powerZMin, this.powerZMax, (float)this.random.NextDouble ());
-
-				if (velocity.x > 0) {
-					velocity.x += valueX;
-				} else {
-					velocity.x -= valueX;
-				}
-
-				if (this.random.NextDouble () < 0.5) {
-					velocity.z += valueZ;
-				} else {
-					velocity.z -= valueZ;
-				}
-
-				collision.rigidbody.velocity = velocity;
+				
+				valueX = collision.rigidbody.velocity.x > 0 ? valueX : -valueX;
+				valueZ = this.random.NextDouble () < 0.5 ? valueZ : -valueZ;
+				ball.Move(valueX, 0, valueZ);
 			}
 
 			this.shaking.Enter (0, 0.1f, 0.05f);

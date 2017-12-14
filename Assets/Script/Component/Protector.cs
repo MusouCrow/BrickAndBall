@@ -60,16 +60,11 @@ namespace Game.Component {
 		}
 
 		void OnCollisionEnter(Collision collision) {
-			if (collision.rigidbody != null) {
-				Vector3 velocity = collision.rigidbody.velocity;
+			Ball ball = collision.gameObject.GetComponent<Ball> ();
 
-				if (velocity.x > 0) {
-					velocity.x += power;
-				} else {
-					velocity.x -= power;
-				}
-
-				collision.rigidbody.velocity = velocity;
+			if (ball != null) {
+				float power = collision.rigidbody.velocity.x > 0 ? this.power : -this.power;
+				ball.Move (power, 0, 0);
 			}
 		}
 	}

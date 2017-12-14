@@ -8,7 +8,6 @@ namespace Game.Component {
 	public class Judge : MonoBehaviour {
 		private const int SCORE_MAX = 5;
 		private const float SHOT_TIME = 2;
-		private const float BALL_SPEED = 6;
 
 		[SerializeField]
 		private Wall wallA;
@@ -40,7 +39,7 @@ namespace Game.Component {
 			this.audioSource.pitch += this.acceleration;
 
 			if (this.ball != null) {
-				this.ball.speed = BALL_SPEED * this.audioSource.pitch;
+				this.ball.rate = this.audioSource.pitch;
 			}
 
 			if (!this.timer.isRunning) {
