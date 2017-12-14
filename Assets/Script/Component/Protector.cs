@@ -8,11 +8,11 @@ namespace Game.Component {
 	public class Protector : MonoBehaviour {
 		public float time;
 		public float power;
-
 		[SerializeField]
 		private float end;
 		[SerializeField]
 		private AudioClip clip;
+		public Vector4 shakingValue;
 
 		private Transform transform;
 		private float begin;
@@ -53,6 +53,7 @@ namespace Game.Component {
 			this.process = 0;
 			this.timer.Enter (this.time);
 			AudioSource.PlayClipAtPoint (this.clip, Vector3.zero);
+			Lib.Shake (this.shakingValue);
 		}
 
 		public void SetActive(bool value) {

@@ -17,10 +17,12 @@ namespace Game.State {
 		private Color originColor;
 		private Color targetColor;
 		private Dragging dragging;
+		private AudioClip clip;
 
 		public Normal (GameObject gameObject, Utility.SimpleJSON.JSONNode param) : base (gameObject, param) {
 			this.controller = gameObject.GetComponent<Controller> ();
 			this.coolDownTime = param ["coolDownTime"].AsFloat;
+			this.clip = Resources.Load ("Sound/Ready") as AudioClip;
 			this.dragValue = 0.5f;
 			this.coolDown = false;
 			this.timer = new Timer ();
@@ -42,6 +44,7 @@ namespace Game.State {
 					this.timer.Enter (0.3f);
 
 					if (this.process == 1) {
+						AudioSource.PlayClipAtPoint (this.clip, Vector3.zero);
 						this.originColor = this.controller.originColor;
 						this.targetColor = Color.white;
 					} else {

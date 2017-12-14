@@ -9,10 +9,13 @@ namespace Game.Component {
 		[SerializeField]
 		private AudioClip clip;
 
+		public Vector4 shakingValue;
+
 		public GameObject Shoot() {
 			GameObject obj = GameObject.Instantiate (this.ball, this.transform.localPosition, Quaternion.identity, this.transform.parent) as GameObject;
 			obj.GetComponent<Rigidbody> ().AddForce (this.transform.localScale, ForceMode.VelocityChange);
 			AudioSource.PlayClipAtPoint (this.clip, Vector3.zero);
+			Lib.Shake (this.shakingValue);
 
 			return obj;
 		}

@@ -14,6 +14,7 @@ namespace Game.Component {
 		public float powerXMax;
 		public float powerZMin;
 		public float powerZMax;
+		public Vector4 shakingValue;
 
 		private Transform transform;
 		private Statemgr statemgr;
@@ -68,7 +69,7 @@ namespace Game.Component {
 				ball.Move(valueX, 0, valueZ);
 			}
 
-			this.shaking.Enter (0, 0.1f, 0.05f);
+			this.shaking.Enter (this.shakingValue);
 		}
 	}
 }

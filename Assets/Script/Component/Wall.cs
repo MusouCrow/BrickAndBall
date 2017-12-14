@@ -7,6 +7,8 @@ namespace Game.Component {
 
 	public class Wall : MonoBehaviour {
 		public Transform barTransform;
+		public Vector4 shakingValue;
+
 		private float target;
 		private Timer timer;
 		private Vector3 localScale;
@@ -34,7 +36,7 @@ namespace Game.Component {
 		}
 
 		void OnCollisionEnter(Collision collision) {
-			this.shaking.Enter (2, 0.05f, 0.3f);
+			this.shaking.Enter (this.shakingValue);
 		}
 	}
 }

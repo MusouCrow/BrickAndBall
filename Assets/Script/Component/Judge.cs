@@ -7,7 +7,6 @@ namespace Game.Component {
 
 	public class Judge : MonoBehaviour {
 		private const int SCORE_MAX = 5;
-		private const float SHOT_TIME = 2;
 
 		[SerializeField]
 		private Wall wallA;
@@ -21,6 +20,7 @@ namespace Game.Component {
 		private AudioClip[] clips;
 		public float volume = 0.5f;
 		public float acceleration = 0.00005f;
+		public float shootingTime = 2;
 
 		private AudioSource audioSource;
 		private bool aShooted;
@@ -28,11 +28,13 @@ namespace Game.Component {
 		private int scoreA;
 		private int scoreB;
 		private Ball ball;
+		private bool playSound;
 
 		void Awake() {
 			this.audioSource = this.GetComponent<AudioSource> ();
+
 			this.timer = new Timer();
-			this.timer.Enter (SHOT_TIME);
+			this.timer.Enter (this.shootingTime);
 		}
 
 		void FixedUpdate() {
@@ -40,6 +42,14 @@ namespace Game.Component {
 
 			if (this.ball != null) {
 				this.ball.rate = this.audioSource.pitch;
+			}
+
+			if (this.playSound) {
+				for (int i = 0; i < this.clips.Length; i++) {
+					AudioSource.PlayClipAtPoint (this.clips [i], Vector3.zero, this.volume);
+				}
+
+				this.playSound = !this.playSound;
 			}
 
 			if (!this.timer.isRunning) {
@@ -58,7 +68,7 @@ namespace Game.Component {
 				}
 
 				this.ball = obj.GetComponent<Ball> ();
-				this.ball.OnDestroyEvent += ReadyBall;
+				this.ball.OnDestroyEvent += this.ReadyBall;
 
 				if (!this.audioSource.isPlaying) {
 					this.audioSource.Play ();
@@ -69,7 +79,7 @@ namespace Game.Component {
 		}
 
 		private void ReadyBall(Vector3 position) {
-			this.timer.Enter (SHOT_TIME);
+			this.timer.Enter (this.shootingTime);
 
 			if (position.x > 0) {
 				this.scoreB += 1;
@@ -79,9 +89,7 @@ namespace Game.Component {
 				this.wallA.SetLength ((float)this.scoreA / (float)SCORE_MAX);
 			}
 
-			for (int i = 0; i < this.clips.Length; i++) {
-				AudioSource.PlayClipAtPoint (this.clips [i], Vector3.zero, this.volume);
-			}
+			this.playSound = true;
 		}
 	}
 }

@@ -6,11 +6,9 @@ using Random = System.Random;
 namespace Game.Utility {
 	public class Shaking {
 		private Transform transform;
-		private int type;
-		private float value;
-		private float range;
 		private Timer timer;
 		private Vector3 position;
+		private Vector3 power;
 		private Random random;
 
 		public Shaking (Transform transform) {
@@ -29,32 +27,31 @@ namespace Game.Utility {
 			if (!this.timer.isRunning) {
 				this.Exit ();
 			} else {
-				this.Shake (Mathf.Lerp (-this.range, this.range, (float)this.random.NextDouble ()));
+				this.Shake (Vector3.Lerp (-this.power, this.power, (float)this.random.NextDouble ()));
 			}
 		}
 
-		// type: 0 is x, 1 is y, 2 is z.
-		public void Enter(int type, float range, float time) {
+		public void Enter(Vector3 power, float time) {
 			if (this.timer.isRunning) {
 				this.Exit ();
 			}
 
 			this.position = this.transform.localPosition;
-			this.type = type;
-			this.value = this.position [this.type];
-			this.range = range;
+			this.power = power;
 			this.timer.Enter (time);
+		}
+
+		public void Enter(Vector4 value) {
+			this.Enter (value, value.w);
 		}
 
 		public void Exit() {
 			this.timer.isRunning = false;
-			this.Shake (0);
+			this.Shake (Vector3.zero);
 		}
 
-		private void Shake(float range) {
-			this.position = this.transform.localPosition;
-			this.position [this.type] = this.value + range;
-			this.transform.localPosition = this.position;
+		private void Shake(Vector3 range) {
+			this.transform.localPosition = this.position + range;
 		}
 	}
 }
