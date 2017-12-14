@@ -6,5 +6,6 @@
 		"time": 0.1
 	},
 	"power": 10,
+	"clip": "Sound/Elast",
 	"nextState": "Normal"
 }

@@ -4,11 +4,15 @@ using UnityEngine;
 
 namespace Game.Component {
 	public class Shooter : MonoBehaviour {
-		public GameObject ball;
-		
+		[SerializeField]
+		private GameObject ball;
+		[SerializeField]
+		private AudioClip clip;
+
 		public GameObject Shoot() {
 			GameObject obj = GameObject.Instantiate (this.ball, this.transform.localPosition, Quaternion.identity, this.transform.parent) as GameObject;
 			obj.GetComponent<Rigidbody> ().AddForce (this.transform.localScale, ForceMode.VelocityChange);
+			AudioSource.PlayClipAtPoint (this.clip, Vector3.zero);
 
 			return obj;
 		}

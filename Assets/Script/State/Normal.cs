@@ -72,18 +72,6 @@ namespace Game.State {
 			}
 
 			this.dragging.Update (Input.mousePosition);
-
-			/*
-			if (this.coolDown) {
-				return;
-			}
-
-			if (Time.fixedTime - this.clickTime <= 0.2f) {
-				this.statemgr.Play ("Elast");
-			}
-
-			this.clickTime = Time.fixedTime;
-			*/
 		}
 
 		public override void OnMouseDrag () {

@@ -11,6 +11,8 @@ namespace Game.Component {
 
 		[SerializeField]
 		private float end;
+		[SerializeField]
+		private AudioClip clip;
 
 		private Transform transform;
 		private float begin;
@@ -50,6 +52,7 @@ namespace Game.Component {
 		void OnEnable() {
 			this.process = 0;
 			this.timer.Enter (this.time);
+			AudioSource.PlayClipAtPoint (this.clip, Vector3.zero);
 		}
 
 		public void SetActive(bool value) {

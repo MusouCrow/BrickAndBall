@@ -6,9 +6,12 @@ namespace Game.Component {
 	public class Ball : MonoBehaviour {
 		private const float RANGE = 3.5f;
 		private const float DEPTH = 10;
-		private const float SPEED = 6;
 
 		private Rigidbody rigidbody;
+
+		[SerializeField]
+		private AudioClip clip;
+		public float speed;
 
 		public delegate void OnDestroyDelegate (Vector3 position);
 		public event OnDestroyDelegate OnDestroyEvent;
@@ -38,10 +41,10 @@ namespace Game.Component {
 
 			Vector3 velocity = this.rigidbody.velocity;
 
-			if (velocity.x < 0 && velocity.x > -SPEED) {
-				velocity.x = -SPEED;
-			} else if (velocity.x > 0 && velocity.x < SPEED) {
-				velocity.x = SPEED;
+			if (velocity.x < 0 && velocity.x > -this.speed) {
+				velocity.x = -this.speed;
+			} else if (velocity.x > 0 && velocity.x < this.speed) {
+				velocity.x = this.speed;
 			}
 
 			this.rigidbody.velocity = velocity;
@@ -51,6 +54,10 @@ namespace Game.Component {
 			if (this.OnDestroyEvent != null) {
 				this.OnDestroyEvent (this.transform.localPosition);
 			}
+		}
+
+		void OnCollisionEnter(Collision collision) {
+			AudioSource.PlayClipAtPoint (this.clip, this.transform.position);
 		}
 	}
 }

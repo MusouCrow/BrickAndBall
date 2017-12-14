@@ -110,3 +110,4 @@ MonoBehaviour:
   time: 0.2
   power: 20
   end: 0
+  clip: {fileID: 8300000, guid: 7f06606fd134142138370f27b335fd40, type: 3}

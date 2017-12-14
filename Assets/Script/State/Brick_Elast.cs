@@ -18,6 +18,7 @@ namespace Game.State {
 		private Transform transform;
 		private Controller controller;
 		private Scale scale;
+		private AudioClip clip;
 		private float power;
 		private string nextState;
 		private Timer timer;
@@ -33,6 +34,7 @@ namespace Game.State {
 				time = param ["scale"] ["time"].AsFloat
 			};
 
+			this.clip = Resources.Load (param ["clip"].Value) as AudioClip;
 			this.power = param ["power"].AsFloat;
 			this.nextState = param ["nextState"].Value;
 			this.timer = new Timer ();
@@ -73,6 +75,7 @@ namespace Game.State {
 
 		public override void Enter() {
 			this.timer.Enter (this.scale.time);
+			AudioSource.PlayClipAtPoint (this.clip, Vector3.zero);
 			this.process = 0;
 		}
 
