@@ -37,7 +37,7 @@ namespace Game.State {
 			this.timer.Update (Time.fixedDeltaTime);
 			this.controller.ColorLert (this.originColor, this.targetColor, this.timer.GetProcess ());
 
-			if (!this.timer.isRunning) {
+			if (!this.timer.IsRunning ()) {
 				this.process += 1;
 
 				if (this.process <= 2) {

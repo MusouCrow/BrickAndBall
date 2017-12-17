@@ -4,7 +4,7 @@ namespace Game.Utility {
 	public class Timer {
 		public float value;
 		public float max;
-		public bool isRunning;
+		private bool isRunning;
 
 		public Timer() {
 			this.value = 0;
@@ -21,7 +21,7 @@ namespace Game.Utility {
 
 			if (this.value >= this.max) {
 				this.value = this.max;
-				this.isRunning = false;
+				this.Exit ();
 			}
 		}
 
@@ -38,6 +38,14 @@ namespace Game.Utility {
 				this.value = this.value - this.max;
 				this.isRunning = false;
 			}
+		}
+
+		public void Exit() {
+			this.isRunning = false;
+		}
+
+		public bool IsRunning() {
+			return this.isRunning;
 		}
 
 		public float GetProcess() {

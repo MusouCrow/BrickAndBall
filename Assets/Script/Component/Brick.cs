@@ -16,24 +16,29 @@ namespace Game.Component {
 		public float powerZMax;
 		public Vector4 shakingValue;
 
-		private Transform transform;
 		private Statemgr statemgr;
 		private Random random;
 		private Dragging dragging;
 		private Shaking shaking;
 
+		[NonSerialized]
+		public Vector3 position;
+
 		void Awake () {
 			base.Awake ();
 
-			this.transform = this.GetComponent<Transform> ();
 			this.statemgr = this.GetComponent<Statemgr> ();
 			this.random = new Random ();
 			this.dragging = new Dragging ();
-			this.shaking = new Shaking (this.transform);
+			this.shaking = new Shaking ();
+			this.position = this.transform.localPosition;
 		}
 
 		void FixedUpdate() {
-			this.shaking.Update (Time.fixedDeltaTime);
+			if (this.shaking.IsRunning ()) {
+				this.shaking.Update (Time.fixedDeltaTime);
+				this.AdjustPosition ();
+			}
 		}
 
 		void OnMouseDown() {
@@ -45,19 +50,18 @@ namespace Game.Component {
 			this.dragging.Update (Input.mousePosition);
 			Vector3 newPos = this.dragging.GetPosition ();
 
-			Vector3 pos = this.transform.position;
-			pos.z += newPos.z - oldPos.z;
+			this.position.z += newPos.z - oldPos.z;
 
-			if (pos.z > RANGE) {
-				pos.z = RANGE;
-			} else if (pos.z < -RANGE) {
-				pos.z = -RANGE;
+			if (this.position.z > RANGE) {
+				this.position.z = RANGE;
+			} else if (this.position.z < -RANGE) {
+				this.position.z = -RANGE;
 			}
 
-			this.transform.position = pos;
+			this.AdjustPosition ();
 		}
 
-		void OnCollisionEnter(Collision collision) {
+		void OnCollisionEnter (Collision collision) {
 			Ball ball = collision.gameObject.GetComponent<Ball> ();
 
 			if (ball != null) {
@@ -70,6 +74,10 @@ namespace Game.Component {
 			}
 
 			this.shaking.Enter (this.shakingValue);
+		}
+
+		public void AdjustPosition () {
+			this.transform.localPosition = this.position + this.shaking.GetPosition ();
 		}
 	}
 }

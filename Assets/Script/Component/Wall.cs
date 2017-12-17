@@ -13,16 +13,21 @@ namespace Game.Component {
 		private Timer timer;
 		private Vector3 localScale;
 		private Shaking shaking;
+		private Vector3 position;
 
 		void Awake() {
 			this.timer = new Timer ();
-			this.shaking = new Shaking (this.transform);
+			this.shaking = new Shaking ();
+			this.position = this.transform.localPosition;
 		}
 
 		void FixedUpdate() {
-			this.shaking.Update (Time.fixedDeltaTime);
+			if (this.shaking.IsRunning ()) {
+				this.shaking.Update (Time.fixedDeltaTime);
+				this.transform.localPosition = this.position + this.shaking.GetPosition ();
+			}
 
-			if (this.timer.isRunning) {
+			if (this.timer.IsRunning ()) {
 				this.timer.Update (Time.fixedDeltaTime);
 				this.localScale = this.barTransform.localScale;
 				this.localScale.x = Mathf.Lerp (this.localScale.x, this.target, this.timer.value);

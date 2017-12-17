@@ -9,20 +9,25 @@ namespace Game.Component {
 		public float time;
 
 		private Shaking shaking;
+		private Vector3 position;
 
 		// Use this for initialization
 		void Awake () {
 			Lib.BindCamera (this);
-			this.shaking = new Shaking (this.transform);
+			this.shaking = new Shaking ();
 		}
 		
 		// Update is called once per frame
 		void Update () {
-			this.shaking.Update (Time.fixedDeltaTime);
+			if (this.shaking.IsRunning ()) {
+				this.shaking.Update (Time.fixedDeltaTime);
+				this.transform.localPosition = this.position + this.shaking.GetPosition ();
+			}
 		}
 
 		public void Shake (Vector3 power, float time) {
 			this.shaking.Enter (power, time);
+			this.position = this.transform.localPosition;
 		}
 	}
 }

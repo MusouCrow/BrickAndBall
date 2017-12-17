@@ -38,7 +38,7 @@ namespace Game.Component {
 
 			this.transform.localPosition = pos;
 
-			if (!this.timer.isRunning) {
+			if (!this.timer.IsRunning ()) {
 				this.process += 1;
 
 				if (this.process == 1) {

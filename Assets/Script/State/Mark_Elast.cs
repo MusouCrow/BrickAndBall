@@ -21,7 +21,7 @@ namespace Game.State {
 			this.timer.Update (Time.fixedDeltaTime);
 			this.mark.ColorLert (this.mark.originColor, this.mark.targetColor, this.timer.GetProcess ());
 
-			if (!this.timer.isRunning) {
+			if (!this.timer.IsRunning ()) {
 				this.statemgr.Play (this.nextState);
 			}
 		}

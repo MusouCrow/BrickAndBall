@@ -8,16 +8,11 @@ namespace Game.State {
 	using Utility.SimpleJSON;
 
 	public class Brick_Elast : State {
-		public struct Scale
-		{
-			public float start;
-			public float end;
-			public float time;
-		}
-
 		private Transform transform;
-		private Controller controller;
-		private Scale scale;
+		private Brick brick;
+		private float[] scaling;
+		private float[] positioning;
+		private float time;
 		private AudioClip clip;
 		private float power;
 		private string nextState;
@@ -26,14 +21,10 @@ namespace Game.State {
 
 		public Brick_Elast (GameObject gameObject, JSONNode param) : base (gameObject, param) {
 			this.transform = gameObject.GetComponent<Transform> ();
-			this.controller = gameObject.GetComponent<Controller> ();
-
-			this.scale = new Scale {
-				start = param ["scale"] ["start"].AsFloat,
-				end = param ["scale"] ["end"].AsFloat,
-				time = param ["scale"] ["time"].AsFloat
-			};
-
+			this.brick = gameObject.GetComponent<Brick> ();
+			this.scaling = new float[]{ param ["scaling"] [0].AsFloat, param ["scaling"] [1].AsFloat };
+			this.positioning = new float[]{ param ["positioning"] [0].AsFloat, param ["positioning"] [1].AsFloat };
+			this.time = param ["time"].AsFloat;
 			this.clip = Resources.Load (param ["clip"].Value) as AudioClip;
 			this.power = param ["power"].AsFloat;
 			this.nextState = param ["nextState"].Value;
@@ -44,29 +35,28 @@ namespace Game.State {
 		public override void Update () {
 			this.timer.Update (Time.fixedDeltaTime);
 
+			int start = 0;
+			int end = 1;
+			float timeProcess = this.timer.GetProcess ();
+
 			if (this.process == 1) {
-				this.controller.ColorLert (this.controller.originColor, this.controller.targetColor, this.timer.GetProcess ());
-			}
-
-			float start = 0;
-			float end = 0;
-
-			if (this.process == 0) {
-				start = this.scale.start;
-				end = this.scale.end;
-			} else {
-				start = this.scale.end;
-				end = this.scale.start;
+				start = 1;
+				end = 0;
+				this.brick.ColorLert (this.brick.originColor, this.brick.targetColor, timeProcess);
 			}
 
 			Vector3 scale = this.transform.localScale;
-			scale.x = Mathf.Lerp (start, end, this.timer.value / this.scale.time);
+			scale.x = Mathf.Lerp (this.scaling [start], this.scaling [end], timeProcess);
 			this.transform.localScale = scale;
 
-			if (!this.timer.isRunning) {
+			this.brick.position.x = Mathf.Lerp (this.positioning [start], this.positioning [end], timeProcess);
+			this.brick.position.x *= -this.brick.direction;
+			this.brick.AdjustPosition ();
+
+			if (!this.timer.IsRunning ()) {
 				if (this.process == 0) {
 					this.process = 1;
-					this.timer.Enter (this.scale.time);
+					this.timer.Enter (this.time);
 				} else {
 					this.statemgr.Play (this.nextState);
 				}
@@ -74,7 +64,7 @@ namespace Game.State {
 		}
 
 		public override void Enter() {
-			this.timer.Enter (this.scale.time);
+			this.timer.Enter (this.time);
 			AudioSource.PlayClipAtPoint (this.clip, Vector3.zero);
 			this.process = 0;
 		}

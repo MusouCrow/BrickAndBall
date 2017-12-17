@@ -52,13 +52,13 @@ namespace Game.Component {
 				this.playSound = !this.playSound;
 			}
 
-			if (!this.timer.isRunning) {
+			if (!this.timer.IsRunning ()) {
 				return;
 			}
 
 			this.timer.Update (Time.fixedDeltaTime);
 			
-			if (!this.timer.isRunning) {
+			if (!this.timer.IsRunning ()) {
 				GameObject obj;
 
 				if (this.aShooted) {

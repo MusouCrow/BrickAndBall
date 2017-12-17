@@ -1,10 +1,8 @@
 {
 	"script": "Brick_Elast",
-	"scale": {
-		"start": 0.5,
-		"end": 2,
-		"time": 0.1
-	},
+	"scaling": [0.5, 1.8],
+	"positioning": [4, 3],
+	"time": 0.1,
 	"power": 10,
 	"clip": "Sound/Elast",
 	"nextState": "Normal"

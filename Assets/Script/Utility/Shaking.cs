@@ -4,39 +4,37 @@ using UnityEngine;
 using Random = System.Random;
 
 namespace Game.Utility {
-	public class Shaking {
-		private Transform transform;
+	public class Shaking { 
 		private Timer timer;
 		private Vector3 position;
 		private Vector3 power;
 		private Random random;
 
-		public Shaking (Transform transform) {
-			this.transform = transform;
+		public Shaking () {
 			this.timer = new Timer ();
 			this.random = new Random ();
 		}
 
 		public void Update(float dt) {
-			if (!this.timer.isRunning) {
+			if (!this.timer.IsRunning ()) {
 				return;
 			}
 
 			this.timer.Update (dt);
 
-			if (!this.timer.isRunning) {
+			if (!this.timer.IsRunning ()) {
 				this.Exit ();
 			} else {
-				this.Shake (Vector3.Lerp (-this.power, this.power, (float)this.random.NextDouble ()));
+				this.position = Vector3.Lerp (-this.power, this.power, (float)this.random.NextDouble ());
 			}
 		}
 
 		public void Enter(Vector3 power, float time) {
-			if (this.timer.isRunning) {
+			if (this.timer.IsRunning ()) {
 				this.Exit ();
 			}
 
-			this.position = this.transform.localPosition;
+			this.position = Vector3.zero;
 			this.power = power;
 			this.timer.Enter (time);
 		}
@@ -46,12 +44,16 @@ namespace Game.Utility {
 		}
 
 		public void Exit() {
-			this.timer.isRunning = false;
-			this.Shake (Vector3.zero);
+			this.timer.Exit ();
+			this.position = Vector3.zero;
 		}
 
-		private void Shake(Vector3 range) {
-			this.transform.localPosition = this.position + range;
+		public Vector3 GetPosition() {
+			return this.position;
+		}
+
+		public bool IsRunning() {
+			return this.timer.IsRunning ();
 		}
 	}
 }
