@@ -44,7 +44,7 @@ namespace Game.State {
 					this.timer.Enter (0.3f);
 
 					if (this.process == 1) {
-						AudioSource.PlayClipAtPoint (this.clip, Vector3.zero);
+						Sound.Play (this.clip);
 						this.originColor = this.controller.originColor;
 						this.targetColor = Color.white;
 					} else {

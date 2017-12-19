@@ -8,6 +8,7 @@ namespace Game.Component {
 
 		void OnDestroy() {
 			ViceCamera.Shake (this.shakingValue);
+			Judge.SetRunning (true);
 		}
 	}
 }

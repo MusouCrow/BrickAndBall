@@ -10,19 +10,14 @@ namespace Game.Component {
 		private const float DEPTH = 10;
 		private const float SPEED = 6;
 
-		private Rigidbody rigidbody;
-
-		[SerializeField]
-		private AudioClip clip;
-		[SerializeField]
-		private GameObject effect;
+		public AudioClip clip;
+		public GameObject effect;
 		public float rate = 1;
 		public float shakingTime = 0.1f;
 
-		public delegate void Delegate (Vector3 value);
-		public event Delegate OnDestroyEvent;
-
 		private Transform follow;
+		private Rigidbody rigidbody;
+		private bool isBegin = false;
 
 		// Use this for initialization
 		void Awake () {
@@ -36,6 +31,7 @@ namespace Game.Component {
 			Vector3 pos = this.rigidbody.position;
 
 			if (pos.y < 0) {
+				Judge.Gain (this.transform.localPosition);
 				Destroy (this.gameObject);
 				return;
 			}
@@ -48,26 +44,26 @@ namespace Game.Component {
 
 			this.rigidbody.position = pos;
 
-			Vector3 velocity = this.rigidbody.velocity;
-			float speed = SPEED * this.rate;
-
-			if (velocity.x < 0 && velocity.x > -speed) {
-				velocity.x = -speed;
-			} else if (velocity.x > 0 && velocity.x < speed) {
-				velocity.x = speed;
+			if (!this.isBegin && pos.y < 0.4f) {
+				this.isBegin = true;
 			}
 
-			this.rigidbody.velocity = velocity;
-		}
+			if (this.isBegin) {
+				Vector3 velocity = this.rigidbody.velocity;
+				float speed = SPEED * this.rate;
 
-		void OnDestroy() {
-			if (this.OnDestroyEvent != null) {
-				this.OnDestroyEvent (this.transform.localPosition);
+				if (velocity.x < 0 && velocity.x > -speed) {
+					velocity.x = -speed;
+				} else if (velocity.x > 0 && velocity.x < speed) {
+					velocity.x = speed;
+				}
+
+				this.rigidbody.velocity = velocity;
 			}
 		}
 
 		void OnCollisionEnter(Collision collision) {
-			AudioSource.PlayClipAtPoint (this.clip, this.transform.position);
+			Sound.Play (this.clip);
 			GameObject obj = this.NewEffect (this.transform.parent);
 			ParticleSystemRenderer psr = obj.GetComponent<ParticleSystemRenderer>();
 			MeshRenderer mr = collision.gameObject.GetComponent<MeshRenderer> ();

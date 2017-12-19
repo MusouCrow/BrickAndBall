@@ -29,7 +29,7 @@ namespace Game.Component {
 			this.timer.Enter (this.time);
 
 			for (int i = 0; i < this.clips.Length; i++) {
-				AudioSource.PlayClipAtPoint (this.clips [i], Vector3.zero);
+				Sound.Play (this.clips [i]);
 			}
 		}
 

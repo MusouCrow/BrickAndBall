@@ -65,7 +65,7 @@ namespace Game.State {
 
 		public override void Enter() {
 			this.timer.Enter (this.time);
-			AudioSource.PlayClipAtPoint (this.clip, Vector3.zero);
+			Sound.Play (this.clip);
 			this.process = 0;
 		}
 
