@@ -36,7 +36,6 @@ namespace Game.Utility {
 		void Start () {
 			if (this.image.sprite != null) {
 				this.Ready ();
-
 			}
 		}
 
@@ -50,7 +49,7 @@ namespace Game.Utility {
 			this.image.color = Color.Lerp (this.image.color, this.targetColor, this.timer.value);
 
 			if (!this.timer.IsRunning ()) {
-				//Destroy (this.gameObject);
+				Destroy (this.gameObject);
 			}
 		}
 	}

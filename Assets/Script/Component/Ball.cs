@@ -76,7 +76,7 @@ namespace Game.Component {
 				psr.material.color = collision.gameObject.GetComponent<MeshRenderer> ().material.color;
 			}
 
-			Lib.Shake (this.rigidbody.velocity * 0.01f, this.shakingTime);
+			ViceCamera.Shake (this.rigidbody.velocity * 0.01f, this.shakingTime);
 		}
 
 		GameObject NewEffect(Transform parent) {

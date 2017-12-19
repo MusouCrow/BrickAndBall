@@ -53,7 +53,7 @@ namespace Game.Component {
 			this.process = 0;
 			this.timer.Enter (this.time);
 			AudioSource.PlayClipAtPoint (this.clip, Vector3.zero);
-			Lib.Shake (this.shakingValue);
+			ViceCamera.Shake (this.shakingValue);
 		}
 
 		public void SetActive(bool value) {

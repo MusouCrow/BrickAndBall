@@ -40,7 +40,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40529e9049b7e4d80b37035dd47c925d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clip: {fileID: 8300000, guid: 669baf8bfb06b4ca08d96574a9d17681, type: 3}
+  clips:
+  - {fileID: 8300000, guid: 28afd25474c874089bb289a13a41b6be, type: 3}
+  - {fileID: 8300000, guid: 669baf8bfb06b4ca08d96574a9d17681, type: 3}
+  targetScale: {x: 2.5, y: 2.5, z: 2.5}
+  time: 0.8
+  mirageArrivedPercent: 0.7
+  next: {fileID: 1605583549108458, guid: 70446b665e4bd43b8832c8e874ac2691, type: 2}
 --- !u!114 &114373157233094738
 MonoBehaviour:
   m_ObjectHideFlags: 1

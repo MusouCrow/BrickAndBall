@@ -3,17 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Component {
-	public class Fight : MonoBehaviour {
-		public AudioClip clip;
+	public class Fight : Poster {
+		public Vector4 shakingValue;
 
-		// Use this for initialization
-		void Start () {
-			
-		}
-		
-		// Update is called once per frame
-		void Update () {
-			
+		void OnDestroy() {
+			ViceCamera.Shake (this.shakingValue);
 		}
 	}
 }

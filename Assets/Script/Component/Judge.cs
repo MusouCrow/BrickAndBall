@@ -34,7 +34,7 @@ namespace Game.Component {
 			this.audioSource = this.GetComponent<AudioSource> ();
 
 			this.timer = new Timer();
-			this.timer.Enter (this.shootingTime);
+			this.timer.Enter (3f);
 		}
 
 		void FixedUpdate() {

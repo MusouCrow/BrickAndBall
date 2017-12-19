@@ -10,7 +10,7 @@ public class Controller : MonoBehaviour {
 
 	protected MeshRenderer renderer;
 
-	public void Awake () {
+	protected void Awake () {
 		this.renderer = this.GetComponent<MeshRenderer> ();
 		this.originColor = this.renderer.material.color;
 	}
