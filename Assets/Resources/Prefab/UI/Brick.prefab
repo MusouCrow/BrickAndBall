@@ -9,50 +9,52 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1946228339026264}
+  m_RootGameObject: {fileID: 1348527961546954}
   m_IsPrefabParent: 1
---- !u!1 &1946228339026264
+--- !u!1 &1348527961546954
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 224704147319006772}
-  - component: {fileID: 222703071798001540}
-  - component: {fileID: 114580492762691940}
-  - component: {fileID: 114556701925997388}
+  - component: {fileID: 224458634687442632}
+  - component: {fileID: 222220123352906860}
+  - component: {fileID: 114065916725906596}
+  - component: {fileID: 114059616000970494}
   m_Layer: 5
-  m_Name: Count1
+  m_Name: Brick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &114556701925997388
+--- !u!114 &114059616000970494
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1946228339026264}
+  m_GameObject: {fileID: 1348527961546954}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40529e9049b7e4d80b37035dd47c925d, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e4c600e7cbf644f68a59e83eaea74a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 28afd25474c874089bb289a13a41b6be, type: 3}
-  - {fileID: 8300000, guid: 6c9bf38243b3a4b7587b2e4c5bad5604, type: 3}
-  targetScale: {x: 2.5, y: 2.5, z: 2.5}
-  time: 0.8
-  mirageArrivedPercent: 0.7
-  next: {fileID: 1306506802561638, guid: e5af5fd8165734d5cbd1f2efae838b49, type: 2}
---- !u!114 &114580492762691940
+  - {fileID: 8300000, guid: 7c3e6d2b64fec42e7ac5eb67d576107b, type: 3}
+  targetScale: {x: 2, y: 2, z: 2}
+  mirageScale: {x: 4, y: 4, z: 4}
+  time: 0.7
+  mirageArrivedPercent: 0.5
+  next: {fileID: 1406601988839056, guid: 7912c9a31dd154ce3bac24dad114a0d2, type: 2}
+  willDestroy: 0
+  shakingValue: {x: 3, y: 3, z: 0, w: 0.7}
+--- !u!114 &114065916725906596
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1946228339026264}
+  m_GameObject: {fileID: 1348527961546954}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
@@ -66,7 +68,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 466ab69135e9f468e8b20b6da23f8d40, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 89afa53fe6ac24b2ebc2be413efd12a1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -74,27 +76,27 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!222 &222703071798001540
+--- !u!222 &222220123352906860
 CanvasRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1946228339026264}
---- !u!224 &224704147319006772
+  m_GameObject: {fileID: 1348527961546954}
+--- !u!224 &224458634687442632
 RectTransform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1946228339026264}
+  m_GameObject: {fileID: 1348527961546954}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 41, y: 76}
+  m_AnchoredPosition: {x: -100, y: 200}
+  m_SizeDelta: {x: 197, y: 101}
   m_Pivot: {x: 0.5, y: 0.5}

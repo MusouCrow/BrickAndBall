@@ -17,6 +17,9 @@ namespace Game.Component {
 			ViceCamera.Shake (value, value.w);
 		}
 
+		public Transform target;
+		public float speed;
+
 		private Shaking shaking;
 		private Vector3 position;
 
@@ -27,7 +30,11 @@ namespace Game.Component {
 		}
 		
 		// Update is called once per frame
-		private void Update () {
+		private void FixedUpdate () {
+			if (this.target) {
+				this.transform.RotateAround (this.target.position, Vector3.up, this.speed);
+			}
+
 			if (this.shaking.IsRunning ()) {
 				this.shaking.Update (Time.fixedDeltaTime);
 				this.transform.localPosition = this.position + this.shaking.GetPosition ();

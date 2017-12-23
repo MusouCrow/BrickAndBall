@@ -4,10 +4,13 @@ using UnityEngine;
 
 namespace Game.Component {
 	public class Fight : Poster {
-		public Vector4 shakingValue;
+		protected void Awake () {
+			base.Awake ();
 
-		void OnDestroy() {
-			ViceCamera.Shake (this.shakingValue);
+			this.OnEndEvent += this.OnEnd;
+		}
+
+		private void OnEnd() {
 			Judge.SetRunning (true);
 		}
 	}

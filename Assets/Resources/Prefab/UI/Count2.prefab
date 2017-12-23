@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224146129201137348}
   - component: {fileID: 222956453474911020}
   - component: {fileID: 114666574463122670}
-  - component: {fileID: 114979536370480916}
+  - component: {fileID: 114209539211621700}
   m_Layer: 5
   m_Name: Count2
   m_TagString: Untagged
@@ -29,6 +29,27 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &114209539211621700
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1605583549108458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4c600e7cbf644f68a59e83eaea74a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: 28afd25474c874089bb289a13a41b6be, type: 3}
+  - {fileID: 8300000, guid: fea57006de4c84ccf95534d67903c921, type: 3}
+  targetScale: {x: 2.5, y: 2.5, z: 2.5}
+  mirageScale: {x: 5, y: 5, z: 5}
+  time: 0.8
+  mirageArrivedPercent: 0.7
+  next: {fileID: 1946228339026264, guid: 24fae291f0c9344bdb393e070e532734, type: 2}
+  willDestroy: 1
+  shakingValue: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &114666574463122670
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -48,7 +69,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 9e81542e371c148b6a44ad666bc5c262, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 39beaa6b68d3547d78f234da34e4218b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -56,24 +77,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114979536370480916
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1605583549108458}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40529e9049b7e4d80b37035dd47c925d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  clips:
-  - {fileID: 8300000, guid: 28afd25474c874089bb289a13a41b6be, type: 3}
-  - {fileID: 8300000, guid: fea57006de4c84ccf95534d67903c921, type: 3}
-  targetScale: {x: 2.5, y: 2.5, z: 2.5}
-  time: 0.8
-  mirageArrivedPercent: 0.7
-  next: {fileID: 1946228339026264, guid: 24fae291f0c9344bdb393e070e532734, type: 2}
 --- !u!222 &222956453474911020
 CanvasRenderer:
   m_ObjectHideFlags: 1
