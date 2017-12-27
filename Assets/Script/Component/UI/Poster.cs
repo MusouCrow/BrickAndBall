@@ -4,12 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-namespace Game.Component {
+namespace Game.Component.UI {
 	using Utility;
 
 	public class Poster : MonoBehaviour {
 		public delegate void OnEndDelegate();
-		protected static GameObject MIRAGE;
 
 		public AudioClip[] clips;
 		public Vector3 targetScale;
@@ -27,10 +26,6 @@ namespace Game.Component {
 		private Shaking shaking;
 
 		protected void Awake () {
-			if (MIRAGE == null) {
-				MIRAGE = Resources.Load ("Prefab/UI/Mirage") as GameObject;
-			}
-
 			this.position = this.transform.localPosition;
 
 			this.timer = new Timer ();
@@ -61,12 +56,9 @@ namespace Game.Component {
 			this.transform.localScale = Vector3.Lerp (this.transform.localScale, this.targetScale, process);
 
 			if (process >= this.mirageArrivedPercent && !this.hasMirage) {
-				GameObject obj = GameObject.Instantiate (MIRAGE, this.transform.parent) as GameObject;
-				obj.transform.localPosition = this.transform.localPosition;
-				obj.transform.localScale = this.transform.localScale;
-				obj.transform.localRotation = this.transform.localRotation;
-
-				obj.GetComponent<Mirage> ().Init (this.GetComponent<Image> ().sprite, this.mirageScale, this.time * (1 - this.mirageArrivedPercent));
+				Image image = this.GetComponent<Image> ();
+				float time = this.time * (1 - this.mirageArrivedPercent);
+				Mirage.New<Image> (this.transform, this.transform.parent, image, this.mirageScale, time);
 				this.hasMirage = true;
 			}
 

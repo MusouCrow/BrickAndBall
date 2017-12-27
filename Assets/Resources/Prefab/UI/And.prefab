@@ -73,7 +73,7 @@ MonoBehaviour:
   mirageScale: {x: 0, y: 0, z: 0}
   time: 0.3
   mirageArrivedPercent: 1.1
-  next: {fileID: 0}
+  next: {fileID: 1004199013416336, guid: 84e13df97244441748beb5c720959aea, type: 2}
   willDestroy: 0
   shakingValue: {x: 3, y: 3, z: 0, w: 0.3}
 --- !u!222 &222946381664654396
@@ -97,6 +97,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 28, y: 110}
+  m_AnchoredPosition: {x: 28, y: 160}
   m_SizeDelta: {x: 37, y: 47}
   m_Pivot: {x: 0.5, y: 0.5}

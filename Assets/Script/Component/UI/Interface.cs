@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Component {
+namespace Game.Component.UI {
 	public class Interface : MonoBehaviour {
 		public GameObject count;
 		public GameObject logo;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.Component {
+namespace Game.Component.UI {
 	public class FPS : MonoBehaviour {
 		private Text text;
 		private float timer;

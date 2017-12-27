@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Component {
+namespace Game.Component.UI {
 	public class Fight : Poster {
 		protected void Awake () {
 			base.Awake ();
