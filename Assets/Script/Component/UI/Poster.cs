@@ -18,7 +18,7 @@ namespace Game.Component.UI {
 		public GameObject next;
 		public bool willDestroy = true;
 		public Vector4 shakingValue;
-		public OnEndDelegate OnEndEvent;
+		public event OnEndDelegate OnEndEvent;
 
 		private Timer timer;
 		private bool hasMirage = false;

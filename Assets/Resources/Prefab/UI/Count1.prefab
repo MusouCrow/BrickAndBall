@@ -46,7 +46,7 @@ MonoBehaviour:
   targetScale: {x: 2.5, y: 2.5, z: 2.5}
   mirageScale: {x: 5, y: 5, z: 5}
   time: 0.8
-  mirageArrivedPercent: 0.7
+  mirageArrivedPercent: 0.3
   next: {fileID: 1306506802561638, guid: e5af5fd8165734d5cbd1f2efae838b49, type: 2}
   willDestroy: 1
   shakingValue: {x: 0, y: 0, z: 0, w: 0}

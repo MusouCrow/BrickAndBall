@@ -16,7 +16,7 @@ namespace Game.State {
 		private int process;
 		private Color originColor;
 		private Color targetColor;
-		private Dragging dragging;
+		private Vector3 draggingPos;
 		private AudioClip clip;
 
 		public Normal (GameObject gameObject, Utility.SimpleJSON.JSONNode param) : base (gameObject, param) {
@@ -26,7 +26,6 @@ namespace Game.State {
 			this.dragValue = 0.5f;
 			this.coolDown = false;
 			this.timer = new Timer ();
-			this.dragging = new Dragging ();
 		}
 
 		public override void Update() {
@@ -53,7 +52,7 @@ namespace Game.State {
 					}
 				} else {
 					this.coolDown = false;
-					this.dragging.Update (Input.mousePosition);
+					this.draggingPos = ViceCamera.ScreenToWorldPoint (Input.mousePosition);
 				}
 			}
 		}
@@ -74,7 +73,7 @@ namespace Game.State {
 				return;
 			}
 
-			this.dragging.Update (Input.mousePosition);
+			this.draggingPos = ViceCamera.ScreenToWorldPoint (Input.mousePosition);
 		}
 
 		public override void OnMouseDrag () {
@@ -82,9 +81,9 @@ namespace Game.State {
 				return;
 			}
 
-			Vector3 oldPos = this.dragging.GetPosition ();
-			this.dragging.Update (Input.mousePosition);
-			Vector3 newPos = this.dragging.GetPosition ();
+			Vector3 oldPos = this.draggingPos;
+			this.draggingPos = ViceCamera.ScreenToWorldPoint (Input.mousePosition);
+			Vector3 newPos = this.draggingPos;
 			float delta = newPos.x - oldPos.x;
 
 			if ((this.controller.direction > 0 && delta > this.dragValue) || (this.controller.direction < 0 && delta < -this.dragValue)) {

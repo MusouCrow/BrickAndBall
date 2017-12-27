@@ -18,7 +18,7 @@ namespace Game.Component {
 
 		private Statemgr statemgr;
 		private Random random;
-		private Dragging dragging;
+		private Vector3 draggingPos;
 		private Shaking shaking;
 
 		[NonSerialized]
@@ -29,7 +29,6 @@ namespace Game.Component {
 
 			this.statemgr = this.GetComponent<Statemgr> ();
 			this.random = new Random ();
-			this.dragging = new Dragging ();
 			this.shaking = new Shaking ();
 			this.position = this.transform.localPosition;
 		}
@@ -42,13 +41,13 @@ namespace Game.Component {
 		}
 
 		void OnMouseDown() {
-			this.dragging.Update (Input.mousePosition);
+			this.draggingPos = ViceCamera.ScreenToWorldPoint (Input.mousePosition);
 		}
 
 		void OnMouseDrag () {
-			Vector3 oldPos = this.dragging.GetPosition ();
-			this.dragging.Update (Input.mousePosition);
-			Vector3 newPos = this.dragging.GetPosition ();
+			Vector3 oldPos = this.draggingPos;
+			this.draggingPos = ViceCamera.ScreenToWorldPoint (Input.mousePosition);
+			Vector3 newPos = this.draggingPos;
 
 			this.position.z += newPos.z - oldPos.z;
 

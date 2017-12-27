@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 222611440571598346}
   - component: {fileID: 114764772944970046}
   - component: {fileID: 114419553438349378}
-  - component: {fileID: 114817906908831314}
+  - component: {fileID: 114089023230485360}
   m_Layer: 5
   m_Name: PVE
   m_TagString: Untagged
@@ -47,6 +47,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &114089023230485360
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1498321150046258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bcf14a64f14a4b859dfffe8fd67d955, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  next: {fileID: 1817071818384210, guid: c4fc1bdfb5e20442a9ef92fed1f7092c, type: 2}
 --- !u!114 &114392097757226274
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -160,18 +172,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114817906908831314
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1498321150046258}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce7487db6375d42ca82bd1fdf544b92a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  next: {fileID: 1817071818384210, guid: c4fc1bdfb5e20442a9ef92fed1f7092c, type: 2}
 --- !u!222 &222159358602620534
 CanvasRenderer:
   m_ObjectHideFlags: 1

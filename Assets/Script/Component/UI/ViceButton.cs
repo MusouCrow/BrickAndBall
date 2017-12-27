@@ -7,7 +7,8 @@ namespace Game.Component.UI {
 	using Utility;
 
 	public class ViceButton : MonoBehaviour {
-		private static AudioClip CLIP;
+		private static AudioClip CLICK_CLIP;
+		private static AudioClip SHOW_CLIP;
 		private static Vector3 MIRAGE_SCALE = new Vector3 (3, 3, 3);
 		private const float SHOW_TIME = 0.3f; 
 
@@ -25,8 +26,12 @@ namespace Game.Component.UI {
 		private Timer timer;
 
 		protected void Awake () {
-			if (CLIP == null) {
-				CLIP = Resources.Load ("Sound/Click") as AudioClip;
+			if (CLICK_CLIP == null) {
+				CLICK_CLIP = Resources.Load ("Sound/Click") as AudioClip;
+			}
+
+			if (SHOW_CLIP == null) {
+				SHOW_CLIP = Resources.Load ("Sound/Count") as AudioClip;
 			}
 
 			this.image = this.GetComponent<Image> ();
@@ -41,6 +46,8 @@ namespace Game.Component.UI {
 
 			this.timer = new Timer ();
 			this.timer.Enter (SHOW_TIME);
+
+			Sound.Play (SHOW_CLIP);
 		}
 
 		protected void FixedUpdate () {
@@ -62,7 +69,7 @@ namespace Game.Component.UI {
 		}
 
 		private void PlaySound () {
-			Sound.Play (CLIP);
+			Sound.Play (CLICK_CLIP);
 			Mirage.New<Image> (this.transform, this.transform.parent, this.image, MIRAGE_SCALE, 0.5f);
 			//Mirage.New<Text> (this.transform, this.transform.parent, this.text, MIRAGE_SCALE, 0.5f);
 		}
