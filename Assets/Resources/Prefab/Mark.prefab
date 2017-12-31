@@ -109,6 +109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetColor: {r: 0, g: 0, b: 0, a: 0}
+  direction: 0
   protector: {fileID: 0}
 --- !u!114 &114383444515033126
 MonoBehaviour:
@@ -121,6 +122,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808aabb8688a243c484118c00899163f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  states:
-  - Normal:Mark/Normal
-  - Elast:Mark/Elast
+  keys:
+  - Normal
+  - Elast
+  values:
+  - {fileID: 11400000, guid: 11478b9751ec04c66b8c0184d43c1f1c, type: 2}
+  - {fileID: 11400000, guid: c9915e15f4cfe45e4930e224a8327c19, type: 2}

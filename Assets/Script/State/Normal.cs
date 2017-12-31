@@ -5,11 +5,12 @@ using UnityEngine;
 namespace Game.State {
 	using Component;
 	using Utility;
+	using StateData = Data.Normal;
 
 	public class Normal : State {
+		private StateData data;
 		private Controller controller;
 		private float clickTime;
-		private float coolDownTime;
 		private float dragValue;
 		private bool coolDown;
 		private Timer timer;
@@ -17,12 +18,10 @@ namespace Game.State {
 		private Color originColor;
 		private Color targetColor;
 		private Vector3 draggingPos;
-		private AudioClip clip;
 
-		public Normal (GameObject gameObject, Utility.SimpleJSON.JSONNode param) : base (gameObject, param) {
+		public Normal (GameObject gameObject, StateData data) : base (gameObject, data) {
+			this.data = data;
 			this.controller = gameObject.GetComponent<Controller> ();
-			this.coolDownTime = param ["coolDownTime"].AsFloat;
-			this.clip = Resources.Load ("Sound/Ready") as AudioClip;
 			this.dragValue = 0.5f;
 			this.coolDown = false;
 			this.timer = new Timer ();
@@ -43,7 +42,7 @@ namespace Game.State {
 					this.timer.Enter (0.3f);
 
 					if (this.process == 1) {
-						Sound.Play (this.clip);
+						Sound.Play (this.data.clip);
 						this.originColor = this.controller.originColor;
 						this.targetColor = Color.white;
 					} else {
@@ -58,7 +57,7 @@ namespace Game.State {
 		}
 
 		public override void Enter() {
-			this.timer.Enter (this.coolDownTime);
+			this.timer.Enter (this.data.coolDownTime);
 			this.process = 0;
 			this.originColor = this.controller.targetColor;
 			this.targetColor = this.controller.originColor;

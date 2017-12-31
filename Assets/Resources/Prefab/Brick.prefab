@@ -126,6 +126,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808aabb8688a243c484118c00899163f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  states:
-  - Normal:Brick/Normal
-  - Elast:Brick/Elast
+  keys:
+  - Normal
+  - Elast
+  values:
+  - {fileID: 11400000, guid: 8ffccdfb79c404c9ba488532b7bd49ee, type: 2}
+  - {fileID: 11400000, guid: 210a8dc20e4d941c89211eec781292ec, type: 2}

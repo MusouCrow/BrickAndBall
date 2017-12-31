@@ -1,9 +1,0 @@
-{
-	"script": "Brick_Elast",
-	"scaling": [0.5, 1.8],
-	"positioning": [4, 3],
-	"time": 0.1,
-	"power": 10,
-	"clip": "Sound/Elast",
-	"nextState": "Normal"
-}

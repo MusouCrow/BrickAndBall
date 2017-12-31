@@ -4,17 +4,17 @@ using UnityEngine;
 namespace Game.State {
 	using Component;
 	using Utility;
-	using Utility.SimpleJSON;
+	using StateData = Data.Mark_Elast;
 
 	public class Mark_Elast : State {
+		private StateData data;
 		private Mark mark;
 		private Timer timer;
-		private string nextState;
 
-		public Mark_Elast (GameObject gameObject, JSONNode param) : base (gameObject, param) {
+		public Mark_Elast (GameObject gameObject, StateData data) : base (gameObject, data) {
+			this.data = data;
 			this.mark = gameObject.GetComponent<Mark> ();
 			this.timer = new Timer ();
-			this.nextState = param ["nextState"].Value;
 		}
 
 		public override void Update() {
@@ -22,7 +22,7 @@ namespace Game.State {
 			this.mark.ColorLert (this.mark.originColor, this.mark.targetColor, this.timer.GetProcess ());
 
 			if (!this.timer.IsRunning ()) {
-				this.statemgr.Play (this.nextState);
+				this.statemgr.Play (this.data.nextState);
 			}
 		}
 

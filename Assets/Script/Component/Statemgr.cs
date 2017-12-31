@@ -7,43 +7,27 @@ using Object = System.Object;
 
 namespace Game.Component {
 	using Utility;
-	using Utility.SimpleJSON;
 
 	public class Statemgr : MonoBehaviour {
-		public string[] states;
+		[SerializeField]
+		private string[] keys;
+		[SerializeField]
+		private State.Data[] values;
 
 		private State nowState;
 		private Dictionary<string, State> stateMap;
 		private string nowStateName;
 
-		static private Dictionary<string, JSONNode> POOR = new Dictionary<string, JSONNode> ();
-
-		private static JSONNode LoadJson(string path) {
-			if (!POOR.ContainsKey (path)) {
-				TextAsset textAsset = Resources.Load ("State/" + path, typeof(TextAsset)) as TextAsset;
-				JSONNode node = JSON.Parse (textAsset.text);
-				POOR.Add (path, node);
-				Resources.UnloadAsset (textAsset);
-			}
-
-			return POOR [path];
-		}
-
 		void Start () {
 			this.stateMap = new Dictionary<string, State> ();
 
-			for (int i = 0; i < this.states.Length; i++) {
-				string[] part = this.states [i].Split (':');
-				string name = part [0];
-				string path = part [1];
-
-				JSONNode node = Statemgr.LoadJson (path);
-				string script = node ["script"].Value;
-				Type type = Type.GetType ("Game.State." + script);
-				State state = Activator.CreateInstance (type, new Object[] { this.gameObject, node }) as State;
-				
-				this.stateMap.Add (name, state);
+			for (int i = 0; i < this.values.Length; i++) {
+				State state = Activator.CreateInstance (this.values [i].type, new Object[] { this.gameObject, this.values [i] }) as State;
+				this.stateMap.Add (this.keys [i], state);
 			}
+
+			this.keys = null;
+			this.values = null;
 
 			this.Play ("Normal");
 		}
