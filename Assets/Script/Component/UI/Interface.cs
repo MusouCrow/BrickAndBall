@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,6 +27,7 @@ namespace Game.Component.UI {
 			ViceCamera.OnEndEvent += OnCameraEnd;
 
 			GameObject.Instantiate (this.logo, this.transform);
+
 		}
 
 		protected void FixedUpdate () {

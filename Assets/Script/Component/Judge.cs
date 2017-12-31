@@ -7,29 +7,32 @@ namespace Game.Component {
 
 	public class Judge : MonoBehaviour {
 		private const int SCORE_MAX = 5;
-		private static Judge instance;
+		private static Judge INSTANCE;
 
 		public static void SetRunning (bool isRunning) {
-			instance.isRunning = isRunning;
+			INSTANCE.isRunning = isRunning;
 
-			if (instance.isRunning) {
-				instance.timer.Enter (0.1f);
+			if (INSTANCE.isRunning) {
+				INSTANCE.timer.Enter (0.1f);
+				Sound.PlayMusic (INSTANCE.music);
+			} else {
+				Sound.PlayMusic ();
 			}
 		}
 
 		public static void Gain (Vector3 position) {
-			instance.timer.Enter (instance.shootingTime);
+			INSTANCE.timer.Enter (INSTANCE.shootingTime);
 
 			if (position.x > 0) {
-				instance.scoreB += 1;
-				instance.wallB.SetLength ((float)instance.scoreB / (float)SCORE_MAX);
+				INSTANCE.scoreB += 1;
+				INSTANCE.wallB.SetLength ((float)INSTANCE.scoreB / (float)SCORE_MAX);
 			} else {
-				instance.scoreA += 1;
-				instance.wallA.SetLength ((float)instance.scoreA / (float)SCORE_MAX);
+				INSTANCE.scoreA += 1;
+				INSTANCE.wallA.SetLength ((float)INSTANCE.scoreA / (float)SCORE_MAX);
 			}
 
-			for (int i = 0; i < instance.sounds.Length; i++) {
-				Sound.Play (instance.sounds [i], instance.volume);
+			for (int i = 0; i < INSTANCE.sounds.Length; i++) {
+				Sound.Play (INSTANCE.sounds [i], INSTANCE.volume);
 			}
 		}
 
@@ -52,7 +55,7 @@ namespace Game.Component {
 		private bool isRunning = false;
 
 		void Awake() {
-			Judge.instance = this;
+			INSTANCE = this;
 			this.timer = new Timer();
 		}
 
@@ -78,10 +81,6 @@ namespace Game.Component {
 						obj = this.shooterA.Shoot ();
 					} else {
 						obj = this.shooterB.Shoot ();
-					}
-
-					if (!Sound.MusicIsPlaying ()) {
-						Sound.PlayMusic (this.music);
 					}
 
 					this.ball = obj.GetComponent<Ball> ();

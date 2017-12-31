@@ -275,7 +275,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4265996288614166, guid: 2e5dad5aee8594c0d8fe3707dfcd425d, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -0.5
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 65710210466194302, guid: 2e5dad5aee8594c0d8fe3707dfcd425d,
         type: 2}
@@ -462,7 +462,17 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4265996288614166, guid: 2e5dad5aee8594c0d8fe3707dfcd425d, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 0.5
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 65710210466194302, guid: 2e5dad5aee8594c0d8fe3707dfcd425d,
+        type: 2}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 65710210466194302, guid: 2e5dad5aee8594c0d8fe3707dfcd425d,
+        type: 2}
+      propertyPath: m_Size.z
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2e5dad5aee8594c0d8fe3707dfcd425d, type: 2}
@@ -591,7 +601,6 @@ GameObject:
   - component: {fileID: 873587225}
   - component: {fileID: 873587224}
   - component: {fileID: 873587223}
-  - component: {fileID: 873587222}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -599,22 +608,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &873587222
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 873587221}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fc6bde01469c7b4badee5362f191d96, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  downsample: 0
-  blurSize: 0
-  blurIterations: 4
-  blurType: 0
-  blurShader: {fileID: 4800000, guid: f9d5fa183cd6b45eeb1491f74863cd91, type: 3}
 --- !u!114 &873587223
 MonoBehaviour:
   m_ObjectHideFlags: 0

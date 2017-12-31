@@ -8,7 +8,7 @@ namespace Game.Component {
 	public class Sound : MonoBehaviour {
 		private static Sound instance;
 
-		public static void PlayMusic (AudioClip clip) {
+		public static void PlayMusic (AudioClip clip=null) {
 			instance.targetClip = clip;
 			instance.timer.Enter (instance.gradualTime);
 			instance.process = 0;

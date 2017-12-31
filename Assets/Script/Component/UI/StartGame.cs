@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Component.UI {
+	using Utility;
+
 	public class StartGame : ViceButton {
 		protected void Awake () {
 			base.Awake ();
