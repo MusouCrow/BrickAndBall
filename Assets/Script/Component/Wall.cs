@@ -16,13 +16,13 @@ namespace Game.Component {
 		private Shaking shaking;
 		private Vector3 position;
 
-		void Awake() {
+		protected void Awake() {
 			this.timer = new Timer ();
 			this.shaking = new Shaking ();
 			this.position = this.transform.localPosition;
 		}
 
-		void FixedUpdate() {
+		protected void FixedUpdate() {
 			if (this.shaking.IsRunning ()) {
 				this.shaking.Update (Time.fixedDeltaTime);
 				this.transform.localPosition = this.position + this.shaking.GetPosition ();
@@ -36,13 +36,17 @@ namespace Game.Component {
 			}
 		}
 
+		protected void OnCollisionEnter(Collision collision) {
+			this.shaking.Enter (this.shakingValue);
+		}
+
 		public void SetLength(float value) {
 			this.target = value;
 			this.timer.Enter (1);
 		}
 
-		void OnCollisionEnter(Collision collision) {
-			this.shaking.Enter (this.shakingValue);
+		public void Reset () {
+			this.SetLength (0);
 		}
 	}
 }

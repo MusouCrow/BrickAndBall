@@ -15,7 +15,7 @@ namespace Game.Component {
 		public Vector4 shakingValue;
 
 		private float begin;
-		private int process;
+		private int state;
 		private Timer timer;
 
 		void Awake () {
@@ -28,7 +28,7 @@ namespace Game.Component {
 
 			Vector3 pos = this.transform.localPosition;
 
-			if (this.process == 0) {
+			if (this.state == 0) {
 				pos.x = Mathf.Lerp (this.begin, this.end, this.timer.GetProcess ());
 			} else {
 				pos.x = Mathf.Lerp (this.end, this.begin, this.timer.GetProcess ());
@@ -37,9 +37,9 @@ namespace Game.Component {
 			this.transform.localPosition = pos;
 
 			if (!this.timer.IsRunning ()) {
-				this.process += 1;
+				this.state += 1;
 
-				if (this.process == 1) {
+				if (this.state == 1) {
 					this.timer.Enter (this.time);
 				} else {
 					this.SetActive (false);
@@ -48,7 +48,7 @@ namespace Game.Component {
 		}
 
 		void OnEnable() {
-			this.process = 0;
+			this.state = 0;
 			this.timer.Enter (this.time);
 			Sound.Play (this.clip);
 			ViceCamera.Shake (this.shakingValue);

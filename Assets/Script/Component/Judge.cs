@@ -6,7 +6,17 @@ namespace Game.Component {
 	using Utility;
 
 	public class Judge : MonoBehaviour {
-		private const int SCORE_MAX = 5;
+		[System.Serializable]
+		private struct Team {
+			public Wall wall;
+			public Shooter shooter;
+			public Brick brick;
+			public Mark mark;
+			[System.NonSerialized]
+			public int score;
+		}
+
+		private const int SCORE_MAX = 1;
 		private static Judge INSTANCE;
 
 		public static void SetRunning (bool isRunning) {
@@ -18,32 +28,38 @@ namespace Game.Component {
 			} else {
 				Sound.PlayMusic ();
 			}
+
+			INSTANCE.teamA.brick.canControll = isRunning;
+			INSTANCE.teamB.brick.canControll = isRunning;
+			INSTANCE.teamA.mark.canControll = isRunning;
+			INSTANCE.teamB.mark.canControll = isRunning;
 		}
 
 		public static void Gain (Vector3 position) {
-			INSTANCE.timer.Enter (INSTANCE.shootingTime);
-
-			if (position.x > 0) {
-				INSTANCE.scoreB += 1;
-				INSTANCE.wallB.SetLength ((float)INSTANCE.scoreB / (float)SCORE_MAX);
+			if (position.x < 0) {
+				INSTANCE.teamA.score += 1;
+				INSTANCE.teamA.wall.SetLength ((float)INSTANCE.teamA.score / (float)SCORE_MAX);
 			} else {
-				INSTANCE.scoreA += 1;
-				INSTANCE.wallA.SetLength ((float)INSTANCE.scoreA / (float)SCORE_MAX);
+				INSTANCE.teamB.score += 1;
+				INSTANCE.teamB.wall.SetLength ((float)INSTANCE.teamB.score / (float)SCORE_MAX);
 			}
 
 			for (int i = 0; i < INSTANCE.sounds.Length; i++) {
 				Sound.Play (INSTANCE.sounds [i], INSTANCE.volume);
 			}
+
+			if (INSTANCE.teamA.score == SCORE_MAX || INSTANCE.teamB.score == SCORE_MAX) {
+				Judge.SetRunning (false);
+				UI.Interface.Result (INSTANCE.teamB.score == SCORE_MAX, 0.5f);
+			} else {
+				INSTANCE.timer.Enter (INSTANCE.shootingTime);
+			}
 		}
 
 		[SerializeField]
-		private Wall wallA;
+		private Team teamA;
 		[SerializeField]
-		private Wall wallB;
-		[SerializeField]
-		private Shooter shooterA;
-		[SerializeField]
-		private Shooter shooterB;
+		private Team teamB;
 		[SerializeField]
 		private AudioClip[] sounds;
 		public AudioClip music;
@@ -53,18 +69,18 @@ namespace Game.Component {
 
 		private bool aShooted;
 		private Timer timer;
-		private int scoreA;
-		private int scoreB;
 		private Ball ball;
 		private float pitch = 1;
 		private bool isRunning = false;
 
-		void Awake() {
+		protected void Awake() {
 			INSTANCE = this;
+
 			this.timer = new Timer();
+			ViceCamera.OnEndEvent += this.Reset;
 		}
 
-		void FixedUpdate() {
+		protected void FixedUpdate() {
 			if (!this.isRunning) {
 				return;
 			}
@@ -83,14 +99,27 @@ namespace Game.Component {
 					GameObject obj;
 
 					if (this.aShooted) {
-						obj = this.shooterA.Shoot ();
+						obj = this.teamA.shooter.Shoot ();
 					} else {
-						obj = this.shooterB.Shoot ();
+						obj = this.teamB.shooter.Shoot ();
 					}
 
 					this.ball = obj.GetComponent<Ball> ();
 					this.aShooted = !this.aShooted;
 				}
+			}
+		}
+
+		private void Reset (bool isGame) {
+			if (!isGame) {
+				this.aShooted = false;
+				this.pitch = 1;
+				this.teamA.score = 0;
+				this.teamB.score = 0;
+				this.teamA.wall.Reset ();
+				this.teamB.wall.Reset ();
+				this.teamA.brick.Reset (1);
+				this.teamB.brick.Reset (1);
 			}
 		}
 	}

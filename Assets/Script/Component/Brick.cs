@@ -17,30 +17,46 @@ namespace Game.Component {
 		private Random random;
 		private Vector3 draggingPos;
 		private Shaking shaking;
+		private Timer timer;
 
 		[NonSerialized]
 		public Vector3 position;
 
-		void Awake () {
+		protected new void Awake () {
 			base.Awake ();
 
 			this.random = new Random ();
 			this.shaking = new Shaking ();
+			this.timer = new Timer ();
 			this.position = this.transform.localPosition;
 		}
 
-		void FixedUpdate() {
+		protected void FixedUpdate() {
+			if (this.timer.IsRunning ()) {
+				this.timer.Update (Time.fixedDeltaTime);
+				this.position.z = Mathf.Lerp (this.position.z, 0, this.timer.GetProcess ());
+				this.AdjustPosition ();
+			}
+
 			if (this.shaking.IsRunning ()) {
 				this.shaking.Update (Time.fixedDeltaTime);
 				this.AdjustPosition ();
 			}
 		}
 
-		void OnMouseDown() {
+		protected void OnMouseDown() {
+			if (!this.canControll) {
+				return;
+			}
+
 			this.draggingPos = ViceCamera.ScreenToWorldPoint (Input.mousePosition);
 		}
 
-		void OnMouseDrag () {
+		protected void OnMouseDrag () {
+			if (!this.canControll) {
+				return;
+			}
+
 			Vector3 oldPos = this.draggingPos;
 			this.draggingPos = ViceCamera.ScreenToWorldPoint (Input.mousePosition);
 			Vector3 newPos = this.draggingPos;
@@ -56,7 +72,7 @@ namespace Game.Component {
 			this.AdjustPosition ();
 		}
 
-		void OnCollisionEnter (Collision collision) {
+		protected void OnCollisionEnter (Collision collision) {
 			Ball ball = collision.gameObject.GetComponent<Ball> ();
 
 			if (ball != null) {
@@ -73,6 +89,10 @@ namespace Game.Component {
 
 		public void AdjustPosition () {
 			this.transform.localPosition = this.position + this.shaking.GetPosition ();
+		}
+
+		public void Reset (float time) {
+			this.timer.Enter (time);
 		}
 	}
 }

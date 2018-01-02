@@ -217,6 +217,12 @@ Transform:
   m_PrefabParentObject: {fileID: 4762679448086616, guid: 8a86af8a7a56e4155897c7d65515fbd9,
     type: 2}
   m_PrefabInternal: {fileID: 212081982}
+--- !u!114 &212081984 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114467319013393604, guid: 8a86af8a7a56e4155897c7d65515fbd9,
+    type: 2}
+  m_PrefabInternal: {fileID: 212081982}
+  m_Script: {fileID: 11500000, guid: d9245a8636fd94d038a733c0ec3a42cf, type: 3}
 --- !u!1001 &469005978
 Prefab:
   m_ObjectHideFlags: 0
@@ -401,9 +407,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b715e17ec3ba44d449f5f6a00e079ccf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  eventSystem: {fileID: 1798831885}
   count: {fileID: 1479093816765346, guid: 2e832f1b94e334174a4dea5ffe75cc41, type: 2}
   logo: {fileID: 1348527961546954, guid: 45b01c378eca941dba6295bb824e8c70, type: 2}
-  eventSystem: {fileID: 1798831885}
+  victory: {fileID: 1247917650694628, guid: e251d2715aa8b4e0283f01e85c0a1796, type: 2}
+  failed: {fileID: 1115733305151930, guid: a7454233946ef4203bcfddcf93a23639, type: 2}
+  endingMusic: {fileID: 8300000, guid: 435b8a525a3e1400bb43ca71c40c53cc, type: 3}
 --- !u!1001 &636020811
 Prefab:
   m_ObjectHideFlags: 0
@@ -784,6 +793,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 716720a0a9c1040429dfdf06e30ac0e6, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &923803114 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114081810873422022, guid: 716720a0a9c1040429dfdf06e30ac0e6,
+    type: 2}
+  m_PrefabInternal: {fileID: 923803113}
+  m_Script: {fileID: 11500000, guid: ca3e4a59b846941359ee3049bd6686bd, type: 3}
 --- !u!1001 &1209522992
 Prefab:
   m_ObjectHideFlags: 0
@@ -860,6 +875,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8a86af8a7a56e4155897c7d65515fbd9, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &1209522993 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114467319013393604, guid: 8a86af8a7a56e4155897c7d65515fbd9,
+    type: 2}
+  m_PrefabInternal: {fileID: 1209522992}
+  m_Script: {fileID: 11500000, guid: d9245a8636fd94d038a733c0ec3a42cf, type: 3}
 --- !u!1001 &1426561435
 Prefab:
   m_ObjectHideFlags: 0
@@ -962,6 +983,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 716720a0a9c1040429dfdf06e30ac0e6, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &1426561436 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114081810873422022, guid: 716720a0a9c1040429dfdf06e30ac0e6,
+    type: 2}
+  m_PrefabInternal: {fileID: 1426561435}
+  m_Script: {fileID: 11500000, guid: ca3e4a59b846941359ee3049bd6686bd, type: 3}
 --- !u!1001 &1521376517
 Prefab:
   m_ObjectHideFlags: 0
@@ -1228,7 +1255,6 @@ GameObject:
   - component: {fileID: 1798831888}
   - component: {fileID: 1798831887}
   - component: {fileID: 1798831886}
-  - component: {fileID: 1798831889}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -1281,87 +1307,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1798831889
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1798831885}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -822479833, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_NetworkPort: 7777
-  m_ServerBindToIP: 0
-  m_ServerBindAddress: 
-  m_NetworkAddress: localhost
-  m_DontDestroyOnLoad: 1
-  m_RunInBackground: 1
-  m_ScriptCRCCheck: 1
-  m_MaxDelay: 0.01
-  m_LogLevel: 2
-  m_PlayerPrefab: {fileID: 0}
-  m_AutoCreatePlayer: 1
-  m_PlayerSpawnMethod: 0
-  m_OfflineScene: 
-  m_OnlineScene: 
-  m_SpawnPrefabs: []
-  m_CustomConfig: 0
-  m_MaxConnections: 4
-  m_ConnectionConfig:
-    m_PacketSize: 1440
-    m_FragmentSize: 500
-    m_ResendTimeout: 1200
-    m_DisconnectTimeout: 2000
-    m_ConnectTimeout: 2000
-    m_MinUpdateTimeout: 10
-    m_PingTimeout: 500
-    m_ReducedPingTimeout: 100
-    m_AllCostTimeout: 20
-    m_NetworkDropThreshold: 5
-    m_OverflowDropThreshold: 5
-    m_MaxConnectionAttempt: 10
-    m_AckDelay: 33
-    m_SendDelay: 10
-    m_MaxCombinedReliableMessageSize: 100
-    m_MaxCombinedReliableMessageCount: 10
-    m_MaxSentMessageQueueSize: 512
-    m_AcksType: 1
-    m_UsePlatformSpecificProtocols: 0
-    m_InitialBandwidth: 0
-    m_BandwidthPeakFactor: 2
-    m_WebSocketReceiveBufferMaxSize: 0
-    m_UdpSocketReceiveBufferMaxSize: 0
-    m_SSLCertFilePath: 
-    m_SSLPrivateKeyFilePath: 
-    m_SSLCAFilePath: 
-    m_Channels: []
-  m_GlobalConfig:
-    m_ThreadAwakeTimeout: 1
-    m_ReactorModel: 0
-    m_ReactorMaximumReceivedMessages: 1024
-    m_ReactorMaximumSentMessages: 1024
-    m_MaxPacketSize: 2000
-    m_MaxHosts: 16
-    m_ThreadPoolSize: 1
-    m_MinTimerTimeout: 1
-    m_MaxTimerTimeout: 12000
-    m_MinNetSimulatorTimeout: 1
-    m_MaxNetSimulatorTimeout: 12000
-  m_Channels: 
-  m_UseWebSockets: 0
-  m_UseSimulator: 0
-  m_SimulatedLatency: 1
-  m_PacketLossPercentage: 0
-  m_MaxBufferedPackets: 16
-  m_AllowFragmentation: 1
-  m_MatchHost: mm.unet.unity3d.com
-  m_MatchPort: 443
-  matchName: default
-  matchSize: 4
-  isNetworkActive: 0
-  matchMaker: {fileID: 0}
 --- !u!1 &1808828743
 GameObject:
   m_ObjectHideFlags: 0
@@ -1413,10 +1358,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d84677731da74fc99ce4824d79db8c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallA: {fileID: 819522418}
-  wallB: {fileID: 1764544986}
-  shooterA: {fileID: 2115577906}
-  shooterB: {fileID: 783902391}
+  teamA:
+    wall: {fileID: 819522418}
+    shooter: {fileID: 2115577906}
+    brick: {fileID: 212081984}
+    mark: {fileID: 923803114}
+  teamB:
+    wall: {fileID: 1764544986}
+    shooter: {fileID: 783902391}
+    brick: {fileID: 1209522993}
+    mark: {fileID: 1426561436}
   sounds:
   - {fileID: 8300000, guid: 2768c4b4319a740f587c97ab3e1973c3, type: 3}
   - {fileID: 8300000, guid: ecf0acc5c82344bf9898bbc95c7bf6fc, type: 3}

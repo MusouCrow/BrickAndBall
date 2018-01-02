@@ -18,7 +18,7 @@ namespace Game.Component {
 		private Dictionary<string, State> stateMap;
 		private string nowStateName;
 
-		void Start () {
+		protected void Start () {
 			this.stateMap = new Dictionary<string, State> ();
 
 			for (int i = 0; i < this.values.Length; i++) {
@@ -32,25 +32,25 @@ namespace Game.Component {
 			this.Play ("Normal");
 		}
 
-		void FixedUpdate () {
+		protected void FixedUpdate () {
 			if (this.nowState != null) {
 				this.nowState.Update ();
 			}
 		}
 
-		void OnMouseDown () {
+		protected void OnMouseDown () {
 			if (this.nowState != null) {
 				this.nowState.OnMouseDown ();
 			}
 		}
 
-		void OnMouseDrag () {
+		protected void OnMouseDrag () {
 			if (this.nowState != null) {
 				this.nowState.OnMouseDrag ();
 			}
 		}
 
-		void OnCollisionEnter(Collision collision) {
+		protected void OnCollisionEnter(Collision collision) {
 			if (this.nowState != null) {
 				this.nowState.OnCollisionEnter (collision);
 			}

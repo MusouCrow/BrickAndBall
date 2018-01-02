@@ -49,7 +49,7 @@ namespace Game.Component {
 		public Transform target;
 		public float speed;
 
-		private Camera camera;
+		private new Camera camera;
 		private Shaking shaking;
 		private Timer timer;
 		private bool isGame;

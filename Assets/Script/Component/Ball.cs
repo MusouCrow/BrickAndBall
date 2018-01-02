@@ -80,7 +80,7 @@ namespace Game.Component {
 		public float rate = 1;
 		public float shakingTime = 0.1f;
 
-		private Rigidbody rigidbody;
+		private new Rigidbody rigidbody;
 		private Stretch stretch;
 		private bool hasDown = false;
 		private Vector3 velocity;

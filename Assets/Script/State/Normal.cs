@@ -68,7 +68,7 @@ namespace Game.State {
 		}
 
 		public override void OnMouseDown () {
-			if (this.coolDown) {
+			if (this.coolDown || !this.controller.canControll) {
 				return;
 			}
 
@@ -76,7 +76,7 @@ namespace Game.State {
 		}
 
 		public override void OnMouseDrag () {
-			if (this.coolDown) {
+			if (this.coolDown || !this.controller.canControll) {
 				return;
 			}
 

@@ -7,8 +7,9 @@ public class Controller : MonoBehaviour {
 	[System.NonSerialized]
 	public Color originColor;
 	public int direction;
+	public bool canControll;
 
-	protected MeshRenderer renderer;
+	protected new MeshRenderer renderer;
 
 	protected void Awake () {
 		this.renderer = this.GetComponent<MeshRenderer> ();

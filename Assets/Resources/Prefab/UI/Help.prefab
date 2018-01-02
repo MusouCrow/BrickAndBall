@@ -175,7 +175,7 @@ MonoBehaviour:
   showClip: {fileID: 8300000, guid: 28afd25474c874089bb289a13a41b6be, type: 3}
   next: {fileID: 0}
   onClickSlots:
-  - {fileID: 11400000, guid: 9f602c3a7337a4841a7f2612aae53f20, type: 2}
+  - {fileID: 11400000, guid: 4db61ddf4f1e24dc098e4cddd6227f19, type: 2}
   onEndSlots: []
 --- !u!222 &222141209171300598
 CanvasRenderer:
