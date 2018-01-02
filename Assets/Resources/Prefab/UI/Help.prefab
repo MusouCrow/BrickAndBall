@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 222753034722284180}
   - component: {fileID: 114548986673072300}
   - component: {fileID: 114507023533384120}
-  - component: {fileID: 114213971339640970}
+  - component: {fileID: 114988886307489858}
   m_Layer: 5
   m_Name: Help
   m_TagString: Untagged
@@ -47,18 +47,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &114213971339640970
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1817071818384210}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1bcf14a64f14a4b859dfffe8fd67d955, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  next: {fileID: 0}
 --- !u!114 &114224542781689130
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -172,6 +160,23 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114988886307489858
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1817071818384210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce7487db6375d42ca82bd1fdf544b92a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickClip: {fileID: 8300000, guid: 5d4655b6b04bb4bb4a993c5c8f9603c6, type: 3}
+  showClip: {fileID: 8300000, guid: 28afd25474c874089bb289a13a41b6be, type: 3}
+  next: {fileID: 0}
+  onClickSlots:
+  - {fileID: 11400000, guid: 9f602c3a7337a4841a7f2612aae53f20, type: 2}
+  onEndSlots: []
 --- !u!222 &222141209171300598
 CanvasRenderer:
   m_ObjectHideFlags: 1

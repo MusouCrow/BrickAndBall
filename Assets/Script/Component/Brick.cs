@@ -10,13 +10,10 @@ namespace Game.Component {
 	public class Brick : Controller {
 		private const float RANGE = 2.5f;
 
-		public float powerXMin;
-		public float powerXMax;
-		public float powerZMin;
-		public float powerZMax;
+		public Vector2 powerX;
+		public Vector2 powerZ;
 		public Vector4 shakingValue;
 
-		private Statemgr statemgr;
 		private Random random;
 		private Vector3 draggingPos;
 		private Shaking shaking;
@@ -27,7 +24,6 @@ namespace Game.Component {
 		void Awake () {
 			base.Awake ();
 
-			this.statemgr = this.GetComponent<Statemgr> ();
 			this.random = new Random ();
 			this.shaking = new Shaking ();
 			this.position = this.transform.localPosition;
@@ -64,8 +60,8 @@ namespace Game.Component {
 			Ball ball = collision.gameObject.GetComponent<Ball> ();
 
 			if (ball != null) {
-				float valueX = Mathf.Lerp (this.powerXMin, this.powerXMax, (float)this.random.NextDouble ());
-				float valueZ = Mathf.Lerp (this.powerZMin, this.powerZMax, (float)this.random.NextDouble ());
+				float valueX = Mathf.Lerp (this.powerX.x, this.powerX.y, (float)this.random.NextDouble ());
+				float valueZ = Mathf.Lerp (this.powerZ.x, this.powerZ.y, (float)this.random.NextDouble ());
 				
 				valueX = collision.rigidbody.velocity.x > 0 ? valueX : -valueX;
 				valueZ = this.random.NextDouble () < 0.5 ? valueZ : -valueZ;

@@ -8,8 +8,6 @@ namespace Game.Component.UI {
 	using Utility;
 
 	public class Poster : MonoBehaviour {
-		public delegate void OnEndDelegate();
-
 		public AudioClip[] clips;
 		public Vector3 targetScale;
 		public Vector3 mirageScale;
@@ -18,12 +16,13 @@ namespace Game.Component.UI {
 		public GameObject next;
 		public bool willDestroy = true;
 		public Vector4 shakingValue;
-		public event OnEndDelegate OnEndEvent;
-
+		[SerializeField]
+		private Slot[] onEndSlots;
+		
 		private Timer timer;
 		private bool hasMirage = false;
 		private Vector3 position;
-		private Shaking shaking;
+		private Shaking shaking; 
 
 		protected void Awake () {
 			this.position = this.transform.localPosition;
@@ -41,7 +40,7 @@ namespace Game.Component.UI {
 			}
 		}
 
-		void FixedUpdate () {
+		protected void FixedUpdate () {
 			if (this.shaking != null && this.shaking.IsRunning ()) {
 				this.shaking.Update (Time.fixedDeltaTime);
 				this.transform.localPosition = this.position + this.shaking.GetPosition ();
@@ -71,8 +70,8 @@ namespace Game.Component.UI {
 					Destroy (this.gameObject);
 				}
 
-				if (this.OnEndEvent != null) {
-					this.OnEndEvent ();
+				for (int i = 0; i < this.onEndSlots.Length; i++) {
+					this.onEndSlots [i].Run (this.gameObject);
 				}
 			}
 		}

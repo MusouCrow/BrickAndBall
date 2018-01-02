@@ -36,11 +36,16 @@ namespace Game.Component {
 			}
 		}
 
-		public Wall wallA;
-		public Wall wallB;
-		public Shooter shooterA;
-		public Shooter shooterB;
-		public AudioClip[] sounds;
+		[SerializeField]
+		private Wall wallA;
+		[SerializeField]
+		private Wall wallB;
+		[SerializeField]
+		private Shooter shooterA;
+		[SerializeField]
+		private Shooter shooterB;
+		[SerializeField]
+		private AudioClip[] sounds;
 		public AudioClip music;
 		public float volume = 0.5f;
 		public float acceleration = 0.00005f;

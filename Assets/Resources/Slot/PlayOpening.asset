@@ -1,0 +1,14 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 040acf0ec8e4540d9b96503eb63f3641, type: 3}
+  m_Name: PlayOpening
+  m_EditorClassIdentifier: 
+  music: {fileID: 8300000, guid: ae6de09d5cebc4f5f96a03eacf1011b0, type: 3}

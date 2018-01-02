@@ -9,13 +9,11 @@ namespace Game.Component.UI {
 		private float timer;
 		private int frame;
 
-		// Use this for initialization
-		void Start () {
+		protected void Awake () {
 			this.text = this.GetComponent<Text> ();
 		}
-		
-		// Update is called once per frame
-		void Update () {
+
+		protected void Update () {
 			this.timer += Time.deltaTime;
 			this.frame += 1;
 

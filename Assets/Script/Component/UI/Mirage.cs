@@ -62,11 +62,11 @@ namespace Game.Component.UI {
 			this.timer.Enter (time);
 		}
 
-		void Awake () {
+		protected void Awake () {
 			this.timer = new Timer ();
 		}
 
-		void FixedUpdate () {
+		protected void FixedUpdate () {
 			if (!this.timer.IsRunning ()) {
 				return;
 			}

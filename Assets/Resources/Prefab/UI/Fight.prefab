@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224642740937686434}
   - component: {fileID: 222508876904761830}
   - component: {fileID: 114579337074036328}
-  - component: {fileID: 114270562856675978}
+  - component: {fileID: 114948993408273570}
   m_Layer: 5
   m_Name: Fight
   m_TagString: Untagged
@@ -29,27 +29,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &114270562856675978
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1306506802561638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91e00807d51584ab1b788d19bff83719, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  clips:
-  - {fileID: 8300000, guid: 48cd9d1ac0f09464b8943f13ef55958e, type: 3}
-  - {fileID: 8300000, guid: 9d352e48f9fa64d49beeac1056d970b0, type: 3}
-  targetScale: {x: 2, y: 2, z: 2}
-  mirageScale: {x: 4, y: 4, z: 4}
-  time: 0.7
-  mirageArrivedPercent: 0.5
-  next: {fileID: 0}
-  willDestroy: 1
-  shakingValue: {x: 5, y: 5, z: 0, w: 0.5}
 --- !u!114 &114579337074036328
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -77,6 +56,29 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114948993408273570
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1306506802561638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4c600e7cbf644f68a59e83eaea74a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: 48cd9d1ac0f09464b8943f13ef55958e, type: 3}
+  - {fileID: 8300000, guid: 9d352e48f9fa64d49beeac1056d970b0, type: 3}
+  targetScale: {x: 2, y: 2, z: 2}
+  mirageScale: {x: 4, y: 4, z: 4}
+  time: 0.7
+  mirageArrivedPercent: 0.5
+  next: {fileID: 0}
+  willDestroy: 1
+  shakingValue: {x: 5, y: 5, z: 0, w: 0.5}
+  onEndSlots:
+  - {fileID: 11400000, guid: 1e0828ffc771849e39faae6d9777da74, type: 2}
 --- !u!222 &222508876904761830
 CanvasRenderer:
   m_ObjectHideFlags: 1

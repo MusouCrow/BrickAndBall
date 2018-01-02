@@ -14,13 +14,11 @@ namespace Game.Component {
 		private AudioClip clip;
 		public Vector4 shakingValue;
 
-		private Transform transform;
 		private float begin;
 		private int process;
 		private Timer timer;
 
 		void Awake () {
-			this.transform = this.GetComponent<Transform> ();
 			this.begin = this.transform.localPosition.x;
 			this.timer = new Timer ();
 		}

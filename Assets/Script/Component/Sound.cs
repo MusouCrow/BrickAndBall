@@ -6,20 +6,21 @@ namespace Game.Component {
 	using Utility;
 
 	public class Sound : MonoBehaviour {
-		private static Sound instance;
+		private static Sound INSTANCE;
 
 		public static void PlayMusic (AudioClip clip=null) {
-			instance.targetClip = clip;
-			instance.timer.Enter (instance.gradualTime);
-			instance.process = 0;
+			INSTANCE.targetClip = clip;
+			INSTANCE.audioSource.volume = INSTANCE.volume;
+			INSTANCE.timer.Enter (INSTANCE.gradualTime);
+			INSTANCE.process = 0;
 		}
 
 		public static void SetMusicPitch (float pitch) {
-			instance.audioSource.pitch = pitch;
+			INSTANCE.audioSource.pitch = pitch;
 		}
 
 		public static bool MusicIsPlaying () {
-			return instance.audioSource.isPlaying;
+			return INSTANCE.audioSource.isPlaying;
 		}
 
 		public static void Play (AudioClip clip, float volume=1) {
@@ -28,7 +29,7 @@ namespace Game.Component {
 
 		public float gradualTime = 0.5f;
 		[Range(0, 1)]
-		public float volume = 0.3f;
+		public float volume = 1;
 
 		private AudioSource audioSource;
 		private Timer timer;
@@ -36,7 +37,7 @@ namespace Game.Component {
 		private int process;
 
 		private void Awake () {
-			Sound.instance = this;
+			INSTANCE = this;
 			this.audioSource = this.GetComponent<AudioSource> ();
 			this.timer = new Timer ();
 		}

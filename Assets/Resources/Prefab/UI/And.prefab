@@ -76,6 +76,8 @@ MonoBehaviour:
   next: {fileID: 1004199013416336, guid: 84e13df97244441748beb5c720959aea, type: 2}
   willDestroy: 0
   shakingValue: {x: 3, y: 3, z: 0, w: 0.3}
+  onEndSlots:
+  - {fileID: 11400000, guid: f287fbc95b10542f58cbbceffb9df3cf, type: 2}
 --- !u!222 &222946381664654396
 CanvasRenderer:
   m_ObjectHideFlags: 1

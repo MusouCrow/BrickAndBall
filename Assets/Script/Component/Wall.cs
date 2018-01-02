@@ -6,7 +6,8 @@ namespace Game.Component {
 	using Utility;
 
 	public class Wall : MonoBehaviour {
-		public Transform barTransform;
+		[SerializeField]
+		private Transform barTransform;
 		public Vector4 shakingValue;
 
 		private float target;

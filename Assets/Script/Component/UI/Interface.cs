@@ -14,9 +14,12 @@ namespace Game.Component.UI {
 			INSTANCE.timer.Enter (time);
 		}
 
-		public GameObject count;
-		public GameObject logo;
-		public GameObject eventSystem;
+		[SerializeField]
+		private GameObject count;
+		[SerializeField]
+		private GameObject logo;
+		[SerializeField]
+		private GameObject eventSystem;
 
 		private Timer timer;
 

@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 222611440571598346}
   - component: {fileID: 114764772944970046}
   - component: {fileID: 114419553438349378}
-  - component: {fileID: 114089023230485360}
+  - component: {fileID: 114153264259565220}
   m_Layer: 5
   m_Name: PVE
   m_TagString: Untagged
@@ -47,7 +47,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &114089023230485360
+--- !u!114 &114153264259565220
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -55,10 +55,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1498321150046258}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1bcf14a64f14a4b859dfffe8fd67d955, type: 3}
+  m_Script: {fileID: 11500000, guid: ce7487db6375d42ca82bd1fdf544b92a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clickClip: {fileID: 8300000, guid: 5d4655b6b04bb4bb4a993c5c8f9603c6, type: 3}
+  showClip: {fileID: 8300000, guid: 28afd25474c874089bb289a13a41b6be, type: 3}
   next: {fileID: 1817071818384210, guid: c4fc1bdfb5e20442a9ef92fed1f7092c, type: 2}
+  onClickSlots:
+  - {fileID: 11400000, guid: 9f602c3a7337a4841a7f2612aae53f20, type: 2}
+  onEndSlots: []
 --- !u!114 &114392097757226274
 MonoBehaviour:
   m_ObjectHideFlags: 1

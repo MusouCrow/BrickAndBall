@@ -1554,7 +1554,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gradualTime: 0.5
-  volume: 0.3
+  volume: 0.5
 --- !u!1 &1910051466
 GameObject:
   m_ObjectHideFlags: 0
