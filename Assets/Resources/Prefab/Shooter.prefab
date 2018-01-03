@@ -53,4 +53,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ball: {fileID: 1187190308481434, guid: 5f7bcc01c491f4d37afc28121745116d, type: 2}
   clip: {fileID: 8300000, guid: 7c3e6d2b64fec42e7ac5eb67d576107b, type: 3}
-  shakingValue: {x: 0.1, y: 0.05, z: 0, w: 0.3}
+  shakingValue: {x: 0.1, y: 0.05, z: 0, w: 0.5}

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Game.Component {
 	using Utility;
@@ -10,39 +11,18 @@ namespace Game.Component {
 		private Transform barTransform;
 		public Vector4 shakingValue;
 
-		private float target;
-		private Timer timer;
-		private Vector3 localScale;
-		private Shaking shaking;
-		private Vector3 position;
-
-		protected void Awake() {
-			this.timer = new Timer ();
-			this.shaking = new Shaking ();
-			this.position = this.transform.localPosition;
-		}
-
-		protected void FixedUpdate() {
-			if (this.shaking.IsRunning ()) {
-				this.shaking.Update (Time.fixedDeltaTime);
-				this.transform.localPosition = this.position + this.shaking.GetPosition ();
-			}
-
-			if (this.timer.IsRunning ()) {
-				this.timer.Update (Time.fixedDeltaTime);
-				this.localScale = this.barTransform.localScale;
-				this.localScale.x = Mathf.Lerp (this.localScale.x, this.target, this.timer.value);
-				this.barTransform.localScale = this.localScale;
-			}
-		}
+		private Tweener tweener;
 
 		protected void OnCollisionEnter(Collision collision) {
-			this.shaking.Enter (this.shakingValue);
+			if (this.tweener == null || !this.tweener.IsPlaying ()) {
+				this.tweener = Lib.Shake (this.transform, this.shakingValue);
+			}
 		}
 
 		public void SetLength(float value) {
-			this.target = value;
-			this.timer.Enter (1);
+			this.barTransform.DOScaleX (value, 1)
+				.SetEase (Ease.OutBack)
+				.SetUpdate (UpdateType.Fixed);
 		}
 
 		public void Reset () {

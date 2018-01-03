@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Game.State {
 	using Component;

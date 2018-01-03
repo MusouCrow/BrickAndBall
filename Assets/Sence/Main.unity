@@ -630,6 +630,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1808828744}
   speed: 0.1
+  clip: {fileID: 8300000, guid: 9d352e48f9fa64d49beeac1056d970b0, type: 3}
 --- !u!124 &873587224
 Behaviour:
   m_ObjectHideFlags: 0

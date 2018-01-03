@@ -16,7 +16,7 @@ namespace Game.Component {
 			public int score;
 		}
 
-		private const int SCORE_MAX = 1;
+		private const int SCORE_MAX = 5;
 		private static Judge INSTANCE;
 
 		public static void SetRunning (bool isRunning) {

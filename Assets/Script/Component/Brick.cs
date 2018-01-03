@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 using Random = System.Random;
 
 namespace Game.Component {
@@ -16,7 +17,7 @@ namespace Game.Component {
 
 		private Random random;
 		private Vector3 draggingPos;
-		private Shaking shaking;
+		private Vector3 shakingPos;
 		private Timer timer;
 
 		[NonSerialized]
@@ -26,7 +27,6 @@ namespace Game.Component {
 			base.Awake ();
 
 			this.random = new Random ();
-			this.shaking = new Shaking ();
 			this.timer = new Timer ();
 			this.position = this.transform.localPosition;
 		}
@@ -35,11 +35,6 @@ namespace Game.Component {
 			if (this.timer.IsRunning ()) {
 				this.timer.Update (Time.fixedDeltaTime);
 				this.position.z = Mathf.Lerp (this.position.z, 0, this.timer.GetProcess ());
-				this.AdjustPosition ();
-			}
-
-			if (this.shaking.IsRunning ()) {
-				this.shaking.Update (Time.fixedDeltaTime);
 				this.AdjustPosition ();
 			}
 		}
@@ -84,15 +79,24 @@ namespace Game.Component {
 				ball.Move(valueX, 0, valueZ);
 			}
 
-			this.shaking.Enter (this.shakingValue);
+			DOTween.Punch (this.GetShakingPos, this.SetShakingPos, this.shakingValue, this.shakingValue.w)
+				.OnUpdate (this.AdjustPosition);
 		}
 
 		public void AdjustPosition () {
-			this.transform.localPosition = this.position + this.shaking.GetPosition ();
+			this.transform.localPosition = this.position + this.shakingPos;
 		}
 
 		public void Reset (float time) {
 			this.timer.Enter (time);
+		}
+
+		private Vector3 GetShakingPos () {
+			return this.shakingPos;
+		}
+
+		private void SetShakingPos (Vector3 value) {
+			this.shakingPos = value;
 		}
 	}
 }
