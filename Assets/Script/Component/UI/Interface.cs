@@ -12,17 +12,11 @@ namespace Game.Component.UI {
 		public delegate void Delegate();
 
 		public static void Clear (float time=0) {
-			INSTANCE.eventSystem.SetActive (false);
-			INSTANCE.timer.Enter (time);
-			INSTANCE.TimerEvent = INSTANCE.OnClearEnd;
+			INSTANCE.StartCoroutine (INSTANCE.TickClear (time));
 		}
 
 		public static void Result (bool isVictory, float time=0) {
-			Sound.PlayMusic (INSTANCE.endingMusic);
-
-			INSTANCE.timer.Enter (time);
-			INSTANCE.isVictory = isVictory;
-			INSTANCE.TimerEvent = INSTANCE.ShowResult;
+			INSTANCE.StartCoroutine (INSTANCE.TickResult (isVictory, time));
 		}
 
 		[SerializeField]
@@ -38,10 +32,6 @@ namespace Game.Component.UI {
 		[SerializeField]
 		private AudioClip endingMusic;
 
-		private Timer timer;
-		private bool isVictory;
-		private Delegate TimerEvent;
-
 		protected void Awake () {
 			INSTANCE = this;
 
@@ -49,30 +39,18 @@ namespace Game.Component.UI {
 			DOTween.defaultEaseType = Ease.OutExpo;
 			DOTween.defaultUpdateType = UpdateType.Fixed;
 
-			this.timer = new Timer ();
 			ViceCamera.OnEndEvent += OnCameraEnd;
 
-			//Interface.Result (true);
 			this.Instantiate (this.logo);
 		}
 
-		protected void FixedUpdate () {
-			if (this.timer.IsRunning ()) {
-				this.timer.Update (Time.fixedDeltaTime);
+		private IEnumerator TickClear (float time) {
+			this.eventSystem.SetActive (false);
 
-				if (!this.timer.IsRunning ()) {
-					if (this.TimerEvent != null) {
-						this.TimerEvent ();
-					}
-				}
-			}
-		}
+			yield return new WaitForSeconds (time);
 
-		private void OnClearEnd () {
-			Transform transform = INSTANCE.transform;
-
-			for (int i = 0; i < transform.childCount; i++) {
-				Transform child = transform.GetChild (i);
+			for (int i = 0; i < this.transform.childCount; i++) {
+				Transform child = this.transform.GetChild (i);
 
 				if (child.name != "FPS") {
 					Destroy (child.gameObject);
@@ -82,8 +60,12 @@ namespace Game.Component.UI {
 			this.eventSystem.SetActive (true);
 		}
 
-		private void ShowResult () {
-			if (this.isVictory) {
+		private IEnumerator TickResult (bool isVictory, float time) {
+			Sound.PlayMusic (this.endingMusic);
+
+			yield return new WaitForSeconds (time);
+
+			if (isVictory) {
 				this.Instantiate (this.victory);
 			} else {
 				this.Instantiate (this.failed);

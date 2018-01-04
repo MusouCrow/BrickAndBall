@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Game.Component {
 	using Utility;
@@ -11,8 +12,18 @@ namespace Game.Component {
 		public static void PlayMusic (AudioClip clip=null) {
 			INSTANCE.targetClip = clip;
 			INSTANCE.audioSource.volume = INSTANCE.volume;
-			INSTANCE.timer.Enter (INSTANCE.gradualTime);
-			INSTANCE.process = 0;
+
+			if (INSTANCE.sequence != null && INSTANCE.sequence.IsPlaying ()) {
+				INSTANCE.sequence.Complete ();
+			}
+
+			INSTANCE.sequence = DOTween.Sequence ();
+			Tweener t1 = INSTANCE.MoveVolume (0);
+			Tweener t2 = INSTANCE.MoveVolume (INSTANCE.volume);
+
+			INSTANCE.sequence.Append (t1);
+			INSTANCE.sequence.AppendCallback (INSTANCE.StartPlay);
+			INSTANCE.sequence.Append (t2);
 		}
 
 		public static void SetMusicPitch (float pitch) {
@@ -32,39 +43,30 @@ namespace Game.Component {
 		public float volume = 1;
 
 		private AudioSource audioSource;
-		private Timer timer;
 		private AudioClip targetClip;
-		private int process;
+		private Sequence sequence;
 
 		private void Awake () {
 			INSTANCE = this;
 			this.audioSource = this.GetComponent<AudioSource> ();
-			this.timer = new Timer ();
 		}
 
-		private void FixedUpdate () {
-			if (this.timer.IsRunning ()) {
-				this.timer.Update (Time.fixedDeltaTime);
+		private Tweener MoveVolume (float target) {
+			return DOTween.To (INSTANCE.GetVolume, INSTANCE.SetVolume, target, INSTANCE.gradualTime);
+		}
 
-				float target = 0;
+		private float GetVolume () {
+			return this.audioSource.volume;
+		}
 
-				if (this.process == 1) {
-					target = this.volume;
-				}
+		private void SetVolume (float volume) {
+			this.audioSource.volume = volume;
+		}
 
-				this.audioSource.volume = Mathf.Lerp (this.audioSource.volume, target, this.timer.GetProcess ());
-
-				if (!this.timer.IsRunning ()) {
-					this.process += 1;
-
-					if (this.process == 1) {
-						this.audioSource.clip = this.targetClip;
-						this.audioSource.pitch = 1;
-						this.audioSource.Play ();
-						this.timer.Enter (this.gradualTime);
-					}
-				}
-			}
+		private void StartPlay () {
+			this.audioSource.clip = this.targetClip;
+			this.audioSource.pitch = 1;
+			this.audioSource.Play ();
 		}
 	}
 }

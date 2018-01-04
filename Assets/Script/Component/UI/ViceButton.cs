@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace Game.Component.UI {
 	using Utility;
@@ -21,57 +22,45 @@ namespace Game.Component.UI {
 		public GameObject next;
 		[SerializeField]
 		private Slot[] onClickSlots;
-		[SerializeField]
-		private Slot[] onEndSlots;
 
-		protected Button button;
+		private Button button;
 		private Image image;
 		private Text text;
-		private Timer timer;
 
 		protected void Awake () {
 			this.image = this.GetComponent<Image> ();
 			this.text = this.GetComponentInChildren<Text> ();
 
+			Color imageColor = this.image.color;
+			Color textColor = this.text.color;
+
 			ViceButton.SetAlpha (this.image, 0);
 			ViceButton.SetAlpha (this.text, 0);
+
+			this.image.DOColor (imageColor, SHOW_TIME)
+				.SetEase(Ease.Linear)
+				.OnComplete (this.OnShow);
+			this.text.DOColor (textColor, SHOW_TIME)
+				.SetEase (Ease.Linear);
 
 			this.button = this.GetComponent<Button> ();
 			this.button.onClick.AddListener (this.OnClick);
 			this.button.enabled = false;
 
-			this.timer = new Timer ();
-			this.timer.Enter (SHOW_TIME);
-
 			Sound.Play (this.showClip);
 		}
 
-		protected void FixedUpdate () {
-			if (this.timer.IsRunning ()) {
-				this.timer.Update (Time.fixedDeltaTime);
-				float process = this.timer.GetProcess ();
+		private void OnShow () {
+			this.button.enabled = true;
 
-				ViceButton.SetAlpha (this.image, process);
-				ViceButton.SetAlpha (this.text, process);
-
-				if (!this.timer.IsRunning ()) {
-					this.button.enabled = true;
-
-					if (this.next != null) {
-						GameObject.Instantiate (this.next, this.transform.parent);
-					}
-
-					for (int i = 0; i < this.onEndSlots.Length; i++) {
-						this.onEndSlots [i].Run (this.gameObject);
-					}
-				}
+			if (this.next != null) {
+				GameObject.Instantiate (this.next, this.transform.parent);
 			}
 		}
 
 		private void OnClick () {
 			Sound.Play (this.clickClip);
-			Mirage.New<Image> (this.transform, this.transform.parent, this.image, MIRAGE_SCALE, 0.5f);
-			//Mirage.New<Text> (this.transform, this.transform.parent, this.text, MIRAGE_SCALE, 0.5f);
+			Mirage.New (this.transform, this.transform.parent, this.image, MIRAGE_SCALE, 0.5f);
 
 			for (int i = 0; i < this.onClickSlots.Length; i++) {
 				this.onClickSlots [i].Run (this.gameObject);

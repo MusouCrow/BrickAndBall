@@ -16,14 +16,14 @@ namespace Game.Component {
 			public int score;
 		}
 
-		private const int SCORE_MAX = 1;
+		private const int SCORE_MAX = 5;
 		private static Judge INSTANCE;
 
 		public static void SetRunning (bool isRunning) {
 			INSTANCE.isRunning = isRunning;
 
 			if (INSTANCE.isRunning) {
-				INSTANCE.timer.Enter (0.1f);
+				INSTANCE.Shoot (0.1f);
 				Sound.PlayMusic (INSTANCE.music);
 			} else {
 				Sound.PlayMusic ();
@@ -52,7 +52,7 @@ namespace Game.Component {
 				Judge.SetRunning (false);
 				UI.Interface.Result (INSTANCE.teamB.score == SCORE_MAX, 0.5f);
 			} else {
-				INSTANCE.timer.Enter (INSTANCE.shootingTime);
+				INSTANCE.Shoot (INSTANCE.shootingTime);
 			}
 		}
 
@@ -68,7 +68,6 @@ namespace Game.Component {
 		public float shootingTime = 2;
 
 		private bool aShooted;
-		private Timer timer;
 		private Ball ball;
 		private float pitch = 1;
 		private bool isRunning = false;
@@ -76,7 +75,6 @@ namespace Game.Component {
 		protected void Awake() {
 			INSTANCE = this;
 
-			this.timer = new Timer();
 			ViceCamera.OnEndEvent += this.Reset;
 		}
 
@@ -90,23 +88,6 @@ namespace Game.Component {
 
 			if (this.ball != null) {
 				this.ball.rate = this.pitch;
-			}
-
-			if (this.timer.IsRunning ()) {
-				this.timer.Update (Time.fixedDeltaTime);
-
-				if (!this.timer.IsRunning ()) {
-					GameObject obj;
-
-					if (this.aShooted) {
-						obj = this.teamA.shooter.Shoot ();
-					} else {
-						obj = this.teamB.shooter.Shoot ();
-					}
-
-					this.ball = obj.GetComponent<Ball> ();
-					this.aShooted = !this.aShooted;
-				}
 			}
 		}
 
@@ -123,6 +104,25 @@ namespace Game.Component {
 				this.teamA.mark.Reset ();
 				this.teamB.mark.Reset ();
 			}
+		}
+
+		public void Shoot (float time) {
+			this.StartCoroutine (this.TickShoot (time));
+		}
+
+		private IEnumerator TickShoot (float time) {
+			yield return new WaitForSeconds (time);
+
+			GameObject obj;
+
+			if (this.aShooted) {
+				obj = this.teamA.shooter.Shoot ();
+			} else {
+				obj = this.teamB.shooter.Shoot ();
+			}
+
+			this.ball = obj.GetComponent<Ball> ();
+			this.aShooted = !this.aShooted;
 		}
 	}
 }

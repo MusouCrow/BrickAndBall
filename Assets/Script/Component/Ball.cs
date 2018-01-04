@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Game.Component {
 	using Utility;
@@ -13,33 +14,18 @@ namespace Game.Component {
 			private const float TIME = 0.075f;
 			private static Vector3 SCALE = new Vector3 (1, 1, 1);
 
-			private Vector3 targetScale = SCALE;
 			private bool hasCollded = false;
-			private int state;
-			private Timer timer;
 			private Transform transform;
 			private Rigidbody rigidbody;
+			private Sequence sequence;
 
 			public Stretch (Transform transform, Rigidbody rigidbody) {
-				this.timer = new Timer ();
 				this.transform = transform;
 				this.rigidbody = rigidbody;
 			}
 
 			public void Update (ref Vector3 velocity) {
-				if (this.timer.IsRunning ()) {
-					this.timer.Update (Time.fixedDeltaTime);
-					this.transform.localScale = Vector3.Lerp (this.transform.localScale, this.targetScale, this.timer.GetProcess ());
-
-					if (!this.timer.IsRunning ()) {
-						if (this.state == 0) {
-							this.timer.Enter (TIME);
-							this.targetScale = SCALE;
-						}
-
-						this.state += 1;
-					}
-				} else if (this.hasCollded) {
+				if (this.hasCollded) {
 					float x = 1;
 					float z = 1;
 
@@ -55,17 +41,18 @@ namespace Game.Component {
 						z += value * 2;
 					}
 
-					this.targetScale.x = x;
-					this.targetScale.z = z;
+					this.sequence = DOTween.Sequence ();
+					Tweener t1 = this.transform.DOScale (new Vector3 (x, 1, z), TIME);
+					Tweener t2 = this.transform.DOScale (SCALE, TIME);
+					this.sequence.Append (t1);
+					this.sequence.Append (t2);
 
-					this.timer.Enter (TIME);
-					this.state = 0;
 					this.hasCollded = false;
 				}
 			}
 
 			public void OnCollisionEnter () {
-				if (!this.timer.IsRunning ()) {
+				if (this.sequence == null || !this.sequence.IsPlaying ()) {
 					this.hasCollded = true;
 				}
 			}
