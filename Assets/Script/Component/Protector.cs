@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Game.Component {
 	using Utility;
@@ -15,41 +16,22 @@ namespace Game.Component {
 		public Vector4 shakingValue;
 
 		private float begin;
-		private int state;
-		private Timer timer;
 
 		void Awake () {
 			this.begin = this.transform.localPosition.x;
-			this.timer = new Timer ();
-		}
-
-		void FixedUpdate () {
-			this.timer.Update (Time.fixedDeltaTime);
-
-			Vector3 pos = this.transform.localPosition;
-
-			if (this.state == 0) {
-				pos.x = Mathf.Lerp (this.begin, this.end, this.timer.GetProcess ());
-			} else {
-				pos.x = Mathf.Lerp (this.end, this.begin, this.timer.GetProcess ());
-			}
-
-			this.transform.localPosition = pos;
-
-			if (!this.timer.IsRunning ()) {
-				this.state += 1;
-
-				if (this.state == 1) {
-					this.timer.Enter (this.time);
-				} else {
-					this.SetActive (false);
-				}
-			}
 		}
 
 		void OnEnable() {
-			this.state = 0;
-			this.timer.Enter (this.time);
+			Sequence s = DOTween.Sequence ();
+			Tweener t1 = this.transform.DOLocalMoveX (this.end, this.time)
+				.SetEase (Ease.InOutBack);
+			Tweener t2 = this.transform.DOLocalMoveX (this.begin, this.time)
+				.SetEase (Ease.InOutQuad);
+
+			s.Append (t1);
+			s.Append (t2);
+			s.AppendCallback (() => this.SetActive (false));
+
 			Sound.Play (this.clip);
 			ViceCamera.Shake (this.shakingValue);
 		}

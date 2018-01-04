@@ -18,25 +18,13 @@ namespace Game.Component {
 		private Random random;
 		private Vector3 draggingPos;
 		private Vector3 shakingPos;
-		private Timer timer;
-
-		[NonSerialized]
-		public Vector3 position;
+		private Vector3 position;
 
 		protected new void Awake () {
 			base.Awake ();
 
 			this.random = new Random ();
-			this.timer = new Timer ();
 			this.position = this.transform.localPosition;
-		}
-
-		protected void FixedUpdate() {
-			if (this.timer.IsRunning ()) {
-				this.timer.Update (Time.fixedDeltaTime);
-				this.position.z = Mathf.Lerp (this.position.z, 0, this.timer.GetProcess ());
-				this.AdjustPosition ();
-			}
 		}
 
 		protected void OnMouseDown() {
@@ -83,12 +71,17 @@ namespace Game.Component {
 				.OnUpdate (this.AdjustPosition);
 		}
 
-		public void AdjustPosition () {
+		private void AdjustPosition () {
 			this.transform.localPosition = this.position + this.shakingPos;
 		}
 
+		public Tweener MovePosition (int type, float target, float time) {
+			return DOTween.To (v => this.position [type] = v, this.position [type], target, time)
+				.OnUpdate (this.AdjustPosition);
+		}
+
 		public void Reset (float time) {
-			this.timer.Enter (time);
+			this.MovePosition (2, 0, time);
 		}
 
 		private Vector3 GetShakingPos () {

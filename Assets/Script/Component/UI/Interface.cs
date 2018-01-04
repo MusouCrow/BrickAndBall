@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Game.Component.UI {
 	using Utility;
@@ -43,6 +44,9 @@ namespace Game.Component.UI {
 
 		protected void Awake () {
 			INSTANCE = this;
+
+			DOTween.defaultEaseType = Ease.OutExpo;
+			DOTween.defaultUpdateType = UpdateType.Fixed;
 
 			this.timer = new Timer ();
 			ViceCamera.OnEndEvent += OnCameraEnd;

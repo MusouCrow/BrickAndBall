@@ -21,8 +21,7 @@ namespace Game.Component {
 
 		public void SetLength(float value) {
 			this.barTransform.DOScaleX (value, 1)
-				.SetEase (Ease.OutBack)
-				.SetUpdate (UpdateType.Fixed);
+				.SetEase (Ease.OutBack);
 		}
 
 		public void Reset () {

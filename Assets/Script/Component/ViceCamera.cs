@@ -39,6 +39,7 @@ namespace Game.Component {
 
 		private new Camera camera;
 		private bool isGame = false;
+		private bool isMoving = false;
 
 		private void Awake () {
 			INSTANCE = this;
@@ -46,18 +47,17 @@ namespace Game.Component {
 			this.camera = this.GetComponent<Camera> ();
 		}
 
-
 		private void FixedUpdate () {
-			if (!this.isGame && this.target) {
+			if (!this.isGame && !this.isMoving && this.target) {
 				this.transform.RotateAround (this.target.position, Vector3.up, this.speed);
 			}
 		}
-
 
 		private IEnumerator TickMove (bool isGame, float wattingTime, float movingTime) {
 			Vector3 targetPos;
 			Vector3 targetRot;
 			this.isGame = isGame;
+			this.isMoving = true;
 
 			if (isGame) {
 				targetPos = GAME_POS;
@@ -72,12 +72,12 @@ namespace Game.Component {
 			Sound.Play (this.clip);
 			INSTANCE.transform.DOLocalMove (targetPos, movingTime)
 				.SetEase (Ease.InOutBack)
-				.SetUpdate (UpdateType.Fixed)
-				.OnComplete (() => ViceCamera.OnEndEvent (isGame));
+				.OnComplete (() => {
+				ViceCamera.OnEndEvent (isGame);
+				this.isMoving = false;
+			});
 			INSTANCE.transform.DOLocalRotate (targetRot, movingTime)
-				.SetEase (Ease.InOutBack)
-				.SetUpdate (UpdateType.Fixed);
+				.SetEase (Ease.InOutBack);
 		}
-
 	}
 }

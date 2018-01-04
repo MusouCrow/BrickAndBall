@@ -6,7 +6,6 @@ namespace Game.Utility {
 	public static class Lib {
 		public static Tweener Shake (Transform transform, Vector3 power, float time) {
 			return transform.DOPunchPosition (power, time)
-				.SetUpdate (UpdateType.Fixed)
 				.SetEase(Ease.InOutElastic);
 		}
 

@@ -12,52 +12,41 @@ namespace Game.State {
 		private StateData data;
 		private Transform transform;
 		private Brick brick;
-		private Timer timer;
-		private int process;
 
 		public Brick_Elast (GameObject gameObject, StateData data) : base (gameObject, data) {
 			this.data = data;
 			this.transform = gameObject.GetComponent<Transform> ();
 			this.brick = gameObject.GetComponent<Brick> ();
-			this.timer = new Timer ();
-			this.process = 0;
 		}
 
-		public override void Update () {
-			this.timer.Update (Time.fixedDeltaTime);
+		private void GotoNextState () {
+			this.statemgr.Play (this.data.nextState);
+		}
 
-			int start = 0;
-			int end = 1;
-			float timeProcess = this.timer.GetProcess ();
-
-			if (this.process == 1) {
-				start = 1;
-				end = 0;
-				this.brick.ColorLert (this.brick.originColor, this.brick.targetColor, timeProcess);
-			}
-
-			Vector3 scale = this.transform.localScale;
-			scale.x = Mathf.Lerp (this.data.scaling [start], this.data.scaling [end], timeProcess);
-			this.transform.localScale = scale;
-
-			this.brick.position.x = Mathf.Lerp (this.data.positioning [start], this.data.positioning [end], timeProcess);
-			this.brick.position.x *= -this.brick.direction;
-			this.brick.AdjustPosition ();
-
-			if (!this.timer.IsRunning ()) {
-				if (this.process == 0) {
-					this.process = 1;
-					this.timer.Enter (this.data.time);
-				} else {
-					this.statemgr.Play (this.data.nextState);
-				}
-			}
+		private void MovePosition (int type) {
+			this.brick.MovePosition (0, this.data.positioning [type] * -this.brick.direction, this.data.time)
+				.SetEase (Ease.InOutQuad);
 		}
 
 		public override void Enter() {
-			this.timer.Enter (this.data.time);
+			float time = this.data.time;
+
+			Sequence s = DOTween.Sequence();
+			Tweener t1 = this.transform.DOScaleX (this.data.scaling [1], time)
+				.OnPlay (() => this.MovePosition (1))
+				.SetEase (Ease.InOutBack);
+			Tweener t2 = this.transform.DOScaleX (this.data.scaling [0], time)
+				.OnPlay (() => {
+				this.MovePosition (0);
+				this.brick.MoveColor (this.brick.targetColor, time);
+			})
+				.SetEase (Ease.InOutBack);
+
+			s.Append (t1);
+			s.Append (t2);
+			s.AppendCallback (this.GotoNextState);
+
 			Sound.Play (this.data.clip);
-			this.process = 0;
 		}
 
 		public override void OnCollisionEnter(Collision collision) {

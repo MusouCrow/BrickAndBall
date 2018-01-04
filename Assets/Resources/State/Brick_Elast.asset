@@ -14,7 +14,7 @@ MonoBehaviour:
   _stateScript: Brick_Elast
   _scaling: {x: 0.5, y: 1.8}
   _positioning: {x: 4, y: 3}
-  _time: 0.1
+  _time: 0.2
   _power: 10
   _clip: {fileID: 8300000, guid: 188e2c55bd2e64e7caaee5d53cee7268, type: 3}
   _nextState: Normal

@@ -40,9 +40,9 @@ namespace Game.State {
 			float coolDownTime = this.data.coolDownTime;
 
 			Sequence s = DOTween.Sequence();
-			Tweener t1 = this.controller.MoveColor (this.controller.originColor, coolDownTime * 0.9f).SetEase (Ease.Linear);
-			Tweener t2 = this.controller.MoveColor (Color.white, coolDownTime * 0.05f).SetEase (Ease.Linear);
-			Tweener t3 = this.controller.MoveColor (this.controller.originColor, coolDownTime * 0.05f).SetEase (Ease.Linear);
+			Tweener t1 = this.controller.MoveColor (this.controller.originColor, coolDownTime * 0.9f);
+			Tweener t2 = this.controller.MoveColor (Color.white, coolDownTime * 0.05f);
+			Tweener t3 = this.controller.MoveColor (this.controller.originColor, coolDownTime * 0.05f);
 
 			s.Append (t1);
 			s.AppendCallback (this.PlaySound);

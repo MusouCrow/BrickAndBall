@@ -17,11 +17,8 @@ public class Controller : MonoBehaviour {
 		this.originColor = this.renderer.material.color;
 	}
 
-	public void ColorLert (Color a, Color b, float t) {
-		this.renderer.material.color = Color.Lerp (a, b, t);
-	}
-
 	public Tweener MoveColor (Color value, float t) {
-		return this.renderer.material.DOColor (value, t).SetUpdate (UpdateType.Fixed);
+		return this.renderer.material.DOColor (value, t)
+			.SetEase (Ease.Linear);
 	}
 }
