@@ -15,7 +15,8 @@ namespace Game.Component {
 
 		protected void OnCollisionEnter(Collision collision) {
 			if (this.tweener == null || !this.tweener.IsPlaying ()) {
-				this.tweener = Lib.Shake (this.transform, this.shakingValue);
+				this.tweener = this.transform.DOPunchPosition (this.shakingValue, this.shakingValue.w)
+					.SetEase (Ease.InOutElastic);
 			}
 		}
 

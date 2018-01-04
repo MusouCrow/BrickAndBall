@@ -111,4 +111,4 @@ MonoBehaviour:
   power: 20
   end: 0
   clip: {fileID: 8300000, guid: 7f06606fd134142138370f27b335fd40, type: 3}
-  shakingValue: {x: 0.1, y: 0, z: 0, w: 0.2}
+  shakingValue: {x: 0.2, y: 0, z: 0, w: 0.4}

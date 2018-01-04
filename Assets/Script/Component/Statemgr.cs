@@ -69,5 +69,9 @@ namespace Game.Component {
 		public string GetStateName () {
 			return this.nowStateName;
 		}
+
+		public bool CheckRunning (State state) {
+			return this.nowState == state;
+		}
 	}
 }

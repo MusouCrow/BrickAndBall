@@ -25,6 +25,7 @@ namespace Game.Component {
 
 			this.random = new Random ();
 			this.position = this.transform.localPosition;
+			this.ResetEvent += this.ResetPostion;
 		}
 
 		protected void OnMouseDown() {
@@ -80,8 +81,8 @@ namespace Game.Component {
 				.OnUpdate (this.AdjustPosition);
 		}
 
-		public void Reset (float time) {
-			this.MovePosition (2, 0, time);
+		private void ResetPostion () {
+			this.MovePosition (2, 0, 1);
 		}
 
 		private Vector3 GetShakingPos () {

@@ -15,12 +15,15 @@ namespace Game.State {
 		private float dragValue;
 		private bool coolDown;
 		private Vector3 draggingPos;
+		private Sequence sequence;
+		private bool willReset;
 
 		public Normal (GameObject gameObject, StateData data) : base (gameObject, data) {
 			this.data = data;
 			this.controller = gameObject.GetComponent<Controller> ();
 			this.dragValue = 0.5f;
 			this.coolDown = false;
+			this.controller.ResetEvent += this.Reset;
 		}
 
 		private void PlaySound () {
@@ -32,6 +35,18 @@ namespace Game.State {
 			this.draggingPos = ViceCamera.ScreenToWorldPoint (Input.mousePosition);
 		}
 
+		private void Reset () {
+			if (this.statemgr.CheckRunning (this)) {
+				if (this.sequence != null) {
+					this.sequence.Complete (false);
+				}
+
+				this.coolDown = false;
+			} else {
+				this.willReset = true;
+			}
+		}
+
 		public override void Enter() {
 			if (!this.coolDown) {
 				return;
@@ -39,16 +54,20 @@ namespace Game.State {
 
 			float coolDownTime = this.data.coolDownTime;
 
-			Sequence s = DOTween.Sequence();
+			this.sequence = DOTween.Sequence();
 			Tweener t1 = this.controller.MoveColor (this.controller.originColor, coolDownTime * 0.9f);
 			Tweener t2 = this.controller.MoveColor (Color.white, coolDownTime * 0.05f);
 			Tweener t3 = this.controller.MoveColor (this.controller.originColor, coolDownTime * 0.05f);
+			
+			this.sequence.Append (t1);
+			this.sequence.AppendCallback (this.PlaySound);
+			this.sequence.Append (t2);
+			this.sequence.Append (t3);
+			this.sequence.AppendCallback (this.CoolDownEnd);
 
-			s.Append (t1);
-			s.AppendCallback (this.PlaySound);
-			s.Append (t2);
-			s.Append (t3);
-			s.AppendCallback (this.CoolDownEnd);
+			if (this.willReset) {
+				this.Reset ();
+			}
 		}
 
 		public override void Exit() {

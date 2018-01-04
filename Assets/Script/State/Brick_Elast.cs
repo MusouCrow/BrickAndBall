@@ -33,8 +33,7 @@ namespace Game.State {
 
 			Sequence s = DOTween.Sequence();
 			Tweener t1 = this.transform.DOScaleX (this.data.scaling [1], time)
-				.OnPlay (() => this.MovePosition (1))
-				.SetEase (Ease.InOutBack);
+				.OnPlay (() => this.MovePosition (1));
 			Tweener t2 = this.transform.DOScaleX (this.data.scaling [0], time)
 				.OnPlay (() => {
 				this.MovePosition (0);

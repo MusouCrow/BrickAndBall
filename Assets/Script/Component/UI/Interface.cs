@@ -45,6 +45,7 @@ namespace Game.Component.UI {
 		protected void Awake () {
 			INSTANCE = this;
 
+			DOTween.Init ();
 			DOTween.defaultEaseType = Ease.OutExpo;
 			DOTween.defaultUpdateType = UpdateType.Fixed;
 

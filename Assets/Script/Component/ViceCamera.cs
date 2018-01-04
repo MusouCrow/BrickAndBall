@@ -16,19 +16,21 @@ namespace Game.Component {
 		private static Vector3 OP_POS = new Vector3 (-25, 10, 0);
 		private static Vector3 OP_ROT = new Vector3 (10, 90, 0);
 		
-		public static void Shake(Vector3 power, float time) {
-			Lib.Shake (INSTANCE.transform, power, time);
+		public static void Shake (Vector3 power, float time) {
+			INSTANCE.transform.DOPunchPosition (power, time)
+				.SetEase (Ease.InOutElastic)
+				.OnComplete (INSTANCE.ResetShaking);
 		}
 
-		public static void Shake(Vector4 value) {
+		public static void Shake (Vector4 value) {
 			ViceCamera.Shake (value, value.w);
 		}
 
-		public static void Move(bool isGame, float wattingTime, float movingTime) {
+		public static void Move (bool isGame, float wattingTime, float movingTime) {
 			INSTANCE.StartCoroutine (INSTANCE.TickMove (isGame, wattingTime, movingTime));
 		}
 
-		public static Vector3 ScreenToWorldPoint(Vector3 pos) {
+		public static Vector3 ScreenToWorldPoint (Vector3 pos) {
 			pos.z = 10;
 			return INSTANCE.camera.ScreenToWorldPoint (pos);
 		}
@@ -78,6 +80,10 @@ namespace Game.Component {
 			});
 			INSTANCE.transform.DOLocalRotate (targetRot, movingTime)
 				.SetEase (Ease.InOutBack);
+		}
+
+		private void ResetShaking () {
+			this.transform.localPosition = GAME_POS;
 		}
 	}
 }

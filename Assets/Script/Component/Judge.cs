@@ -16,7 +16,7 @@ namespace Game.Component {
 			public int score;
 		}
 
-		private const int SCORE_MAX = 5;
+		private const int SCORE_MAX = 1;
 		private static Judge INSTANCE;
 
 		public static void SetRunning (bool isRunning) {
@@ -118,8 +118,10 @@ namespace Game.Component {
 				this.teamB.score = 0;
 				this.teamA.wall.Reset ();
 				this.teamB.wall.Reset ();
-				this.teamA.brick.Reset (1);
-				this.teamB.brick.Reset (1);
+				this.teamA.brick.Reset ();
+				this.teamB.brick.Reset ();
+				this.teamA.mark.Reset ();
+				this.teamB.mark.Reset ();
 			}
 		}
 	}

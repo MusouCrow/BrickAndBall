@@ -175,12 +175,12 @@ Prefab:
     - target: {fileID: 114467319013393604, guid: 8a86af8a7a56e4155897c7d65515fbd9,
         type: 2}
       propertyPath: targetColor.g
-      value: 0.11764706
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114467319013393604, guid: 8a86af8a7a56e4155897c7d65515fbd9,
         type: 2}
       propertyPath: targetColor.b
-      value: 0.11764706
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 23574638928607706, guid: 8a86af8a7a56e4155897c7d65515fbd9,
         type: 2}
@@ -755,12 +755,12 @@ Prefab:
     - target: {fileID: 114081810873422022, guid: 716720a0a9c1040429dfdf06e30ac0e6,
         type: 2}
       propertyPath: targetColor.g
-      value: 0.11764706
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114081810873422022, guid: 716720a0a9c1040429dfdf06e30ac0e6,
         type: 2}
       propertyPath: targetColor.b
-      value: 0.11764706
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114081810873422022, guid: 716720a0a9c1040429dfdf06e30ac0e6,
         type: 2}
@@ -856,12 +856,12 @@ Prefab:
     - target: {fileID: 114467319013393604, guid: 8a86af8a7a56e4155897c7d65515fbd9,
         type: 2}
       propertyPath: targetColor.r
-      value: 0.11764706
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114467319013393604, guid: 8a86af8a7a56e4155897c7d65515fbd9,
         type: 2}
       propertyPath: targetColor.g
-      value: 0.11764706
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114467319013393604, guid: 8a86af8a7a56e4155897c7d65515fbd9,
         type: 2}
@@ -945,12 +945,12 @@ Prefab:
     - target: {fileID: 114081810873422022, guid: 716720a0a9c1040429dfdf06e30ac0e6,
         type: 2}
       propertyPath: targetColor.r
-      value: 0.11764706
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114081810873422022, guid: 716720a0a9c1040429dfdf06e30ac0e6,
         type: 2}
       propertyPath: targetColor.g
-      value: 0.11764706
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114081810873422022, guid: 716720a0a9c1040429dfdf06e30ac0e6,
         type: 2}

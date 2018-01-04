@@ -4,6 +4,8 @@ using UnityEngine;
 using DG.Tweening;
 
 public class Controller : MonoBehaviour {
+	public delegate void ResetDelegate ();
+
 	public Color targetColor;
 	public int direction;
 	public bool canControll;
@@ -11,10 +13,17 @@ public class Controller : MonoBehaviour {
 	[System.NonSerialized]
 	public Color originColor;
 	protected new MeshRenderer renderer;
+	public event ResetDelegate ResetEvent;
 
 	protected void Awake () {
 		this.renderer = this.GetComponent<MeshRenderer> ();
 		this.originColor = this.renderer.material.color;
+	}
+
+	public void Reset () {
+		if (this.ResetEvent != null) {
+			this.ResetEvent ();
+		}
 	}
 
 	public Tweener MoveColor (Color value, float t) {
