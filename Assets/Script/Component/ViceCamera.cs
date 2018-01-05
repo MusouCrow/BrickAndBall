@@ -39,7 +39,7 @@ namespace Game.Component {
 		public float speed;
 		public AudioClip clip;
 
-		private new Camera camera;
+		private Camera camera;
 		private bool isGame = false;
 		private bool isMoving = false;
 

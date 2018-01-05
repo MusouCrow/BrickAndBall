@@ -12,7 +12,7 @@ public class Controller : MonoBehaviour {
 
 	[System.NonSerialized]
 	public Color originColor;
-	protected new MeshRenderer renderer;
+	protected MeshRenderer renderer;
 	public event ResetDelegate ResetEvent;
 
 	protected void Awake () {
