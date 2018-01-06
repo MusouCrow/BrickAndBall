@@ -110,9 +110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetColor: {r: 0, g: 0, b: 0, a: 0}
   direction: 0
-  powerX: {x: 7, y: 12}
-  powerZ: {x: 5, y: 10}
-  shakingValue: {x: 0.1, y: 0, z: 0, w: 0.2}
+  data: {fileID: 11400000, guid: cbf42622be7a64984adc046cd79229ca, type: 2}
 --- !u!114 &114868950200349630
 MonoBehaviour:
   m_ObjectHideFlags: 1

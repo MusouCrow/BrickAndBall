@@ -5,15 +5,23 @@ using DG.Tweening;
 
 public class Controller : MonoBehaviour {
 	public delegate void ResetDelegate ();
+	public enum Identity {
+		Player,
+		AI,
+		Network
+	}
 
 	public Color targetColor;
 	public int direction;
-	public bool canControll;
 
 	[System.NonSerialized]
 	public Color originColor;
 	protected MeshRenderer renderer;
 	public event ResetDelegate ResetEvent;
+	[System.NonSerialized]
+	public bool isRunning;
+	[System.NonSerialized]
+	public Identity identity;
 
 	protected void Awake () {
 		this.renderer = this.GetComponent<MeshRenderer> ();
@@ -29,5 +37,9 @@ public class Controller : MonoBehaviour {
 	public Tweener MoveColor (Color value, float t) {
 		return this.renderer.material.DOColor (value, t)
 			.SetEase (Ease.Linear);
+	}
+
+	public bool CanConroll () {
+		return this.isRunning && this.identity == Identity.Player;
 	}
 }

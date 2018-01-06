@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Game.Component {
 	using Utility;
+	using Component.UI;
 
 	public class Judge : MonoBehaviour {
 		[System.Serializable]
@@ -16,8 +17,30 @@ namespace Game.Component {
 			public int score;
 		}
 
+		public enum GameType {
+			NONE,
+			PVP,
+			PVE,
+			HELP
+		}
+
 		private const int SCORE_MAX = 5;
 		private static Judge INSTANCE;
+
+		public static ViceCamera.TargetType StartGame (GameType gameType) {
+			INSTANCE.gameType = gameType;
+			ViceCamera.TargetType targetType;
+
+			if (gameType == GameType.NONE) {
+				targetType = ViceCamera.TargetType.Opening;
+			} else {
+				targetType = ViceCamera.TargetType.B;
+				INSTANCE.teamA.brick.identity = Brick.Identity.AI;
+				INSTANCE.teamB.brick.identity = Brick.Identity.Player;
+			}
+
+			return targetType;
+		}
 
 		public static void SetRunning (bool isRunning) {
 			INSTANCE.isRunning = isRunning;
@@ -29,10 +52,10 @@ namespace Game.Component {
 				Sound.PlayMusic ();
 			}
 
-			INSTANCE.teamA.brick.canControll = isRunning;
-			INSTANCE.teamB.brick.canControll = isRunning;
-			INSTANCE.teamA.mark.canControll = isRunning;
-			INSTANCE.teamB.mark.canControll = isRunning;
+			INSTANCE.teamA.brick.isRunning = isRunning;
+			INSTANCE.teamB.brick.isRunning = isRunning;
+			INSTANCE.teamA.mark.isRunning = isRunning;
+			INSTANCE.teamB.mark.isRunning = isRunning;
 		}
 
 		public static void Gain (Vector3 position) {
@@ -56,6 +79,14 @@ namespace Game.Component {
 			}
 		}
 
+		public static Vector3 GetBallPosition () {
+			if (INSTANCE.ball == null) {
+				return Vector3.zero;
+			}
+
+			return INSTANCE.ball.transform.localPosition;
+		}
+
 		[SerializeField]
 		private Team teamA;
 		[SerializeField]
@@ -71,6 +102,7 @@ namespace Game.Component {
 		private Ball ball;
 		private float pitch = 1;
 		private bool isRunning = false;
+		private GameType gameType;
 
 		protected void Awake() {
 			INSTANCE = this;
@@ -91,8 +123,8 @@ namespace Game.Component {
 			}
 		}
 
-		private void Reset (bool isGame) {
-			if (!isGame) {
+		private void Reset (ViceCamera.TargetType type) {
+			if (type == ViceCamera.TargetType.Opening) {
 				this.aShooted = false;
 				this.pitch = 1;
 				this.teamA.score = 0;

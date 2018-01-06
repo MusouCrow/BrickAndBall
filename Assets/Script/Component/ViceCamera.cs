@@ -7,7 +7,12 @@ namespace Game.Component {
 	using Utility;
 
 	public class ViceCamera : MonoBehaviour {
-		public delegate void OnEndDelegate(bool isGame);
+		public enum TargetType {
+			Opening,
+			A,
+			B
+		}
+		public delegate void OnEndDelegate(TargetType type);
 		public static event OnEndDelegate OnEndEvent;
 
 		private static ViceCamera INSTANCE;
@@ -26,8 +31,8 @@ namespace Game.Component {
 			ViceCamera.Shake (value, value.w);
 		}
 
-		public static void Move (bool isGame, float wattingTime, float movingTime) {
-			INSTANCE.StartCoroutine (INSTANCE.TickMove (isGame, wattingTime, movingTime));
+		public static void Move (TargetType type, float wattingTime, float movingTime) {
+			INSTANCE.StartCoroutine (INSTANCE.TickMove (type, wattingTime, movingTime));
 		}
 
 		public static Vector3 ScreenToWorldPoint (Vector3 pos) {
@@ -55,10 +60,10 @@ namespace Game.Component {
 			}
 		}
 
-		private IEnumerator TickMove (bool isGame, float wattingTime, float movingTime) {
+		private IEnumerator TickMove (TargetType type, float wattingTime, float movingTime) {
 			Vector3 targetPos;
 			Vector3 targetRot;
-			this.isGame = isGame;
+			this.isGame = type != TargetType.Opening;
 			this.isMoving = true;
 
 			if (isGame) {
@@ -75,7 +80,7 @@ namespace Game.Component {
 			INSTANCE.transform.DOLocalMove (targetPos, movingTime)
 				.SetEase (Ease.InOutBack)
 				.OnComplete (() => {
-				ViceCamera.OnEndEvent (isGame);
+				ViceCamera.OnEndEvent (type);
 				this.isMoving = false;
 			});
 			INSTANCE.transform.DOLocalRotate (targetRot, movingTime)

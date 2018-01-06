@@ -11,6 +11,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 431bffa12314549bab24490d7e6a74b1, type: 3}
   m_Name: StartGame
   m_EditorClassIdentifier: 
-  into: 1
+  gameType: 1
   wattingTime: 0.3
   movingTime: 2

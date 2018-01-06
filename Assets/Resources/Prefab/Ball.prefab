@@ -113,8 +113,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clip: {fileID: 8300000, guid: 1b6d15b7ed7ba4b63a8b05e48359b290, type: 3}
   effect: {fileID: 1364103279484132, guid: 2150f809efd1b43ff91f17869c8953b6, type: 2}
-  rate: 1
+  rangeZ: 3.5
+  speed: 6
+  sleepThreshold: 0.001
+  shakingRate: 0.005
   shakingTime: 0.05
+  stretchRate: 0.01
+  stretchTime: 0.075
 --- !u!135 &135283783279046018
 SphereCollider:
   m_ObjectHideFlags: 1

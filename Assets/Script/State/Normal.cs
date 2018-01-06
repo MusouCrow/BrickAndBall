@@ -9,10 +9,11 @@ namespace Game.State {
 	using StateData = Data.Normal;
 
 	public class Normal : State {
+		private const float DRAG_DELTA = 0.3f;
+
 		private StateData data;
 		private Controller controller;
 		private float clickTime;
-		private float dragValue;
 		private bool coolDown;
 		private Vector3 draggingPos;
 		private Sequence sequence;
@@ -21,7 +22,6 @@ namespace Game.State {
 		public Normal (GameObject gameObject, StateData data) : base (gameObject, data) {
 			this.data = data;
 			this.controller = gameObject.GetComponent<Controller> ();
-			this.dragValue = 0.5f;
 			this.coolDown = false;
 			this.controller.ResetEvent += this.Reset;
 		}
@@ -75,7 +75,7 @@ namespace Game.State {
 		}
 
 		public override void OnMouseDown () {
-			if (this.coolDown || !this.controller.canControll) {
+			if (this.coolDown || !this.controller.CanConroll ()) {
 				return;
 			}
 
@@ -83,7 +83,7 @@ namespace Game.State {
 		}
 
 		public override void OnMouseDrag () {
-			if (this.coolDown || !this.controller.canControll) {
+			if (this.coolDown || !this.controller.CanConroll ()) {
 				return;
 			}
 
@@ -92,7 +92,7 @@ namespace Game.State {
 			Vector3 newPos = this.draggingPos;
 			float delta = newPos.x - oldPos.x;
 
-			if ((this.controller.direction > 0 && delta > this.dragValue) || (this.controller.direction < 0 && delta < -this.dragValue)) {
+			if ((this.controller.direction > 0 && delta > DRAG_DELTA) || (this.controller.direction < 0 && delta < -DRAG_DELTA)) {
 				this.statemgr.Play ("Elast");
 			}
 		}

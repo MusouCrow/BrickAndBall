@@ -10,40 +10,40 @@ namespace Game.Component {
 
 	public class Ball : MonoBehaviour {
 		private class Stretch {
-			private const float VALUE = 0.01f;
-			private const float TIME = 0.075f;
 			private static Vector3 SCALE = new Vector3 (1, 1, 1);
 
+			private float rate;
+			private float time;
 			private bool hasCollded = false;
 			private Transform transform;
 			private Rigidbody rigidbody;
 			private Sequence sequence;
 
-			public Stretch (Transform transform, Rigidbody rigidbody) {
+			public Stretch (float rate, float time, Transform transform, Rigidbody rigidbody) {
 				this.transform = transform;
 				this.rigidbody = rigidbody;
 			}
 
 			public void Update (ref Vector3 velocity) {
 				if (this.hasCollded) {
-					float x = 1;
-					float z = 1;
+					float x = SCALE.x;
+					float z = SCALE.z;
 
 					if (this.rigidbody.velocity.x > 0 != velocity.x > 0) {
-						float value = this.rigidbody.velocity.x * VALUE;
+						float value = this.rigidbody.velocity.x * this.rate;
 						x += value * 2;
 						z -= value;
 					}
 
 					if (this.rigidbody.velocity.z > 0 != velocity.z > 0) {
-						float value = this.rigidbody.velocity.z * VALUE;
+						float value = this.rigidbody.velocity.z * this.rate;
 						x -= value;
 						z += value * 2;
 					}
 
 					this.sequence = DOTween.Sequence ();
-					Tweener t1 = this.transform.DOScale (new Vector3 (x, 1, z), TIME);
-					Tweener t2 = this.transform.DOScale (SCALE, TIME);
+					Tweener t1 = this.transform.DOScale (new Vector3 (x, SCALE.y, z), this.time);
+					Tweener t2 = this.transform.DOScale (SCALE, this.time);
 					this.sequence.Append (t1);
 					this.sequence.Append (t2);
 
@@ -58,15 +58,27 @@ namespace Game.Component {
 			}
 		}
 
-		private const float RANGE = 3.5f;
-		private const float DEPTH = 10;
-		private const float SPEED = 6;
+		[SerializeField]
+		private AudioClip clip;
+		[SerializeField]
+		private GameObject effect;
+		[SerializeField]
+		private float rangeZ = 3.5f;
+		[SerializeField]
+		private float speed = 6;
+		[SerializeField]
+		private float sleepThreshold = 0.001f;
+		[SerializeField]
+		private float shakingRate = 0.005f;
+		[SerializeField]
+		private float shakingTime = 0.05f;
+		[SerializeField]
+		private float stretchRate = 0.01f;
+		[SerializeField]
+		private float stretchTime = 0.075f;
 
-		public AudioClip clip;
-		public GameObject effect;
+		[NonSerialized]
 		public float rate = 1;
-		public float shakingTime = 0.1f;
-
 		private Rigidbody rigidbody;
 		private Stretch stretch;
 		private bool hasDown = false;
@@ -74,8 +86,8 @@ namespace Game.Component {
 
 		protected void Awake () {
 			this.rigidbody = this.GetComponent<Rigidbody> ();
-			this.rigidbody.sleepThreshold = 0.001f;
-			this.stretch = new Stretch (this.transform, this.rigidbody);
+			this.rigidbody.sleepThreshold = this.sleepThreshold;
+			this.stretch = new Stretch (this.stretchRate, this.stretchTime, this.transform, this.rigidbody);
 
 			this.NewEffect (this.transform);
 		}
@@ -89,10 +101,10 @@ namespace Game.Component {
 				return;
 			}
 
-			if (pos.z > RANGE) {
-				pos.z = RANGE;
-			} else if (pos.z < -RANGE) {
-				pos.z = -RANGE;
+			if (pos.z > this.rangeZ) {
+				pos.z = this.rangeZ;
+			} else if (pos.z < -this.rangeZ) {
+				pos.z = -this.rangeZ;
 			}
 
 			this.rigidbody.position = pos;
@@ -101,7 +113,7 @@ namespace Game.Component {
 				this.stretch.Update (ref this.velocity);
 				this.velocity = this.rigidbody.velocity;
 
-				float speed = SPEED * this.rate;
+				float speed = this.speed * this.rate;
 
 				if (this.velocity.x < 0 && this.velocity.x > -speed) {
 					this.velocity.x = -speed;
@@ -123,7 +135,7 @@ namespace Game.Component {
 				psr.material.color = collision.gameObject.GetComponent<MeshRenderer> ().material.color;
 			}
 
-			ViceCamera.Shake (this.rigidbody.velocity * 0.01f, this.shakingTime);
+			ViceCamera.Shake (this.rigidbody.velocity * this.shakingRate, this.shakingTime);
 			this.stretch.OnCollisionEnter ();
 			this.hasDown = true;
 		}

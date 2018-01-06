@@ -8,7 +8,6 @@ namespace Game.Component {
 		private GameObject ball;
 		[SerializeField]
 		private AudioClip clip;
-
 		public Vector4 shakingValue;
 
 		public GameObject Shoot() {

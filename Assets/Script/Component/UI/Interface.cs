@@ -76,8 +76,8 @@ namespace Game.Component.UI {
 			GameObject.Instantiate (gameObject, this.transform);
 		}
 
-		private void OnCameraEnd(bool isGame) {
-			if (isGame) {
+		private void OnCameraEnd(ViceCamera.TargetType type) {
+			if (type != ViceCamera.TargetType.Opening) {
 				this.Instantiate (this.count);
 			} else {
 				this.Instantiate (this.logo);

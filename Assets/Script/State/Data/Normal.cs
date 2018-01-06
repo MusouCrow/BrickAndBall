@@ -12,11 +12,11 @@ namespace Game.State.Data {
 		protected AudioClip _clip;
 
 		public float coolDownTime {
-			get { return this._coolDownTime;}
+			get {return _coolDownTime;}
 		}
 
 		public AudioClip clip {
-			get { return this._clip;}
+			get {return _clip;}
 		}
 	}
 }
