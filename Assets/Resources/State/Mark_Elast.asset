@@ -11,5 +11,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86c335fc4bdf746a8b8826585d1640bf, type: 3}
   m_Name: Mark_Elast
   m_EditorClassIdentifier: 
-  _stateScript: Mark_Elast
+  _stateScript: {fileID: 11500000, guid: b7d404ec46a654164892c5a116935d60, type: 3}
   _nextState: Normal

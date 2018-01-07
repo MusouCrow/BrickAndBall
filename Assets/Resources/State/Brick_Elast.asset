@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b09fef1be2f0a43709e7a53f87e16ca5, type: 3}
   m_Name: Brick_Elast
   m_EditorClassIdentifier: 
-  _stateScript: Brick_Elast
+  _stateScript: {fileID: 11500000, guid: b588656cdfcbc4cdaa3bea6269510f6a, type: 3}
   _scaling: {x: 0.5, y: 1.5}
   _positioning: {x: 4, y: 3}
   _time: 0.15
