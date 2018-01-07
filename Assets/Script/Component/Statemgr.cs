@@ -50,9 +50,15 @@ namespace Game.Component {
 			}
 		}
 
-		protected void OnCollisionEnter(Collision collision) {
+		protected void OnCollisionEnter (Collision collision) {
 			if (this.nowState != null) {
 				this.nowState.OnCollisionEnter (collision);
+			}
+		}
+
+		protected void OnDrawGizmosSelected () {
+			if (this.nowState != null) {
+				this.nowState.OnDrawGizmosSelected ();
 			}
 		}
 

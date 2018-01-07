@@ -14,12 +14,7 @@ namespace Game.Component {
 		}
 		public delegate void OnEndDelegate(TargetType type);
 		public static event OnEndDelegate OnEndEvent;
-
 		private static ViceCamera INSTANCE;
-		private static Vector3 GAME_POS = new Vector3 (0, 10, 0);
-		private static Vector3 GAME_ROT = new Vector3 (90, 90, 0);
-		private static Vector3 OP_POS = new Vector3 (-25, 10, 0);
-		private static Vector3 OP_ROT = new Vector3 (10, 90, 0);
 		
 		public static void Shake (Vector3 power, float time) {
 			INSTANCE.transform.DOPunchPosition (power, time)
@@ -40,9 +35,20 @@ namespace Game.Component {
 			return INSTANCE.camera.ScreenToWorldPoint (pos);
 		}
 
-		public Transform target;
-		public float speed;
-		public AudioClip clip;
+		[SerializeField]
+		private Vector3 gamePosition = new Vector3 (0, 10, 0);
+		[SerializeField]
+		private Vector3 gameRotation = new Vector3 (90, 90, 0);
+		[SerializeField]
+		private Vector3 openingPosition = new Vector3 (-25, 10, 0);
+		[SerializeField]
+		private Vector3 openingRotation = new Vector3 (10, 90, 0);
+		[SerializeField]
+		private Transform target;
+		[SerializeField]
+		private float speed;
+		[SerializeField]
+		private AudioClip clip;
 
 		private Camera camera;
 		private bool isGame = false;
@@ -67,11 +73,11 @@ namespace Game.Component {
 			this.isMoving = true;
 
 			if (isGame) {
-				targetPos = GAME_POS;
-				targetRot = GAME_ROT;
+				targetPos = this.gamePosition;
+				targetRot = this.gameRotation;
 			} else {
-				targetPos = OP_POS;
-				targetRot = OP_ROT;
+				targetPos = this.openingPosition;
+				targetRot = this.openingRotation;
 			}
 
 			yield return new WaitForSeconds (wattingTime);
@@ -88,7 +94,7 @@ namespace Game.Component {
 		}
 
 		private void ResetShaking () {
-			this.transform.localPosition = GAME_POS;
+			this.transform.localPosition = this.gamePosition;
 		}
 	}
 }

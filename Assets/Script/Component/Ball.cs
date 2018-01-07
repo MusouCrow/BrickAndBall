@@ -20,6 +20,8 @@ namespace Game.Component {
 			private Sequence sequence;
 
 			public Stretch (float rate, float time, Transform transform, Rigidbody rigidbody) {
+				this.rate = rate;
+				this.time = time;
 				this.transform = transform;
 				this.rigidbody = rigidbody;
 			}

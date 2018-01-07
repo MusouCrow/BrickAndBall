@@ -110,6 +110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetColor: {r: 0, g: 0, b: 0, a: 0}
   direction: 0
+  AIIntervalRange: {x: 0.2, y: 0.2}
   protector: {fileID: 0}
 --- !u!114 &114383444515033126
 MonoBehaviour:

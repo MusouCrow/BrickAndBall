@@ -24,7 +24,6 @@ namespace Game.Component {
 			HELP
 		}
 
-		private const int SCORE_MAX = 5;
 		private static Judge INSTANCE;
 
 		public static ViceCamera.TargetType StartGame (GameType gameType) {
@@ -35,8 +34,10 @@ namespace Game.Component {
 				targetType = ViceCamera.TargetType.Opening;
 			} else {
 				targetType = ViceCamera.TargetType.B;
-				INSTANCE.teamA.brick.identity = Brick.Identity.AI;
-				INSTANCE.teamB.brick.identity = Brick.Identity.Player;
+				INSTANCE.teamA.brick.identity = Controller.Identity.AI;
+				INSTANCE.teamB.brick.identity = Controller.Identity.Player;
+				INSTANCE.teamA.mark.identity = Controller.Identity.AI;
+				INSTANCE.teamB.mark.identity = Controller.Identity.Player;
 			}
 
 			return targetType;
@@ -61,19 +62,19 @@ namespace Game.Component {
 		public static void Gain (Vector3 position) {
 			if (position.x < 0) {
 				INSTANCE.teamA.score += 1;
-				INSTANCE.teamA.wall.SetLength ((float)INSTANCE.teamA.score / (float)SCORE_MAX);
+				INSTANCE.teamA.wall.SetLength ((float)INSTANCE.teamA.score / (float)INSTANCE.scoreMax);
 			} else {
 				INSTANCE.teamB.score += 1;
-				INSTANCE.teamB.wall.SetLength ((float)INSTANCE.teamB.score / (float)SCORE_MAX);
+				INSTANCE.teamB.wall.SetLength ((float)INSTANCE.teamB.score / (float)INSTANCE.scoreMax);
 			}
 
 			for (int i = 0; i < INSTANCE.sounds.Length; i++) {
 				Sound.Play (INSTANCE.sounds [i], INSTANCE.volume);
 			}
 
-			if (INSTANCE.teamA.score == SCORE_MAX || INSTANCE.teamB.score == SCORE_MAX) {
+			if (INSTANCE.teamA.score == INSTANCE.scoreMax || INSTANCE.teamB.score == INSTANCE.scoreMax) {
 				Judge.SetRunning (false);
-				UI.Interface.Result (INSTANCE.teamB.score == SCORE_MAX, 0.5f);
+				UI.Interface.Result (INSTANCE.teamB.score == INSTANCE.scoreMax, 0.5f);
 			} else {
 				INSTANCE.Shoot (INSTANCE.shootingTime);
 			}
@@ -93,10 +94,16 @@ namespace Game.Component {
 		private Team teamB;
 		[SerializeField]
 		private AudioClip[] sounds;
-		public AudioClip music;
-		public float volume = 0.5f;
-		public float acceleration = 0.00005f;
-		public float shootingTime = 2;
+		[SerializeField]
+		private AudioClip music;
+		[SerializeField]
+		private float volume = 0.5f;
+		[SerializeField]
+		private float acceleration = 0.00005f;
+		[SerializeField]
+		private float shootingTime = 2;
+		[SerializeField]
+		private int scoreMax = 5;
 
 		private bool aShooted;
 		private Ball ball;

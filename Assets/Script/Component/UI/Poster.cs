@@ -9,10 +9,14 @@ namespace Game.Component.UI {
 	using Utility;
 
 	public class Poster : MonoBehaviour {
-		public AudioClip[] showingClips;
-		public GameObject next;
-		public float livingTime;
-		public bool willDestroy = true;
+		[SerializeField]
+		private AudioClip[] showingClips;
+		[SerializeField]
+		private GameObject next;
+		[SerializeField]
+		private float livingTime;
+		[SerializeField]
+		private bool willDestroy = true;
 		[SerializeField]
 		private Slot[] onAwakeSlots;
 		[SerializeField]

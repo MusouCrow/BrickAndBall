@@ -110,7 +110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetColor: {r: 0, g: 0, b: 0, a: 0}
   direction: 0
-  data: {fileID: 11400000, guid: cbf42622be7a64984adc046cd79229ca, type: 2}
+  AIIntervalRange: {x: 0.2, y: 0.5}
 --- !u!114 &114868950200349630
 MonoBehaviour:
   m_ObjectHideFlags: 1

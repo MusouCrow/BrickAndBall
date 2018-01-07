@@ -18,12 +18,33 @@ namespace Game.State {
 		private Vector3 draggingPos;
 		private Sequence sequence;
 		private bool willReset;
+		private Bounds bounds;
 
 		public Normal (GameObject gameObject, StateData data) : base (gameObject, data) {
 			this.data = data;
 			this.controller = gameObject.GetComponent<Controller> ();
 			this.coolDown = false;
 			this.controller.ResetEvent += this.Reset;
+			this.controller.AITickEvent += this.Elast;
+
+			Bounds bounds = this.gameObject.GetComponent<MeshRenderer> ().bounds;
+			Vector3 center = bounds.center;
+			Vector3 size = bounds.size;
+			center.x += bounds.size.x * this.controller.direction;
+			size.x *= 2;
+			size.y = 1;
+
+			this.bounds = new Bounds (center, size);
+		}
+
+		private void Elast (Vector3 ballPosition) {
+			if (!this.statemgr.CheckRunning (this) || this.coolDown) {
+				return;
+			}
+
+			if (this.bounds.Contains (ballPosition)) {
+				this.statemgr.Play ("Elast");
+			}
 		}
 
 		private void PlaySound () {
@@ -95,6 +116,10 @@ namespace Game.State {
 			if ((this.controller.direction > 0 && delta > DRAG_DELTA) || (this.controller.direction < 0 && delta < -DRAG_DELTA)) {
 				this.statemgr.Play ("Elast");
 			}
+		}
+
+		public override void OnDrawGizmosSelected () {
+			Gizmos.DrawCube (this.bounds.center, this.bounds.size);
 		}
 	}
 }

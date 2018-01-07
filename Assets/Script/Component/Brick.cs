@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using Random = System.Random;
+using Random = UnityEngine.Random;
 
 namespace Game.Component {
 	using Utility;
@@ -12,7 +12,6 @@ namespace Game.Component {
 		private const float RANGE_Z = 2.5f;
 		private static Vector2 POWER_X = new Vector2 (7, 12);
 		private static Vector2 POWER_Z = new Vector2 (5, 15);
-		private static Vector2 AI_INTERVAL = new Vector2 (0.3f, 0.5f);
 		private static Vector2 AI_MOTION_TIME = new Vector2 (0.2f, 0.6f);
 		private static Vector4 SHAKING_VALUE = new Vector4 (0.1f, 0, 0, 0.2f);
 
@@ -24,34 +23,30 @@ namespace Game.Component {
 			}
 		}
 
-		private Random random;
 		private Vector3 draggingPos;
 		private Vector3 shakingPos;
 		private Vector3 position;
-		private Timer timer;
+		private Bounds bounds;
 
 		protected new void Awake () {
 			base.Awake ();
 
-			this.random = new Random ();
 			this.position = this.transform.localPosition;
+			this.bounds = this.GetComponent<MeshRenderer> ().bounds;
 			this.ResetEvent += this.ResetPostion;
-			this.timer = new Timer (Mathf.Lerp (AI_INTERVAL.x, AI_INTERVAL.y, (float)this.random.NextDouble ()));
+			this.AITickEvent += this.FollowBall;
 		}
 
-		protected void FixedUpdate () {
-			if (!this.isRunning || this.identity != Identity.AI) {
-				return;
+		private void FollowBall (Vector3 ballPosition) {
+			Brick.HandleValueWithRange (ref ballPosition.z);
+			int direction = 1;
+
+			if ((this.direction == 1 && ballPosition.x < this.transform.localPosition.x)
+				|| (this.direction == -1 && ballPosition.x > this.transform.localPosition.x)) {
+				direction = -1;
 			}
 
-			this.timer.Update (Time.fixedDeltaTime);
-
-			if (!this.timer.IsRunning ()) {
-				Vector3 pos = Judge.GetBallPosition ();
-				Brick.HandleValueWithRange (ref pos.z);
-				this.MovePosition (2, pos.z, Mathf.Lerp (AI_MOTION_TIME.x, AI_MOTION_TIME.y, (float)this.random.NextDouble ()));
-				this.timer.Enter (Mathf.Lerp (AI_INTERVAL.x, AI_INTERVAL.y, (float)this.random.NextDouble ()));
-			}
+			this.MovePosition (2, ballPosition.z * direction, Mathf.Lerp (AI_MOTION_TIME.x, AI_MOTION_TIME.y, Random.value));
 		}
 
 		protected void OnMouseDown() {
@@ -80,11 +75,11 @@ namespace Game.Component {
 			Ball ball = collision.gameObject.GetComponent<Ball> ();
 
 			if (ball != null) {
-				float valueX = Mathf.Lerp (POWER_X.x, POWER_X.y, (float)this.random.NextDouble ());
-				float valueZ = Mathf.Lerp (POWER_Z.x, POWER_Z.y, (float)this.random.NextDouble ());
+				float valueX = Mathf.Lerp (POWER_X.x, POWER_X.y, Random.value);
+				float valueZ = Mathf.Lerp (POWER_Z.x, POWER_Z.y, Random.value);
 				
 				valueX = collision.rigidbody.velocity.x > 0 ? valueX : -valueX;
-				valueZ = this.random.NextDouble () < 0.5 ? valueZ : -valueZ;
+				valueZ = Random.value < 0.5f ? valueZ : -valueZ;
 				ball.Move(valueX, 0, valueZ);
 			}
 

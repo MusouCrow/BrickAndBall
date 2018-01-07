@@ -17,9 +17,12 @@ namespace Game.Component.UI {
 			graphic.color = color;
 		}
 
-		public AudioClip clickClip;
-		public AudioClip showClip;
-		public GameObject next;
+		[SerializeField]
+		private AudioClip clickClip;
+		[SerializeField]
+		private AudioClip showClip;
+		[SerializeField]
+		private GameObject next;
 		[SerializeField]
 		private Slot[] onClickSlots;
 

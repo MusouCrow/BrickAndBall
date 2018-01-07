@@ -8,12 +8,14 @@ namespace Game.Component {
 
 	public class Protector : MonoBehaviour {
 		public float time;
-		public float power;
+		[SerializeField]
+		private float power;
 		[SerializeField]
 		private float end;
 		[SerializeField]
 		private AudioClip clip;
-		public Vector4 shakingValue;
+		[SerializeField]
+		private Vector4 shakingValue;
 
 		private float begin;
 

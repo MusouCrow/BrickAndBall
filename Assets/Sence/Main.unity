@@ -209,6 +209,10 @@ Prefab:
       propertyPath: m_LocalScale.z
       value: 2.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1196681888188112, guid: 8a86af8a7a56e4155897c7d65515fbd9, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8a86af8a7a56e4155897c7d65515fbd9, type: 2}
   m_IsPrefabParent: 0
@@ -628,6 +632,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4e1ab60469a84a3eb4e08654017f286, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gamePosition: {x: 0, y: 10, z: 0}
+  gameRotation: {x: 90, y: 90, z: 0}
+  openingPosition: {x: -25, y: 10, z: 0}
+  openingRotation: {x: 10, y: 90, z: 0}
   target: {fileID: 1808828744}
   speed: 0.1
   clip: {fileID: 8300000, guid: 9d352e48f9fa64d49beeac1056d970b0, type: 3}
@@ -791,6 +799,10 @@ Prefab:
       propertyPath: direction
       value: -1
       objectReference: {fileID: 0}
+    - target: {fileID: 1162257301094918, guid: 716720a0a9c1040429dfdf06e30ac0e6, type: 2}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 716720a0a9c1040429dfdf06e30ac0e6, type: 2}
   m_IsPrefabParent: 0
@@ -871,6 +883,10 @@ Prefab:
     - target: {fileID: 114467319013393604, guid: 8a86af8a7a56e4155897c7d65515fbd9,
         type: 2}
       propertyPath: direction
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1196681888188112, guid: 8a86af8a7a56e4155897c7d65515fbd9, type: 2}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -980,6 +996,10 @@ Prefab:
         type: 2}
       propertyPath: direction
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1162257301094918, guid: 716720a0a9c1040429dfdf06e30ac0e6, type: 2}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 716720a0a9c1040429dfdf06e30ac0e6, type: 2}
@@ -1376,6 +1396,7 @@ MonoBehaviour:
   volume: 0.5
   acceleration: 0.00005
   shootingTime: 2.5
+  scoreMax: 5
 --- !u!1 &1890081514
 GameObject:
   m_ObjectHideFlags: 0

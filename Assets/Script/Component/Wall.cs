@@ -9,7 +9,8 @@ namespace Game.Component {
 	public class Wall : MonoBehaviour {
 		[SerializeField]
 		private Transform barTransform;
-		public Vector4 shakingValue;
+		[SerializeField]
+		private Vector4 shakingValue;
 
 		private Tweener tweener;
 

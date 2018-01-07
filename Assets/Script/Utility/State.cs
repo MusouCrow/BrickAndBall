@@ -26,11 +26,12 @@ namespace Game.Utility {
 			this.statemgr = this.gameObject.GetComponent<Statemgr> ();
 		}
 
-		public virtual void Update() {}
-		public virtual void Enter() {}
-		public virtual void Exit() {}
-		public virtual void OnMouseDown() {}
-		public virtual void OnMouseDrag() {}
-		public virtual void OnCollisionEnter(Collision collision) {}
+		public virtual void Update () {}
+		public virtual void Enter () {}
+		public virtual void Exit () {}
+		public virtual void OnMouseDown () {}
+		public virtual void OnMouseDrag () {}
+		public virtual void OnCollisionEnter (Collision collision) {}
+		public virtual void OnDrawGizmosSelected () {}
 	}
 }

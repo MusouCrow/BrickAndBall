@@ -38,9 +38,11 @@ namespace Game.Component {
 			AudioSource.PlayClipAtPoint (clip, Vector3.zero, volume);
 		}
 
-		public float gradualTime = 0.5f;
+		[SerializeField]
+		private float gradualTime = 0.5f;
+		[SerializeField]
 		[Range(0, 1)]
-		public float volume = 1;
+		private float volume = 1;
 
 		private AudioSource audioSource;
 		private AudioClip targetClip;

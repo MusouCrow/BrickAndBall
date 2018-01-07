@@ -10,6 +10,8 @@ namespace Game.State.Data {
 		protected float _coolDownTime;
 		[SerializeField]
 		protected AudioClip _clip;
+		protected float _judgingInterval;
+		protected float _judgingRange;
 
 		public float coolDownTime {
 			get {return _coolDownTime;}
@@ -17,6 +19,14 @@ namespace Game.State.Data {
 
 		public AudioClip clip {
 			get {return _clip;}
+		}
+
+		public float judgingInterval {
+			get {return _judgingInterval;}
+		}
+
+		public float judgingRange {
+			get {return _judgingRange;}
 		}
 	}
 }
