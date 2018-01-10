@@ -10,12 +10,10 @@ namespace Game.State {
 
 	public class Brick_Elast : State {
 		private StateData data;
-		private Transform transform;
 		private Brick brick;
 
 		public Brick_Elast (GameObject gameObject, StateData data) : base (gameObject, data) {
 			this.data = data;
-			this.transform = gameObject.GetComponent<Transform> ();
 			this.brick = gameObject.GetComponent<Brick> ();
 		}
 
@@ -32,9 +30,9 @@ namespace Game.State {
 			float time = this.data.time;
 
 			Sequence s = DOTween.Sequence();
-			Tweener t1 = this.transform.DOScaleX (this.data.scaling [1], time)
+			Tweener t1 = this.brick.ts.DOScaleX (this.data.scaling [1], time)
 				.OnPlay (() => this.MovePosition (1));
-			Tweener t2 = this.transform.DOScaleX (this.data.scaling [0], time)
+			Tweener t2 = this.brick.ts.DOScaleX (this.data.scaling [0], time)
 				.OnPlay (() => {
 				this.MovePosition (0);
 				this.brick.MoveColor (this.brick.targetColor, time);

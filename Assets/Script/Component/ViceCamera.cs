@@ -35,6 +35,10 @@ namespace Game.Component {
 			if (INSTANCE.isGame) {
 				targetPos = INSTANCE.gamePosition;
 				targetRot = INSTANCE.gameRotation;
+
+				if (type == TargetType.A) {
+					targetRot.y = -targetRot.y;
+				}
 			} else {
 				targetPos = INSTANCE.openingPosition;
 				targetRot = INSTANCE.openingRotation;

@@ -645,7 +645,7 @@ PlayerSettings:
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 2
   cloudProjectId: cb57f1bc-92ab-495a-8cb3-b36e05d50392
-  projectName: Test2 (1)
+  projectName: BrickAndBall
   organizationId: tongchunkit
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0

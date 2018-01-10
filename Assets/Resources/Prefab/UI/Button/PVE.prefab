@@ -62,8 +62,7 @@ MonoBehaviour:
   showClip: {fileID: 8300000, guid: 28afd25474c874089bb289a13a41b6be, type: 3}
   next: {fileID: 1817071818384210, guid: c4fc1bdfb5e20442a9ef92fed1f7092c, type: 2}
   onClickSlots:
-  - {fileID: 11400000, guid: 4db61ddf4f1e24dc098e4cddd6227f19, type: 2}
-  onShowSlots: []
+  - {fileID: 11400000, guid: 684c59906f10948fb998f4958e75769f, type: 2}
 --- !u!114 &114392097757226274
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Game.Component {
 	using Utility;
 	using Component.UI;
+	using Identity = Controller.Identity;
 
 	public class Judge : MonoBehaviour {
 		[System.Serializable]
@@ -28,16 +29,21 @@ namespace Game.Component {
 
 		public static ViceCamera.TargetType StartGame (GameType gameType) {
 			INSTANCE.gameType = gameType;
-			ViceCamera.TargetType targetType;
+			ViceCamera.TargetType targetType = ViceCamera.TargetType.Opening;
 
-			if (gameType == GameType.NONE) {
-				targetType = ViceCamera.TargetType.Opening;
-			} else {
+			if (gameType == GameType.PVP) {
+				bool isA = INSTANCE.teamA.brick.GetPlayer ().isLocalPlayer;
+				targetType = isA ? ViceCamera.TargetType.A : ViceCamera.TargetType.B;
+				INSTANCE.teamA.brick.identity = isA ? Identity.Player : Identity.Network;
+				INSTANCE.teamB.brick.identity = isA ? Identity.Network : Identity.Player;
+				INSTANCE.teamA.mark.identity = isA ? Identity.Player : Identity.Network;
+				INSTANCE.teamB.mark.identity = isA ? Identity.Network : Identity.Player;
+			} else if (gameType == GameType.PVE) {
 				targetType = ViceCamera.TargetType.B;
-				INSTANCE.teamA.brick.identity = Controller.Identity.AI;
-				INSTANCE.teamB.brick.identity = Controller.Identity.Player;
-				INSTANCE.teamA.mark.identity = Controller.Identity.AI;
-				INSTANCE.teamB.mark.identity = Controller.Identity.Player;
+				INSTANCE.teamA.brick.identity = Identity.AI;
+				INSTANCE.teamB.brick.identity = Identity.Player;
+				INSTANCE.teamA.mark.identity = Identity.AI;
+				INSTANCE.teamB.mark.identity = Identity.Player;
 			}
 
 			return targetType;
@@ -74,7 +80,8 @@ namespace Game.Component {
 
 			if (INSTANCE.teamA.score == INSTANCE.scoreMax || INSTANCE.teamB.score == INSTANCE.scoreMax) {
 				Judge.SetRunning (false);
-				UI.Interface.Result (INSTANCE.teamB.score == INSTANCE.scoreMax, 0.5f);
+				Team team = INSTANCE.teamA.brick.identity == Identity.Player ? INSTANCE.teamA : INSTANCE.teamB;
+				UI.Interface.Result (team.score == INSTANCE.scoreMax, 0.5f);
 			} else {
 				INSTANCE.Shoot (INSTANCE.shootingTime);
 			}
