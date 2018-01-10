@@ -8,9 +8,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 331cbc15bceb64e4481f3bfaf837b413, type: 3}
-  m_Name: Birck_Normal
+  m_Script: {fileID: 11500000, guid: 11f4b7d1e89fe4387899b99beaf72cb6, type: 3}
+  m_Name: ExitMatch
   m_EditorClassIdentifier: 
-  _stateScript: Normal
-  _coolDownTime: 5
-  _clip: {fileID: 8300000, guid: 9d3f253c3ec134c89919173d68602815, type: 3}
+  isStart: 0
+  next: {fileID: 1004199013416336, guid: 84e13df97244441748beb5c720959aea, type: 2}
+  wattingTime: 0

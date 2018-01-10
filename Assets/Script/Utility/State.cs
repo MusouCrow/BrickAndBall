@@ -2,18 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
 namespace Game.Utility {
 	using Component;
 
 	public class State {
 		public class Data : ScriptableObject {
-			[SerializeField]
-			protected MonoScript _stateScript;
+			public Type type;
 
-			public Type type {
-				get {return _stateScript.GetClass ();}
+			[SerializeField]
+			protected string _stateScript;
+
+			protected void OnEnable () {
+				this.type = Type.GetType ("Game.State." + this._stateScript);
 			}
 		}
 

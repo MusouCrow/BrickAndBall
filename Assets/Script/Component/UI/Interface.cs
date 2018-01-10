@@ -11,12 +11,16 @@ namespace Game.Component.UI {
 		private static Interface INSTANCE;
 		public delegate void Delegate();
 
-		public static void Clear (float time=0) {
-			INSTANCE.StartCoroutine (INSTANCE.TickClear (time));
+		public static void Clear (float time=0, Delegate OnComplete=null, bool exceptPoster=false) {
+			INSTANCE.StartCoroutine (INSTANCE.TickClear (time, OnComplete, exceptPoster));
 		}
 
 		public static void Result (bool isVictory, float time=0) {
 			INSTANCE.StartCoroutine (INSTANCE.TickResult (isVictory, time));
+		}
+
+		public static void Instantiate (GameObject gameObject) {
+			GameObject.Instantiate (gameObject, INSTANCE.transform);
 		}
 
 		[SerializeField]
@@ -40,11 +44,10 @@ namespace Game.Component.UI {
 			DOTween.defaultUpdateType = UpdateType.Fixed;
 
 			ViceCamera.OnEndEvent += OnCameraEnd;
-
-			this.Instantiate (this.logo);
+			Interface.Instantiate (this.logo);
 		}
 
-		private IEnumerator TickClear (float time) {
+		private IEnumerator TickClear (float time, Delegate OnComplete=null, bool exceptPoster=false) {
 			this.eventSystem.SetActive (false);
 
 			yield return new WaitForSeconds (time);
@@ -52,12 +55,21 @@ namespace Game.Component.UI {
 			for (int i = 0; i < this.transform.childCount; i++) {
 				Transform child = this.transform.GetChild (i);
 
-				if (child.name != "FPS") {
+				if (child.name == "FPS" || child.GetComponent<Mirage> () != null) {
+					continue;
+				}
+
+				if (exceptPoster) {
+					if (child.GetComponent<Poster> () == null) {
+						Destroy (child.gameObject);
+					}
+				} else {
 					Destroy (child.gameObject);
 				}
 			}
 
 			this.eventSystem.SetActive (true);
+			OnComplete ();
 		}
 
 		private IEnumerator TickResult (bool isVictory, float time) {
@@ -66,21 +78,17 @@ namespace Game.Component.UI {
 			yield return new WaitForSeconds (time);
 
 			if (isVictory) {
-				this.Instantiate (this.victory);
+				Interface.Instantiate (this.victory);
 			} else {
-				this.Instantiate (this.failed);
+				Interface.Instantiate (this.failed);
 			}
-		}
-
-		private void Instantiate (GameObject gameObject) {
-			GameObject.Instantiate (gameObject, this.transform);
 		}
 
 		private void OnCameraEnd(ViceCamera.TargetType type) {
 			if (type != ViceCamera.TargetType.Opening) {
-				this.Instantiate (this.count);
+				Interface.Instantiate (this.count);
 			} else {
-				this.Instantiate (this.logo);
+				Interface.Instantiate (this.logo);
 			}
 		}
 	}

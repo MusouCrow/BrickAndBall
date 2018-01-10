@@ -15,10 +15,13 @@ namespace Game.Slot {
 		private float movingTime = 3;
 
 		public override void Run (GameObject gameObject) {
-			var targetType = Judge.StartGame (this.gameType);
-			ViceCamera.Move (targetType, this.wattingTime, this.movingTime);
-			Interface.Clear (this.wattingTime);
+			Interface.Clear (this.wattingTime, this.OnComplete);
 			Sound.PlayMusic ();
+		}
+
+		private void OnComplete () {
+			var targetType = Judge.StartGame (this.gameType);
+			ViceCamera.Move (targetType, this.movingTime);
 		}
 	}
 }

@@ -26,8 +26,29 @@ namespace Game.Component {
 			ViceCamera.Shake (value, value.w);
 		}
 
-		public static void Move (TargetType type, float wattingTime, float movingTime) {
-			INSTANCE.StartCoroutine (INSTANCE.TickMove (type, wattingTime, movingTime));
+		public static void Move (TargetType type, float time) {
+			Vector3 targetPos;
+			Vector3 targetRot;
+			INSTANCE.isGame = type != TargetType.Opening;
+			INSTANCE.isMoving = true;
+
+			if (INSTANCE.isGame) {
+				targetPos = INSTANCE.gamePosition;
+				targetRot = INSTANCE.gameRotation;
+			} else {
+				targetPos = INSTANCE.openingPosition;
+				targetRot = INSTANCE.openingRotation;
+			}
+
+			Sound.Play (INSTANCE.clip);
+			INSTANCE.transform.DOLocalMove (targetPos, time)
+				.SetEase (Ease.InOutBack)
+				.OnComplete (() => {
+					ViceCamera.OnEndEvent (type);
+					INSTANCE.isMoving = false;
+				});
+			INSTANCE.transform.DOLocalRotate (targetRot, time)
+				.SetEase (Ease.InOutBack);
 		}
 
 		public static Vector3 ScreenToWorldPoint (Vector3 pos) {
@@ -64,33 +85,6 @@ namespace Game.Component {
 			if (!this.isGame && !this.isMoving && this.target) {
 				this.transform.RotateAround (this.target.position, Vector3.up, this.speed);
 			}
-		}
-
-		private IEnumerator TickMove (TargetType type, float wattingTime, float movingTime) {
-			Vector3 targetPos;
-			Vector3 targetRot;
-			this.isGame = type != TargetType.Opening;
-			this.isMoving = true;
-
-			if (isGame) {
-				targetPos = this.gamePosition;
-				targetRot = this.gameRotation;
-			} else {
-				targetPos = this.openingPosition;
-				targetRot = this.openingRotation;
-			}
-
-			yield return new WaitForSeconds (wattingTime);
-
-			Sound.Play (this.clip);
-			INSTANCE.transform.DOLocalMove (targetPos, movingTime)
-				.SetEase (Ease.InOutBack)
-				.OnComplete (() => {
-				ViceCamera.OnEndEvent (type);
-				this.isMoving = false;
-			});
-			INSTANCE.transform.DOLocalRotate (targetRot, movingTime)
-				.SetEase (Ease.InOutBack);
 		}
 
 		private void ResetShaking () {
