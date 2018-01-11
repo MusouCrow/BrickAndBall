@@ -19,7 +19,23 @@ namespace Game.Component {
 			[System.NonSerialized]
 			public Player player;
 
-			public void UnloadPlayer () {
+			public void SetRunning (bool isRunning) {
+				this.brick.isRunning = isRunning;
+				this.mark.isRunning = isRunning;
+			}
+
+			public void AddScore () {
+				this.score += 1;
+				this.wall.SetLength ((float)this.score / (float)INSTANCE.scoreMax);
+			}
+
+			public void Reset () {
+				this.score = 0;
+				this.wall.Reset ();
+				this.brick.Reset ();
+				this.mark.Reset ();
+
+				Destroy (this.player);
 				this.player = null;
 				this.brick.player = null;
 				this.mark.player = null;
@@ -80,19 +96,15 @@ namespace Game.Component {
 				Sound.PlayMusic ();
 			}
 
-			INSTANCE.teamA.brick.isRunning = isRunning;
-			INSTANCE.teamB.brick.isRunning = isRunning;
-			INSTANCE.teamA.mark.isRunning = isRunning;
-			INSTANCE.teamB.mark.isRunning = isRunning;
+			INSTANCE.teamA.SetRunning (isRunning);
+			INSTANCE.teamB.SetRunning (isRunning);
 		}
 
 		public static void Gain (Vector3 position) {
 			if (position.x < 0) {
-				INSTANCE.teamA.score += 1;
-				INSTANCE.teamA.wall.SetLength ((float)INSTANCE.teamA.score / (float)INSTANCE.scoreMax);
+				INSTANCE.teamA.AddScore ();
 			} else {
-				INSTANCE.teamB.score += 1;
-				INSTANCE.teamB.wall.SetLength ((float)INSTANCE.teamB.score / (float)INSTANCE.scoreMax);
+				INSTANCE.teamB.AddScore ();
 			}
 
 			for (int i = 0; i < INSTANCE.sounds.Length; i++) {
@@ -114,6 +126,10 @@ namespace Game.Component {
 			}
 
 			return INSTANCE.ball.transform.localPosition;
+		}
+
+		public static GameType GetGameType () {
+			return INSTANCE.gameType;
 		}
 
 		[SerializeField]
@@ -143,6 +159,7 @@ namespace Game.Component {
 			INSTANCE = this;
 
 			ViceCamera.OnEndEvent += this.Reset;
+			Shooter.OnShootEvent += this.ReceiveBall;
 		}
 
 		protected void FixedUpdate() {
@@ -162,14 +179,9 @@ namespace Game.Component {
 			if (type == ViceCamera.TargetType.Opening) {
 				this.aShooted = false;
 				this.pitch = 1;
-				this.teamA.score = 0;
-				this.teamB.score = 0;
-				this.teamA.wall.Reset ();
-				this.teamB.wall.Reset ();
-				this.teamA.brick.Reset ();
-				this.teamB.brick.Reset ();
-				this.teamA.mark.Reset ();
-				this.teamB.mark.Reset ();
+				Networkmgr.Disconnect ();
+				this.teamA.Reset ();
+				this.teamB.Reset ();
 			}
 		}
 
@@ -180,16 +192,17 @@ namespace Game.Component {
 		private IEnumerator TickShoot (float time) {
 			yield return new WaitForSeconds (time);
 
-			GameObject obj;
-
 			if (this.aShooted) {
-				obj = this.teamA.shooter.Shoot ();
+				this.teamA.shooter.Shoot ();
 			} else {
-				obj = this.teamB.shooter.Shoot ();
+				this.teamB.shooter.Shoot ();
 			}
 
-			this.ball = obj.GetComponent<Ball> ();
 			this.aShooted = !this.aShooted;
+		}
+
+		private void ReceiveBall (GameObject obj) {
+			this.ball = obj.GetComponent<Ball> ();
 		}
 	}
 }

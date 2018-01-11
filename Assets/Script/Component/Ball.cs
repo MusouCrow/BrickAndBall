@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.Networking;
 using DG.Tweening;
 
 namespace Game.Component {
 	using Utility;
 
-	public class Ball : MonoBehaviour {
+	public class Ball : NetworkBehaviour {
 		private class Stretch {
 			private static Vector3 SCALE = new Vector3 (1, 1, 1);
 
@@ -79,6 +80,7 @@ namespace Game.Component {
 		[SerializeField]
 		private float stretchTime = 0.075f;
 
+		[SyncVar]
 		[NonSerialized]
 		public float rate = 1;
 		private Rigidbody rigidbody;
@@ -98,8 +100,16 @@ namespace Game.Component {
 			Vector3 pos = this.rigidbody.position;
 
 			if (pos.y < 0) {
-				Judge.Gain (this.transform.localPosition);
-				Destroy (this.gameObject);
+				if (Judge.GetGameType () == Judge.GameType.PVP) {
+					if (this.isServer) {
+						NetworkAgent.Gain (this.transform.localPosition);
+						Destroy (this.gameObject);
+					}
+				} else {
+					Judge.Gain (this.transform.localPosition);
+					Destroy (this.gameObject);
+				}
+
 				return;
 			}
 

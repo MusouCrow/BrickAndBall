@@ -41,7 +41,6 @@ namespace Game.Component {
 
 		[ClientRpc]
 		private void RpcPlayState (string type, string name) {
-			print (type);
 			if (type == "Game.Component.Brick") {
 				this.team.brick.statemgr.Play (name);
 			} else if (type == "Game.Component.Mark") {

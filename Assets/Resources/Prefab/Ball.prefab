@@ -24,9 +24,11 @@ GameObject:
   - component: {fileID: 23382344457477538}
   - component: {fileID: 54162379103561030}
   - component: {fileID: 114030529008284130}
+  - component: {fileID: 114704691465792550}
+  - component: {fileID: 114055061943377208}
   m_Layer: 0
   m_Name: Ball
-  m_TagString: Untagged
+  m_TagString: Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -120,6 +122,59 @@ MonoBehaviour:
   shakingTime: 0.05
   stretchRate: 0.01
   stretchTime: 0.075
+--- !u!114 &114055061943377208
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1187190308481434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TransformSyncMode: 1
+  m_SendInterval: 0.03448276
+  m_SyncRotationAxis: 0
+  m_RotationSyncCompression: 0
+  m_SyncSpin: 0
+  m_MovementTheshold: 0.0001
+  m_VelocityThreshold: 0.0001
+  m_SnapThreshold: 10
+  m_InterpolateRotation: 1
+  m_InterpolateMovement: 5
+--- !u!114 &114704691465792550
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1187190308481434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 95
+    i1: 123
+    i2: 204
+    i3: 1
+    i4: 196
+    i5: 145
+    i6: 244
+    i7: 211
+    i8: 122
+    i9: 252
+    i10: 40
+    i11: 18
+    i12: 23
+    i13: 69
+    i14: 17
+    i15: 109
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
 --- !u!135 &135283783279046018
 SphereCollider:
   m_ObjectHideFlags: 1

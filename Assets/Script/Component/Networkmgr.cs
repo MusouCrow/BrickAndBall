@@ -19,6 +19,10 @@ namespace Game.Component {
 			INSTANCE.StopHost ();
 		}
 
+		public static void Disconnect () {
+			INSTANCE.StopHost ();
+		}
+
 		protected void Start () {
 			INSTANCE = this;
 		}
