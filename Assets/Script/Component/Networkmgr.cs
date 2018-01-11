@@ -35,7 +35,7 @@ namespace Game.Component {
 			this.matchMaker.CreateMatch (Time.time.ToString (), 2, true, "", "", "", 0, 0, this.OnMatchCreate);
 		}
 
-		public void OnMatchList (bool success, string extendedInfo, List<MatchInfoSnapshot> matches) {
+		public override void OnMatchList (bool success, string extendedInfo, List<MatchInfoSnapshot> matches) {
 			base.OnMatchList (success, extendedInfo, matches);
 
 			if (success && matches.Count > 0) {

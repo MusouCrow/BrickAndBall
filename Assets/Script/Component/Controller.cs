@@ -29,9 +29,14 @@ namespace Game.Component {
 		public bool isRunning;
 		[System.NonSerialized]
 		public Identity identity;
+		[System.NonSerialized]
+		public Statemgr statemgr;
+		[System.NonSerialized]
+		public Player player;
 		private Timer timer;
 
 		protected void Awake () {
+			this.statemgr = this.GetComponent<Statemgr> ();
 			this.timer = new Timer (this.GetAIInterval ());
 			this.renderer = this.GetComponent<MeshRenderer> ();
 			this.originColor = this.renderer.material.color;

@@ -6,34 +6,47 @@ namespace Game.Component {
 	using Utility;
 
 	public class Player : NetworkBehaviour {
-		private static Brick BRICK_A;
-		private static Brick BRICK_B;
+		private static Slot ON_START_SLOT;
 
 		private static void Preload () {
-			BRICK_A = BRICK_A == null ? GameObject.Find ("Field/BrickA").GetComponent<Brick> () : BRICK_A;
-			BRICK_B = BRICK_B == null ? GameObject.Find ("Field/BrickB").GetComponent<Brick> () : BRICK_B;
+			ON_START_SLOT = ON_START_SLOT == null ? Resources.Load ("Slot/StartPVP") as Slot : ON_START_SLOT;
 		}
 
-		public Slot onStartSlot;
-
-		private Brick brick;
+		private Judge.Team team;
 
 		protected void Awake () {
 			Player.Preload ();
 
-			this.brick = BRICK_A.GetPlayer () == null ? BRICK_A : BRICK_B;
-			this.brick.SetPlayer (this);
+			bool isFull = false;
+			this.team = Judge.AssignTeam (this, ref isFull);
+			this.transform.localPosition = this.team.brick.transform.localPosition;
 
-			this.transform.localPosition = this.brick.transform.localPosition;
-			this.transform.localScale = this.brick.transform.localScale;
-
-			if (this.brick == BRICK_B) {
-				this.onStartSlot.Run (this.gameObject);
+			if (isFull) {
+				ON_START_SLOT.Run (this.gameObject);
 			}
 		}
 
+		/*
 		protected void OnDestroy () {
-			this.brick.SetPlayer ();
+			if (this.team != null) {
+				this.team.UnloadPlayer ();
+			}
+		}
+		*/
+
+		[Command]
+		public void CmdPlayState (string type, string name) {
+			this.RpcPlayState (type, name);
+		}
+
+		[ClientRpc]
+		private void RpcPlayState (string type, string name) {
+			print (type);
+			if (type == "Game.Component.Brick") {
+				this.team.brick.statemgr.Play (name);
+			} else if (type == "Game.Component.Mark") {
+				this.team.mark.statemgr.Play (name);
+			}
 		}
 	}
 }

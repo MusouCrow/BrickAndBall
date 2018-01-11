@@ -30,9 +30,9 @@ namespace Game.State {
 			float time = this.data.time;
 
 			Sequence s = DOTween.Sequence();
-			Tweener t1 = this.brick.ts.DOScaleX (this.data.scaling [1], time)
+			Tweener t1 = this.brick.transform.DOScaleX (this.data.scaling [1], time)
 				.OnPlay (() => this.MovePosition (1));
-			Tweener t2 = this.brick.ts.DOScaleX (this.data.scaling [0], time)
+			Tweener t2 = this.brick.transform.DOScaleX (this.data.scaling [0], time)
 				.OnPlay (() => {
 				this.MovePosition (0);
 				this.brick.MoveColor (this.brick.targetColor, time);

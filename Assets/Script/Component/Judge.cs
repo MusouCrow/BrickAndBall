@@ -9,13 +9,21 @@ namespace Game.Component {
 
 	public class Judge : MonoBehaviour {
 		[System.Serializable]
-		private struct Team {
+		public class Team {
 			public Wall wall;
 			public Shooter shooter;
 			public Brick brick;
 			public Mark mark;
 			[System.NonSerialized]
 			public int score;
+			[System.NonSerialized]
+			public Player player;
+
+			public void UnloadPlayer () {
+				this.player = null;
+				this.brick.player = null;
+				this.mark.player = null;
+			}
 		}
 
 		public enum GameType {
@@ -27,12 +35,25 @@ namespace Game.Component {
 
 		private static Judge INSTANCE;
 
+		public static Team AssignTeam (Player player, ref bool isFull) {
+			Team team = INSTANCE.teamA.player == null ? INSTANCE.teamA : INSTANCE.teamB;
+			team.player = player;
+			team.brick.player = player;
+			team.mark.player = player;
+
+			if (team == INSTANCE.teamB) {
+				isFull = true;
+			}
+
+			return team;
+		}
+
 		public static ViceCamera.TargetType StartGame (GameType gameType) {
 			INSTANCE.gameType = gameType;
 			ViceCamera.TargetType targetType = ViceCamera.TargetType.Opening;
 
 			if (gameType == GameType.PVP) {
-				bool isA = INSTANCE.teamA.brick.GetPlayer ().isLocalPlayer;
+				bool isA = INSTANCE.teamA.brick.player.isLocalPlayer;
 				targetType = isA ? ViceCamera.TargetType.A : ViceCamera.TargetType.B;
 				INSTANCE.teamA.brick.identity = isA ? Identity.Player : Identity.Network;
 				INSTANCE.teamB.brick.identity = isA ? Identity.Network : Identity.Player;

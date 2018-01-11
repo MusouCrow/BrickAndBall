@@ -26,15 +26,11 @@ namespace Game.Component {
 		private Vector3 draggingPos;
 		private Vector3 shakingPos;
 		private Vector3 position;
-		private Player player;
-		[NonSerialized]
-		public Transform ts;
 
 		protected new void Awake () {
 			base.Awake ();
 
-			this.ts = this.transform;
-			this.position = this.ts.localPosition;
+			this.position = this.transform.localPosition;
 			this.ResetEvent += this.ResetPostion;
 			this.AITickEvent += this.FollowBall;
 		}
@@ -46,16 +42,15 @@ namespace Game.Component {
 				return;
 			}
 
-			this.transform.localPosition = this.ts.localPosition;
-			this.transform.localScale = this.ts.localScale;
+			this.transform.localPosition = this.player.transform.localPosition;
 		}
 
 		private void FollowBall (Vector3 ballPosition) {
 			Brick.HandleValueWithRange (ref ballPosition.z);
 			int direction = 1;
 
-			if ((this.direction == 1 && ballPosition.x < this.ts.localPosition.x)
-				|| (this.direction == -1 && ballPosition.x > this.ts.localPosition.x)) {
+			if ((this.direction == 1 && ballPosition.x < this.transform.localPosition.x)
+				|| (this.direction == -1 && ballPosition.x > this.transform.localPosition.x)) {
 				direction = -1;
 			}
 
@@ -101,7 +96,11 @@ namespace Game.Component {
 		}
 
 		private void AdjustPosition () {
-			this.ts.localPosition = this.position + this.shakingPos;
+			this.transform.localPosition = this.position + this.shakingPos;
+
+			if (this.player != null) {
+				this.player.transform.localPosition = this.transform.localPosition;
+			}
 		}
 
 		public Tweener MovePosition (int type, float target, float time) {
@@ -119,15 +118,6 @@ namespace Game.Component {
 
 		private void SetShakingPos (Vector3 value) {
 			this.shakingPos = value;
-		}
-
-		public Player GetPlayer () {
-			return this.player;
-		}
-
-		public void SetPlayer (Player player=null) {
-			this.player = player;
-			this.ts = this.player == null ? this.transform : this.player.transform;
 		}
 	}
 }
