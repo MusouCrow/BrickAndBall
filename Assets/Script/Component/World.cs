@@ -7,6 +7,12 @@ namespace Game.Component {
     public class World : MonoBehaviour {
         private static World INSTANCE;
 
+        public static CollisionSystem CollisionSystem {
+            get {
+                return INSTANCE.world.CollisionSystem;
+            }
+        }
+
         public static void AddBody(JRigidbody body) {
             INSTANCE.world.AddBody(body);
         }
