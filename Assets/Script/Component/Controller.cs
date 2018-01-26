@@ -22,7 +22,7 @@ namespace Game.Component {
 
 		[System.NonSerialized]
 		public Color originColor;
-		protected MeshRenderer renderer;
+		protected new MeshRenderer renderer;
 		public event ResetDelegate ResetEvent;
 		public event AITickDelegate AITickEvent;
 		[System.NonSerialized]
@@ -31,8 +31,6 @@ namespace Game.Component {
 		public Identity identity;
 		[System.NonSerialized]
 		public Statemgr statemgr;
-		[System.NonSerialized]
-		public Player player;
 		private Timer timer;
 
 		protected void Awake () {

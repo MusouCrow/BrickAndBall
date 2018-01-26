@@ -8,7 +8,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 16995157, guid: 0d8e7842c67544a43ade524bc6d9341d, type: 3}
+  m_Script: {fileID: 16995157, guid: 43443912259564e339e72c26dc20fd50, type: 3}
   m_Name: DOTweenSettings
   m_EditorClassIdentifier: 
   useSafeMode: 1
@@ -20,9 +20,9 @@ MonoBehaviour:
   drawGizmos: 1
   defaultRecyclable: 0
   defaultAutoPlay: 3
-  defaultUpdateType: 0
+  defaultUpdateType: 2
   defaultTimeScaleIndependent: 0
-  defaultEaseType: 6
+  defaultEaseType: 18
   defaultEaseOvershootOrAmplitude: 1.70158
   defaultEasePeriod: 0
   defaultAutoKill: 1

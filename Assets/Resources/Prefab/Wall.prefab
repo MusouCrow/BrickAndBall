@@ -40,6 +40,7 @@ GameObject:
   - component: {fileID: 33749926883218736}
   - component: {fileID: 65799116015316352}
   - component: {fileID: 23417510377735230}
+  - component: {fileID: 114939991471366668}
   - component: {fileID: 114636845915035390}
   m_Layer: 0
   m_Name: Wall
@@ -194,3 +195,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   barTransform: {fileID: 4265996288614166}
   shakingValue: {x: 0, y: 0, z: 0.05, w: 0.3}
+--- !u!114 &114939991471366668
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1655890471916416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4068a60a7b2c4897b223bdd730aa136, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isStatic: 1

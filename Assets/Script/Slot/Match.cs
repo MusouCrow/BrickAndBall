@@ -20,11 +20,13 @@ namespace Game.Slot {
 		}
 
 		private void OnComplete () {
+			/*
 			if (this.isStart) {
 				Networkmgr.StartMatch ();
 			} else {
 				Networkmgr.ExitMatch ();
 			}
+			*/
 
 			Interface.Instantiate (this.next);
 		}

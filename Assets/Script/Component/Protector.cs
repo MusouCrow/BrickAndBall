@@ -46,7 +46,7 @@ namespace Game.Component {
 			Ball ball = collision.gameObject.GetComponent<Ball> ();
 
 			if (ball != null) {
-				float power = collision.rigidbody.velocity.x > 0 ? this.power : -this.power;
+				float power = ball.velocity.x > 0 ? this.power : -this.power;
 				ball.Move (power, 0, 0);
 			}
 		}

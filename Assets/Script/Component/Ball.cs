@@ -3,13 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
-using UnityEngine.Networking;
 using DG.Tweening;
 
 namespace Game.Component {
 	using Utility;
 
-	public class Ball : NetworkBehaviour {
+	public class Ball : MonoBehaviour {
 		private class Stretch {
 			private static Vector3 SCALE = new Vector3 (1, 1, 1);
 
@@ -17,29 +16,30 @@ namespace Game.Component {
 			private float time;
 			private bool hasCollded = false;
 			private Transform transform;
-			private Rigidbody rigidbody;
+			private Collider collider;
 			private Sequence sequence;
 
-			public Stretch (float rate, float time, Transform transform, Rigidbody rigidbody) {
+			public Stretch (float rate, float time, Transform transform, Collider collider) {
 				this.rate = rate;
 				this.time = time;
 				this.transform = transform;
-				this.rigidbody = rigidbody;
+				this.collider = collider;
 			}
 
 			public void Update (ref Vector3 velocity) {
 				if (this.hasCollded) {
 					float x = SCALE.x;
 					float z = SCALE.z;
+					var colliderVelocity = this.collider.Velocity;
 
-					if (this.rigidbody.velocity.x > 0 != velocity.x > 0) {
-						float value = this.rigidbody.velocity.x * this.rate;
+					if (colliderVelocity.x > 0 != velocity.x > 0) {
+						float value = colliderVelocity.x * this.rate;
 						x += value * 2;
 						z -= value;
 					}
 
-					if (this.rigidbody.velocity.z > 0 != velocity.z > 0) {
-						float value = this.rigidbody.velocity.z * this.rate;
+					if (colliderVelocity.z > 0 != velocity.z > 0) {
+						float value = colliderVelocity.z * this.rate;
 						x -= value;
 						z += value * 2;
 					}
@@ -80,60 +80,52 @@ namespace Game.Component {
 		[SerializeField]
 		private float stretchTime = 0.075f;
 
-		[SyncVar]
 		[NonSerialized]
 		public float rate = 1;
-		private Rigidbody rigidbody;
+		[NonSerialized]
+		public Vector3 velocity;
+		private new Collider collider;
 		private Stretch stretch;
 		private bool hasDown = false;
-		private Vector3 velocity;
 
 		protected void Awake () {
-			this.rigidbody = this.GetComponent<Rigidbody> ();
-			this.rigidbody.sleepThreshold = this.sleepThreshold;
-			this.stretch = new Stretch (this.stretchRate, this.stretchTime, this.transform, this.rigidbody);
+			this.collider = this.GetComponent<Collider> ();
+			//this.rigidbody.sleepThreshold = this.sleepThreshold;
+			this.stretch = new Stretch (this.stretchRate, this.stretchTime, this.transform, this.collider);
 
 			this.NewEffect (this.transform);
 		}
 
 		protected void FixedUpdate () {
-			Vector3 pos = this.rigidbody.position;
+			var pos = this.collider.Position;
 
 			if (pos.y < 0) {
-				if (Judge.GetGameType () == Judge.GameType.PVP) {
-					if (this.isServer) {
-						NetworkAgent.Gain (this.transform.localPosition);
-						Destroy (this.gameObject);
-					}
-				} else {
-					Judge.Gain (this.transform.localPosition);
-					Destroy (this.gameObject);
-				}
-
+				Judge.Gain (this.transform.localPosition);
+				Destroy (this.gameObject);
 				return;
 			}
 
 			if (pos.z > this.rangeZ) {
 				pos.z = this.rangeZ;
+				this.collider.Position = pos;
 			} else if (pos.z < -this.rangeZ) {
 				pos.z = -this.rangeZ;
+				this.collider.Position = pos;
 			}
-
-			this.rigidbody.position = pos;
 
 			if (this.hasDown) {
 				this.stretch.Update (ref this.velocity);
-				this.velocity = this.rigidbody.velocity;
+				this.velocity = this.collider.Velocity;
 
 				float speed = this.speed * this.rate;
 
 				if (this.velocity.x < 0 && this.velocity.x > -speed) {
 					this.velocity.x = -speed;
+					this.collider.Velocity = this.velocity;
 				} else if (this.velocity.x > 0 && this.velocity.x < speed) {
 					this.velocity.x = speed;
+					this.collider.Velocity = this.velocity;
 				}
-
-				this.rigidbody.velocity = this.velocity;
 			}
 		}
 
@@ -147,7 +139,7 @@ namespace Game.Component {
 				psr.material.color = collision.gameObject.GetComponent<MeshRenderer> ().material.color;
 			}
 
-			ViceCamera.Shake (this.rigidbody.velocity * this.shakingRate, this.shakingTime);
+			ViceCamera.Shake (this.collider.Velocity * this.shakingRate, this.shakingTime);
 			this.stretch.OnCollisionEnter ();
 			this.hasDown = true;
 		}
@@ -160,8 +152,9 @@ namespace Game.Component {
 			x *= this.rate;
 			y *= this.rate;
 			z *= this.rate;
-
-			this.rigidbody.velocity += new Vector3 (x, y, z);
+			print(this.collider.Velocity);
+			this.collider.Velocity += new Vector3 (x, y, z);
+			print(this.collider.Velocity);
 		}
 	}
 }

@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 33461794255770286}
   - component: {fileID: 65549405235624516}
   - component: {fileID: 23328240291514392}
+  - component: {fileID: 114795152574503052}
   - component: {fileID: 114508875496071688}
   m_Layer: 0
   m_Name: Protector
@@ -112,3 +113,15 @@ MonoBehaviour:
   end: 0
   clip: {fileID: 8300000, guid: 7f06606fd134142138370f27b335fd40, type: 3}
   shakingValue: {x: 0.2, y: 0, z: 0, w: 0.4}
+--- !u!114 &114795152574503052
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1465642577304122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4068a60a7b2c4897b223bdd730aa136, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isStatic: 1

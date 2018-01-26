@@ -40,11 +40,9 @@ namespace Game.Component.UI {
 			INSTANCE = this;
 
 			DOTween.Init ();
-			DOTween.defaultEaseType = Ease.OutExpo;
-			DOTween.defaultUpdateType = UpdateType.Fixed;
-
-			ViceCamera.OnEndEvent += OnCameraEnd;
+			ViceCamera.OnEndEvent += this.OnCameraEnd;
 			Interface.Instantiate (this.logo);
+			Screen.SetResolution (225, 400, false);
 		}
 
 		private IEnumerator TickClear (float time, Delegate OnComplete=null, bool exceptPoster=false) {
@@ -84,7 +82,7 @@ namespace Game.Component.UI {
 			}
 		}
 
-		private void OnCameraEnd(ViceCamera.TargetType type) {
+		private void OnCameraEnd (ViceCamera.TargetType type) {
 			if (type != ViceCamera.TargetType.Opening) {
 				Interface.Instantiate (this.count);
 			} else {

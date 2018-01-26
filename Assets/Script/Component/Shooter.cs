@@ -1,10 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace Game.Component {
-	public class Shooter : NetworkBehaviour {
+	public class Shooter : MonoBehaviour {
 		public delegate void OnShootDelegate (GameObject obj);
 		public static event OnShootDelegate OnShootEvent;
 
@@ -17,42 +16,18 @@ namespace Game.Component {
 
 		private GameObject NewBall () {
 			GameObject obj = GameObject.Instantiate (this.ball, this.transform.localPosition, Quaternion.identity, this.transform.parent) as GameObject;
-			obj.GetComponent<Rigidbody> ().AddForce (this.transform.localScale, ForceMode.VelocityChange);
+			obj.GetComponent<Collider>().AddForce(this.transform.localScale);
 		
 			return obj;
 		}
 
-		private void Effect () {
+		public void Shoot () {
+			if (Shooter.OnShootEvent != null) {
+				Shooter.OnShootEvent (this.NewBall ());
+			}
+
 			Sound.Play (this.clip);
 			ViceCamera.Shake (this.shakingValue);
-		}
-
-		public void Shoot () {
-			if (Judge.GetGameType () != Judge.GameType.PVP) {
-				if (Shooter.OnShootEvent != null) {
-					Shooter.OnShootEvent (this.NewBall ());
-				}
-
-				this.Effect ();
-			} else {
-				this.CmdShoot ();
-			}
-		}
-
-		[Command]
-		private void CmdShoot () {
-			GameObject obj = this.NewBall ();
-			NetworkServer.Spawn (obj);
-			this.RpcShoot ();
-		}
-
-		[ClientRpc]
-		private void RpcShoot () {
-			this.Effect ();
-
-			if (Shooter.OnShootEvent != null) {
-				Shooter.OnShootEvent (GameObject.FindWithTag("Ball"));
-			}
 		}
 	}
 }

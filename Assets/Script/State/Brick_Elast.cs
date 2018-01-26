@@ -50,7 +50,7 @@ namespace Game.State {
 			Ball ball = collision.gameObject.GetComponent<Ball> ();
 
 			if (ball != null) {
-				float power = collision.rigidbody.velocity.x > 0 ? this.data.power : -this.data.power;
+				float power = ball.velocity.x > 0 ? this.data.power : -this.data.power;
 				ball.Move (power, 0, 0);
 			}
 		}

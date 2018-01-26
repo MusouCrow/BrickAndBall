@@ -18,7 +18,6 @@ namespace Game.State {
 		private Vector3 draggingPos;
 		private Sequence sequence;
 		private bool willReset;
-		private bool willElast;
 		private Bounds bounds;
 
 		public Normal (GameObject gameObject, StateData data) : base (gameObject, data) {
@@ -94,7 +93,6 @@ namespace Game.State {
 
 		public override void Exit() {
 			this.coolDown = true;
-			this.willElast = false;
 		}
 
 		public override void OnMouseDown () {
@@ -106,7 +104,7 @@ namespace Game.State {
 		}
 
 		public override void OnMouseDrag () {
-			if (this.coolDown || !this.controller.CanConroll () || this.willElast) {
+			if (this.coolDown || !this.controller.CanConroll ()) {
 				return;
 			}
 
@@ -116,12 +114,7 @@ namespace Game.State {
 			float delta = newPos.x - oldPos.x;
 
 			if ((this.controller.direction > 0 && delta > DRAG_DELTA) || (this.controller.direction < 0 && delta < -DRAG_DELTA)) {
-				if (this.controller.player != null) {
-					this.controller.player.CmdPlayState (this.controller.GetType ().ToString (), "Elast");
-					this.willElast = true;
-				} else {
-					this.statemgr.Play ("Elast");
-				}
+				this.statemgr.Play ("Elast");
 			}
 		}
 

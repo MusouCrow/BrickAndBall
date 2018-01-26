@@ -3,9 +3,10 @@ using UnityEngine;
 
 namespace Game.Slot {
 	using Component;
+	using Utility;
 
 	[CreateAssetMenuAttribute(menuName="Game/Slot/PlayMusic")]
-	public class PlayMusic : Utility.Slot {
+	public class PlayMusic : Slot {
 		[SerializeField]
 		private AudioClip music;
 

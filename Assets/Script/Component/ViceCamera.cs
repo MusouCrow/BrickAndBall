@@ -75,7 +75,7 @@ namespace Game.Component {
 		[SerializeField]
 		private AudioClip clip;
 
-		private Camera camera;
+		private new Camera camera;
 		private bool isGame = false;
 		private bool isMoving = false;
 

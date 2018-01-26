@@ -35,16 +35,6 @@ namespace Game.Component {
 			this.AITickEvent += this.FollowBall;
 		}
 
-		protected new void FixedUpdate () {
-			base.FixedUpdate ();
-
-			if (this.player == null) {
-				return;
-			}
-
-			this.transform.localPosition = this.player.transform.localPosition;
-		}
-
 		private void FollowBall (Vector3 ballPosition) {
 			Brick.HandleValueWithRange (ref ballPosition.z);
 			int direction = 1;
@@ -81,12 +71,12 @@ namespace Game.Component {
 
 		protected void OnCollisionEnter (Collision collision) {
 			Ball ball = collision.gameObject.GetComponent<Ball> ();
-
+			
 			if (ball != null) {
 				float valueX = Mathf.Lerp (POWER_X.x, POWER_X.y, Random.value);
 				float valueZ = Mathf.Lerp (POWER_Z.x, POWER_Z.y, Random.value);
 				
-				valueX = collision.rigidbody.velocity.x > 0 ? valueX : -valueX;
+				valueX = ball.velocity.x > 0 ? valueX : -valueX;
 				valueZ = Random.value < 0.5f ? valueZ : -valueZ;
 				ball.Move(valueX, 0, valueZ);
 			}
@@ -97,10 +87,6 @@ namespace Game.Component {
 
 		private void AdjustPosition () {
 			this.transform.localPosition = this.position + this.shakingPos;
-
-			if (this.player != null) {
-				this.player.transform.localPosition = this.transform.localPosition;
-			}
 		}
 
 		public Tweener MovePosition (int type, float target, float time) {
