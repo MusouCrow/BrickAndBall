@@ -7,6 +7,7 @@ using DG.Tweening;
 
 namespace Game.Component {
 	using Utility;
+	using Rigidbody = Utility.Rigidbody;
 
 	public class Ball : MonoBehaviour {
 		private class Stretch {
@@ -90,6 +91,7 @@ namespace Game.Component {
 
 		protected void Awake () {
 			this.collider = this.GetComponent<Collider> ();
+			this.collider.CollisionEnterEvent += this.CollisionEnter;
 			//this.rigidbody.sleepThreshold = this.sleepThreshold;
 			this.stretch = new Stretch (this.stretchRate, this.stretchTime, this.transform, this.collider);
 
@@ -104,7 +106,7 @@ namespace Game.Component {
 				Destroy (this.gameObject);
 				return;
 			}
-
+			
 			if (pos.z > this.rangeZ) {
 				pos.z = this.rangeZ;
 				this.collider.Position = pos;
@@ -129,14 +131,14 @@ namespace Game.Component {
 			}
 		}
 
-		protected void OnCollisionEnter(Collision collision) {
+		private void CollisionEnter(Rigidbody rigidbody) {
 			Sound.Play (this.clip);
-			GameObject obj = this.NewEffect (this.transform.parent);
-			ParticleSystemRenderer psr = obj.GetComponent<ParticleSystemRenderer>();
-			MeshRenderer mr = collision.gameObject.GetComponent<MeshRenderer> ();
+			var obj = this.NewEffect (this.transform.parent);
+			var psr = obj.GetComponent<ParticleSystemRenderer>();
+			var mr = rigidbody.collider.gameObject.GetComponent<MeshRenderer> ();
 
 			if (psr && mr) {
-				psr.material.color = collision.gameObject.GetComponent<MeshRenderer> ().material.color;
+				psr.material.color = mr.material.color;
 			}
 
 			ViceCamera.Shake (this.collider.Velocity * this.shakingRate, this.shakingTime);

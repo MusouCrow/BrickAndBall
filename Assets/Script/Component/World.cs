@@ -24,8 +24,8 @@ namespace Game.Component {
             this.world = new JWorld(new CollisionSystemSAP());
         }
 
-        protected void LateUpdate() {
-            this.world.Step(0.017f, true);
+        protected void FixedUpdate() {
+            this.world.Step(0.017f, false);
         }
     }
 }

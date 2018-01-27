@@ -70,17 +70,19 @@ namespace Game.Component {
             this.body = new Rigidbody(this, shape);
             this.body.IsStatic = this.isStatic;
             this.body.Position = this.transform.localPosition.ToJVector();
-
+            
+            /*
             if (collider.material != null) {
                 this.body.Material.kineticFriction = collider.material.dynamicFriction;
                 this.body.Material.staticFriction = collider.material.staticFriction;
                 this.body.Material.restitution = collider.material.bounciness;
             }
+            */
 
             World.AddBody(this.body);
             World.CollisionSystem.CollisionDetected += this.CollisionDetected;
 
-            this.CollisionEnterEvent += (Rigidbody body) => print(this.name);
+            //this.CollisionEnterEvent += (Rigidbody body) => print(this.name);
         }
         
         protected void FixedUpdate() {
@@ -122,7 +124,7 @@ namespace Game.Component {
                 return;
             }
 
-            var body = body1 == this.body ? body1 as Rigidbody : body2 as Rigidbody;
+            var body = body1 == this.body ? body2 as Rigidbody : body1 as Rigidbody;
             
             if (!this.collisionMap.ContainsKey(body)) {
                 this.collisionMap[body] = CollisionState.Enter;
