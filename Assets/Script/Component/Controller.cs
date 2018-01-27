@@ -7,8 +7,8 @@ namespace Game.Component {
 	using Utility;
 
 	public class Controller : MonoBehaviour {
-		public delegate void ResetDelegate ();
-		public delegate void AITickDelegate (Vector3 ballPosition);
+		public delegate void ResetDelegate();
+		public delegate void AITickDelegate(Vector3 ballPosition);
 		public enum Identity {
 			Player,
 			AI,
@@ -33,45 +33,45 @@ namespace Game.Component {
 		public Statemgr statemgr;
 		private Timer timer;
 
-		protected void Awake () {
-			this.statemgr = this.GetComponent<Statemgr> ();
-			this.timer = new Timer (this.GetAIInterval ());
-			this.renderer = this.GetComponent<MeshRenderer> ();
+		protected void Awake() {
+			this.statemgr = this.GetComponent<Statemgr>();
+			this.timer = new Timer (this.GetAIInterval());
+			this.renderer = this.GetComponent<MeshRenderer>();
 			this.originColor = this.renderer.material.color;
 		}
 
-		protected void FixedUpdate () {
+		protected void FixedUpdate() {
 			if (!this.isRunning || this.identity != Identity.AI) {
 				return;
 			}
 
-			this.timer.Update (Time.fixedDeltaTime);
+			this.timer.Update(Time.fixedDeltaTime);
 
-			if (!this.timer.IsRunning ()) {
+			if (!this.timer.IsRunning()) {
 				if (this.AITickEvent != null) {
-					this.AITickEvent (Judge.GetBallPosition ());
+					this.AITickEvent(Judge.GetBallPosition());
 				}
 
-				this.timer.Enter (this.GetAIInterval ());
+				this.timer.Enter(this.GetAIInterval());
 			}
 		}
 
-		private float GetAIInterval () {
-			return Mathf.Lerp (this.AIIntervalRange.x, this.AIIntervalRange.y, Random.value);
+		private float GetAIInterval() {
+			return Mathf.Lerp(this.AIIntervalRange.x, this.AIIntervalRange.y, Random.value);
 		}
 
-		public void Reset () {
+		public void Reset() {
 			if (this.ResetEvent != null) {
-				this.ResetEvent ();
+				this.ResetEvent();
 			}
 		}
 
-		public Tweener MoveColor (Color value, float t) {
-			return this.renderer.material.DOColor (value, t)
-				.SetEase (Ease.Linear);
+		public Tweener MoveColor(Color value, float t) {
+			return this.renderer.material.DOColor(value, t)
+				.SetEase(Ease.Linear);
 		}
 
-		public bool CanConroll () {
+		public bool CanConroll() {
 			return this.isRunning && this.identity == Identity.Player;
 		}
 	}

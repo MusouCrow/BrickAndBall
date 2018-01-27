@@ -10,7 +10,7 @@ namespace Game.Component {
 		private Protector protector;
 
 		public void Play() {
-			this.protector.SetActive (true);
+			this.protector.SetActive(true);
 		}
 
 		public float GetTime() {

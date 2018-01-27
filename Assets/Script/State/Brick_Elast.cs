@@ -12,46 +12,46 @@ namespace Game.State {
 		private StateData data;
 		private Brick brick;
 
-		public Brick_Elast (GameObject gameObject, StateData data) : base (gameObject, data) {
+		public Brick_Elast(GameObject gameObject, StateData data) : base(gameObject, data) {
 			this.data = data;
-			this.brick = gameObject.GetComponent<Brick> ();
+			this.brick = gameObject.GetComponent<Brick>();
 		}
 
-		private void GotoNextState () {
-			this.statemgr.Play (this.data.nextState);
+		private void GotoNextState() {
+			this.statemgr.Play(this.data.nextState);
 		}
 
-		private void MovePosition (int type) {
-			this.brick.MovePosition (0, this.data.positioning [type] * -this.brick.direction, this.data.time)
-				.SetEase (Ease.InOutQuad);
+		private void MovePosition(int type) {
+			this.brick.MovePosition(0, this.data.positioning [type] * -this.brick.direction, this.data.time)
+				.SetEase(Ease.InOutQuad);
 		}
 
 		public override void Enter() {
 			float time = this.data.time;
 
 			Sequence s = DOTween.Sequence();
-			Tweener t1 = this.brick.transform.DOScaleX (this.data.scaling [1], time)
+			Tweener t1 = this.brick.transform.DOScaleX(this.data.scaling [1], time)
 				.OnPlay (() => this.MovePosition (1));
-			Tweener t2 = this.brick.transform.DOScaleX (this.data.scaling [0], time)
+			Tweener t2 = this.brick.transform.DOScaleX(this.data.scaling [0], time)
 				.OnPlay (() => {
-				this.MovePosition (0);
-				this.brick.MoveColor (this.brick.targetColor, time);
+				this.MovePosition(0);
+				this.brick.MoveColor(this.brick.targetColor, time);
 			})
-				.SetEase (Ease.InOutBack);
+				.SetEase(Ease.InOutBack);
 
-			s.Append (t1);
-			s.Append (t2);
-			s.AppendCallback (this.GotoNextState);
+			s.Append(t1);
+			s.Append(t2);
+			s.AppendCallback(this.GotoNextState);
 
-			Sound.Play (this.data.clip);
+			Sound.Play(this.data.clip);
 		}
 
 		public override void OnCollisionEnter(Collision collision) {
-			Ball ball = collision.gameObject.GetComponent<Ball> ();
+			Ball ball = collision.gameObject.GetComponent<Ball>();
 
 			if (ball != null) {
 				float power = ball.velocity.x > 0 ? this.data.power : -this.data.power;
-				ball.Move (power, 0, 0);
+				ball.Move(power, 0, 0);
 			}
 		}
 	}

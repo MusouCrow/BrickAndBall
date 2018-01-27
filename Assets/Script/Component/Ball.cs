@@ -55,7 +55,7 @@ namespace Game.Component {
 				}
 			}
 
-			public void OnCollisionEnter () {
+			public void OnCollide () {
 				if (this.sequence == null || !this.sequence.IsPlaying ()) {
 					this.hasCollded = true;
 				}
@@ -70,8 +70,6 @@ namespace Game.Component {
 		private float rangeZ = 3.5f;
 		[SerializeField]
 		private float speed = 6;
-		[SerializeField]
-		private float sleepThreshold = 0.001f;
 		[SerializeField]
 		private float shakingRate = 0.005f;
 		[SerializeField]
@@ -91,8 +89,7 @@ namespace Game.Component {
 
 		protected void Awake () {
 			this.collider = this.GetComponent<Collider> ();
-			this.collider.CollisionEnterEvent += this.CollisionEnter;
-			//this.rigidbody.sleepThreshold = this.sleepThreshold;
+			this.collider.CollisionEnterEvent += this.OnCollide;
 			this.stretch = new Stretch (this.stretchRate, this.stretchTime, this.transform, this.collider);
 
 			this.NewEffect (this.transform);
@@ -102,7 +99,7 @@ namespace Game.Component {
 			var pos = this.collider.Position;
 
 			if (pos.y < 0) {
-				Judge.Gain (this.transform.localPosition);
+				Judge.Gain (pos);
 				Destroy (this.gameObject);
 				return;
 			}
@@ -118,7 +115,6 @@ namespace Game.Component {
 			if (this.hasDown) {
 				this.stretch.Update (ref this.velocity);
 				this.velocity = this.collider.Velocity;
-
 				float speed = this.speed * this.rate;
 
 				if (this.velocity.x < 0 && this.velocity.x > -speed) {
@@ -131,7 +127,7 @@ namespace Game.Component {
 			}
 		}
 
-		private void CollisionEnter(Rigidbody rigidbody) {
+		private void OnCollide(Rigidbody rigidbody) {
 			Sound.Play (this.clip);
 			var obj = this.NewEffect (this.transform.parent);
 			var psr = obj.GetComponent<ParticleSystemRenderer>();
@@ -142,7 +138,7 @@ namespace Game.Component {
 			}
 
 			ViceCamera.Shake (this.collider.Velocity * this.shakingRate, this.shakingTime);
-			this.stretch.OnCollisionEnter ();
+			this.stretch.OnCollide ();
 			this.hasDown = true;
 		}
 
@@ -154,9 +150,7 @@ namespace Game.Component {
 			x *= this.rate;
 			y *= this.rate;
 			z *= this.rate;
-			print(this.collider.Velocity);
 			this.collider.Velocity += new Vector3 (x, y, z);
-			print(this.collider.Velocity);
 		}
 	}
 }

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
-using Rigidbody = Game.Utility.Rigidbody;
+using JMaterial = Jitter.Dynamics.Material;
 using JRigidbody = Jitter.Dynamics.RigidBody;
 using UCollider = UnityEngine.Collider;
 
 namespace Game.Component {
     using Utility;
+    using Rigidbody = Utility.Rigidbody;
 
     public class Collider : MonoBehaviour {
         public delegate void Delegate(Rigidbody body);
@@ -35,7 +36,8 @@ namespace Game.Component {
                 return this.body.Position.ToVector3();
             }
             set {
-                this.body.Position = value.ToJVector();
+                this.body.position = value.ToJVector();
+                this.AdjustPosition();
             }
         }
 
@@ -70,7 +72,7 @@ namespace Game.Component {
             this.body = new Rigidbody(this, shape);
             this.body.IsStatic = this.isStatic;
             this.body.Position = this.transform.localPosition.ToJVector();
-            
+
             /*
             if (collider.material != null) {
                 this.body.Material.kineticFriction = collider.material.dynamicFriction;
@@ -81,14 +83,11 @@ namespace Game.Component {
 
             World.AddBody(this.body);
             World.CollisionSystem.CollisionDetected += this.CollisionDetected;
-
-            //this.CollisionEnterEvent += (Rigidbody body) => print(this.name);
         }
         
         protected void FixedUpdate() {
             if (!this.body.IsStaticOrInactive) {
-                this.body.position = this.body.position.ToFixed();
-                this.transform.localPosition = this.body.position.ToVector3();
+                this.AdjustPosition();
             }
 
             for (int i = this.collisionList.Count - 1; i > -1; i--) {
@@ -117,6 +116,20 @@ namespace Game.Component {
                 
                 this.collisionMap[key] = CollisionState.Exit;
             }
+        }
+
+        protected void OnDrawGizmos() {
+            if (!Application.isPlaying) {
+                return;
+            }
+
+            var size = (this.body.Shape.BoundingBox.Max - this.body.Shape.BoundingBox.Min).ToVector3();
+            Gizmos.DrawWireCube(this.transform.position, size);
+        }
+
+        public void AdjustPosition() {
+            this.body.Position = this.body.Position.ToFixed();
+            this.transform.localPosition = this.body.Position.ToVector3();
         }
 
         private void CollisionDetected(JRigidbody body1, JRigidbody body2, JVector point1, JVector point2, JVector normal, float penetration) {

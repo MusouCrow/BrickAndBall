@@ -7,15 +7,17 @@ using Random = UnityEngine.Random;
 
 namespace Game.Component {
 	using Utility;
+	using Rigidbody = Utility.Rigidbody;
 
 	public class Brick : Controller {
 		private const float RANGE_Z = 2.5f;
-		private static Vector2 POWER_X = new Vector2 (7, 12);
-		private static Vector2 POWER_Z = new Vector2 (5, 15);
-		private static Vector2 AI_MOTION_TIME = new Vector2 (0.2f, 0.6f);
-		private static Vector4 SHAKING_VALUE = new Vector4 (0.1f, 0, 0, 0.2f);
+		private static Vector2 POWER_X = new Vector2(7, 12);
+		private static Vector2 POWER_Z = new Vector2(5, 15);
+		private static Vector2 AI_MOTION_TIME = new Vector2(0.2f, 0.6f);
+		private static Vector4 SHAKING_VALUE = new Vector4(0.1f, 0, 0, 0.2f);
+		public delegate void Delegate(Vector3 pos);
 
-		private static void HandleValueWithRange (ref float value) {
+		private static void HandleValueWithRange(ref float value) {
 			if (value > RANGE_Z) {
 				value = RANGE_Z;
 			} else if (value < -RANGE_Z) {
@@ -25,18 +27,25 @@ namespace Game.Component {
 
 		private Vector3 draggingPos;
 		private Vector3 shakingPos;
+		private Vector3 shakingValue;
 		private Vector3 position;
+		private new Collider collider;
+		public event Delegate AdjustPositionEvent;
 
-		protected new void Awake () {
-			base.Awake ();
+		protected new void Awake() {
+			base.Awake();
+
+			this.collider = this.GetComponent<Collider>();
+			this.collider.CollisionEnterEvent += this.OnCollide;
 
 			this.position = this.transform.localPosition;
+			this.shakingValue = SHAKING_VALUE * this.direction;
 			this.ResetEvent += this.ResetPostion;
 			this.AITickEvent += this.FollowBall;
 		}
 
-		private void FollowBall (Vector3 ballPosition) {
-			Brick.HandleValueWithRange (ref ballPosition.z);
+		private void FollowBall(Vector3 ballPosition) {
+			Brick.HandleValueWithRange(ref ballPosition.z);
 			int direction = 1;
 
 			if ((this.direction == 1 && ballPosition.x < this.transform.localPosition.x)
@@ -48,62 +57,65 @@ namespace Game.Component {
 		}
 
 		protected void OnMouseDown() {
-			if (!this.CanConroll ()) {
+			if (!this.CanConroll()) {
 				return;
 			}
 
-			this.draggingPos = ViceCamera.ScreenToWorldPoint (Input.mousePosition);
+			this.draggingPos = ViceCamera.ScreenToWorldPoint(Input.mousePosition);
 		}
 
-		protected void OnMouseDrag () {
-			if (!this.CanConroll ()) {
+		protected void OnMouseDrag() {
+			if (!this.CanConroll()) {
 				return;
 			}
 
 			Vector3 oldPos = this.draggingPos;
-			this.draggingPos = ViceCamera.ScreenToWorldPoint (Input.mousePosition);
+			this.draggingPos = ViceCamera.ScreenToWorldPoint(Input.mousePosition);
 			Vector3 newPos = this.draggingPos;
 
 			this.position.z += newPos.z - oldPos.z;
-			Brick.HandleValueWithRange (ref this.position.z);
-			this.AdjustPosition ();
+			Brick.HandleValueWithRange(ref this.position.z);
+			this.AdjustPosition();
 		}
 
-		protected void OnCollisionEnter (Collision collision) {
-			Ball ball = collision.gameObject.GetComponent<Ball> ();
-			
+		private void OnCollide(Rigidbody rigidbody) {
+			var ball = rigidbody.collider.GetComponent<Ball>();
+
 			if (ball != null) {
 				float valueX = Mathf.Lerp (POWER_X.x, POWER_X.y, Random.value);
 				float valueZ = Mathf.Lerp (POWER_Z.x, POWER_Z.y, Random.value);
-				
+
 				valueX = ball.velocity.x > 0 ? valueX : -valueX;
 				valueZ = Random.value < 0.5f ? valueZ : -valueZ;
 				ball.Move(valueX, 0, valueZ);
 			}
-
-			DOTween.Punch (this.GetShakingPos, this.SetShakingPos, SHAKING_VALUE, SHAKING_VALUE.w)
-				.OnUpdate (this.AdjustPosition);
+			
+			DOTween.Punch(this.GetShakingPos, this.SetShakingPos, this.shakingValue, SHAKING_VALUE.w);
 		}
 
-		private void AdjustPosition () {
-			this.transform.localPosition = this.position + this.shakingPos;
+		private void AdjustPosition() {
+			this.collider.Position = this.position + this.shakingPos;
+
+			if (this.AdjustPositionEvent != null) {
+				this.AdjustPositionEvent(this.transform.localPosition);
+			}
 		}
 
-		public Tweener MovePosition (int type, float target, float time) {
-			return DOTween.To (v => this.position [type] = v, this.position [type], target, time)
-				.OnUpdate (this.AdjustPosition);
+		public Tweener MovePosition(int type, float target, float time) {
+			return DOTween.To(v => {this.position[type] = v; this.AdjustPosition();}, this.position[type], target, time);
 		}
 
-		private void ResetPostion () {
-			this.MovePosition (2, 0, 1);
+		private void ResetPostion() {
+			this.MovePosition(2, 0, 1);
 		}
 
-		private Vector3 GetShakingPos () {
+		private Vector3 GetShakingPos() {
 			return this.shakingPos;
 		}
 
-		private void SetShakingPos (Vector3 value) {
+		private void SetShakingPos(Vector3 value) {
 			this.shakingPos = value;
+			this.AdjustPosition();
 		}
 	}
 }
