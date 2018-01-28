@@ -15,6 +15,10 @@ namespace Game.Component {
             INSTANCE.world.AddBody(rigidbody);
         }
 
+        public static void RemoveBody(Rigidbody rigidbody) {
+            INSTANCE.world.RemoveBody(rigidbody);
+        }
+
         private JWorld world;
 
         protected void Awake() {
@@ -33,6 +37,7 @@ namespace Game.Component {
             var b2 = body2 as Rigidbody;
             
             b1.collider.CollisionDetected(b2.collider);
+            b2.collider.CollisionDetected(b1.collider);
         }
     }
 }

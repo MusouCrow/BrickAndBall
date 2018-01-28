@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: db97bebd5498e4eed916267fc42e618a
-timeCreated: 1514540717
+timeCreated: 1517128054
 licenseType: Free
 MonoImporter:
   externalObjects: {}
@@ -9,7 +9,7 @@ MonoImporter:
   - clip: {instanceID: 0}
   - effect: {instanceID: 0}
   - test: {fileID: 11400000, guid: 54cacec2c67e94a5390ea6a7313318e9, type: 2}
-  executionOrder: 0
+  executionOrder: 250
   icon: {instanceID: 0}
   userData: 
   assetBundleName: 

@@ -45,7 +45,7 @@ namespace Game.Component {
                 return this.body.LinearVelocity.ToVector3();
             }
             set {
-                this.body.LinearVelocity = value.ToJVector();
+                this.body.LinearVelocity = value.ToFixed().ToJVector();
             }
         }
 
@@ -62,6 +62,12 @@ namespace Game.Component {
                     var boxShape = this.body.Shape as BoxShape;
                     boxShape.Size = new JVector(value.x * this.size.x, value.y * this.size.y, value.z * this.size.z);
                 }
+            }
+        }
+
+        public bool IsParticle {
+            set {
+                this.body.IsParticle = value;
             }
         }
 
@@ -97,8 +103,6 @@ namespace Game.Component {
             this.body.IsStatic = this.isStatic;
             this.body.Position = this.transform.localPosition.ToJVector();
             this.Scale = this.transform.localScale;
-
-            World.AddBody(this.body);
         }
         
         protected void FixedUpdate() {
@@ -140,7 +144,15 @@ namespace Game.Component {
             }
 
             var size = (this.body.Shape.BoundingBox.Max - this.body.Shape.BoundingBox.Min).ToVector3();
-            Gizmos.DrawWireCube(this.transform.position, size);
+            Gizmos.DrawWireCube(this.body.Position.ToVector3(), size);
+        }
+
+        protected void OnEnable() {
+            World.AddBody(this.body);
+        }
+
+        protected void OnDisable() {
+            World.RemoveBody(this.body);
         }
 
         public void AddForce(Vector3 power) {

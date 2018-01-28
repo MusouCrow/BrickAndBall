@@ -12,8 +12,7 @@ namespace Game.Component {
 	public class Brick : Controller {
 		public delegate void Delegate(Vector3 pos);
 		private const float RANGE_Z = 2.5f;
-		private static Vector2 POWER_X = new Vector2(7, 12);
-		private static Vector2 POWER_Z = new Vector2(5, 15);
+		private static Vector2 POWER = new Vector2(3, 6);
 		private static Vector2 AI_MOTION_TIME = new Vector2(0.2f, 0.6f);
 		private static Vector4 SHAKING_VALUE = new Vector4(0.1f, 0, 0, 0.2f);
 
@@ -37,7 +36,7 @@ namespace Game.Component {
 			base.Awake();
 
 			this.collider = this.GetComponent<Collider>();
-			//this.collider.CollisionEnterEvent += this.OnCollide;
+			this.collider.CollisionEnterEvent += this.OnCollide;
 
 			this.position = this.transform.localPosition;
 			this.scale = this.transform.localScale;
@@ -81,8 +80,8 @@ namespace Game.Component {
 			var ball = collider.GetComponent<Ball>();
 
 			if (ball != null) {
-				float valueX = Mathf.Lerp (POWER_X.x, POWER_X.y, Random.value);
-				float valueZ = Mathf.Lerp (POWER_Z.x, POWER_Z.y, Random.value);
+				float valueX = Mathf.Lerp (POWER.x, POWER.y, Random.value);
+				float valueZ = Mathf.Lerp (POWER.x, POWER.y, Random.value);
 
 				valueX = ball.velocity.x > 0 ? valueX : -valueX;
 				valueZ = Random.value < 0.5f ? valueZ : -valueZ;

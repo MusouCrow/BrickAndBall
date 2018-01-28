@@ -90,7 +90,6 @@ namespace Game.Component {
 			this.collider = this.GetComponent<Collider> ();
 			this.collider.CollisionEnterEvent += this.OnCollide;
 			this.stretch = new Stretch (this.stretchRate, this.stretchTime, this.transform, this.collider);
-
 			this.NewEffect (this.transform);
 		}
 
@@ -115,7 +114,7 @@ namespace Game.Component {
 				this.stretch.Update (ref this.velocity);
 				this.velocity = this.collider.Velocity;
 				float speed = this.speed * this.rate;
-
+				
 				if (this.velocity.x < 0 && this.velocity.x > -speed) {
 					this.velocity.x = -speed;
 					this.collider.Velocity = this.velocity;
@@ -138,7 +137,11 @@ namespace Game.Component {
 
 			ViceCamera.Shake (this.collider.Velocity * this.shakingRate, this.shakingTime);
 			this.stretch.OnCollide ();
-			this.hasDown = true;
+
+			if (!this.hasDown) {
+				this.collider.IsParticle = true;
+				this.hasDown = true;
+			}
 		}
 
 		private GameObject NewEffect(Transform parent) {

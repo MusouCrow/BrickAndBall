@@ -22,7 +22,7 @@ namespace Game.Component {
 			var collider = this.GetComponent<Collider>();
 
 			if (collider != null) {
-				//collider.CollisionEnterEvent += this.OnCollide;
+				collider.CollisionEnterEvent += this.OnCollide;
 			}
 
 			this.stateMap = new Dictionary<string, State>();
