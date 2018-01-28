@@ -69,11 +69,11 @@ namespace Game.Component {
 		}
 
 		public Tweener MovePosition(int type, float target, float time) {
-			return DOTween.To((float v) => {this.position[type] = v.ToFixed(); this.AdjustPosition();}, this.position[type], target, time);
+			return Math.MoveFixedFloat((float v) => {this.position[type] = v; this.AdjustPosition();}, this.position[type], target, time);
 		}
 
 		public Tweener MoveScale(int type, float target, float time) {
-			return DOTween.To((float v) => {this.scale[type] = v.ToFixed(); this.collider.Scale = this.scale;}, this.scale[type], target, time);
+			return Math.MoveFixedFloat((float v) => {this.scale[type] = v; this.collider.Scale = this.scale;}, this.scale[type], target, time);
 		}
 
 		private void OnCollide(Collider collider) {

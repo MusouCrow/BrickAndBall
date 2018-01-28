@@ -14,11 +14,9 @@ namespace Game.Component {
 
 		private Tweener tweener;
 
-		protected void OnCollisionEnter(Collision collision) {
-			if (this.tweener == null || !this.tweener.IsPlaying()) {
-				this.tweener = this.transform.DOPunchPosition(this.shakingValue, this.shakingValue.w)
-					.SetEase(Ease.InOutElastic);
-			}
+		protected void Awake() {
+			var collider = this.GetComponent<Collider>();
+			collider.CollisionEnterEvent += this.OnCollide;
 		}
 
 		public void SetLength(float value) {
@@ -28,6 +26,13 @@ namespace Game.Component {
 
 		public void Reset() {
 			this.SetLength (0);
+		}
+
+		private void OnCollide(Collider collider) {
+			if (this.tweener == null || !this.tweener.IsPlaying()) {
+				this.tweener = this.transform.DOPunchPosition(this.shakingValue, this.shakingValue.w)
+					.SetEase(Ease.InOutElastic);
+			}
 		}
 	}
 }

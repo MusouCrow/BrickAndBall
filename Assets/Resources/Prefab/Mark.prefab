@@ -127,5 +127,5 @@ MonoBehaviour:
   - Normal
   - Elast
   values:
-  - {fileID: 11400000, guid: 11478b9751ec04c66b8c0184d43c1f1c, type: 2}
-  - {fileID: 11400000, guid: c9915e15f4cfe45e4930e224a8327c19, type: 2}
+  - {fileID: 11400000, guid: aa424137075df4c17a19072ee6d6db74, type: 2}
+  - {fileID: 11400000, guid: d599230b2442344a1aeb70f1b7591884, type: 2}

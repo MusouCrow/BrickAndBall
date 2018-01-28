@@ -1,4 +1,6 @@
 using UnityEngine;
+using DG.Tweening;
+using DG.Tweening.Core;
 using Jitter.LinearMath;
 
 namespace Game.Utility {
@@ -31,6 +33,12 @@ namespace Game.Utility {
             value.Z = value.Z.ToFixed();
 
             return value;
+        }
+
+        public static Tweener MoveFixedFloat(DOSetter<float> setter, float startValue, float endValue, float duration) {
+            float v = startValue;
+            
+            return DOTween.To(() => v, (float x) => {v = x.ToFixed(); setter(v);}, endValue, duration);
         }
     }
 }

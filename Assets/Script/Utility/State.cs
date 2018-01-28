@@ -10,11 +10,8 @@ namespace Game.Utility {
 		public class Data : ScriptableObject {
 			public Type type;
 
-			[SerializeField]
-			protected string _stateScript;
-
 			protected void OnEnable() {
-				this.type = Type.GetType("Game.State." + this._stateScript);
+				this.type = Type.GetType(this.GetType().ToString() + "State");
 			}
 		}
 

@@ -67,7 +67,7 @@ namespace Game.Component {
 		}
 
 		public Tweener MoveColor(Color value, float t) {
-			return this.renderer.material.DOColor(value, t)
+			return this.renderer.material.DOColor(value, t.ToFixed())
 				.SetEase(Ease.Linear);
 		}
 

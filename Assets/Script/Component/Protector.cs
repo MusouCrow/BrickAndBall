@@ -18,7 +18,7 @@ namespace Game.Component {
 		private Vector4 shakingValue;
 
 		private float begin;
-		private float process;
+		private Vector3 position;
 		private new Collider collider;
 
 		protected void Awake () {
@@ -26,7 +26,7 @@ namespace Game.Component {
 			this.collider.CollisionEnterEvent += this.OnCollide;
 
 			this.begin = this.transform.localPosition.x;
-			this.process = this.begin;
+			this.position = this.transform.localPosition;
 		}
 
 		protected void OnEnable() {
@@ -49,12 +49,10 @@ namespace Game.Component {
 		}
 
 		private Tweener MoveProcess(float target, float time) {
-			return DOTween.To((float v) => {
-					this.process = v.ToFixed();
-					var pos = this.collider.Position;
-					pos.x = this.process;
-					this.collider.Position = pos;
-				}, this.process, target, time);
+			return Math.MoveFixedFloat((float v) => {
+					this.position.x = v;
+					this.collider.Position = this.position;
+				}, this.position.x, target, time);
 		}
 
 		private void OnCollide(Collider collider) {

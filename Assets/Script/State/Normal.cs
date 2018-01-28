@@ -6,12 +6,27 @@ using DG.Tweening;
 namespace Game.State {
 	using Component;
 	using Utility;
-	using StateData = Data.Normal;
 
-	public class Normal : State {
+	[CreateAssetMenuAttribute(menuName="Game/State/Normal")]
+	public class Normal : State.Data {
+		[SerializeField]
+		protected float coolDownTime;
+		[SerializeField]
+		protected AudioClip clip;
+
+		public float CoolDownTime {
+			get {return coolDownTime;}
+		}
+
+		public AudioClip Clip {
+			get {return clip;}
+		}
+	}
+
+	public class NormalState : State {
 		private const float DRAG_DELTA = 0.3f;
 
-		private StateData data;
+		private Normal data;
 		private Controller controller;
 		private float clickTime;
 		private bool coolDown;
@@ -20,7 +35,7 @@ namespace Game.State {
 		private bool willReset;
 		private Bounds bounds;
 
-		public Normal(GameObject gameObject, StateData data) : base(gameObject, data) {
+		public NormalState(GameObject gameObject, Normal data) : base(gameObject, data) {
 			this.data = data;
 			this.controller = gameObject.GetComponent<Controller>();
 			this.coolDown = false;
@@ -59,7 +74,7 @@ namespace Game.State {
 		}
 
 		private void PlaySound() {
-			Sound.Play(this.data.clip);
+			Sound.Play(this.data.Clip);
 		}
 
 		private void CoolDownEnd() {
@@ -84,7 +99,7 @@ namespace Game.State {
 				return;
 			}
 
-			float coolDownTime = this.data.coolDownTime;
+			float coolDownTime = this.data.CoolDownTime;
 
 			this.sequence = DOTween.Sequence();
 			Tweener t1 = this.controller.MoveColor(this.controller.originColor, coolDownTime * 0.9f);

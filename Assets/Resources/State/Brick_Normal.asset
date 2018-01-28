@@ -8,9 +8,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 331cbc15bceb64e4481f3bfaf837b413, type: 3}
-  m_Name: Birck_Normal
+  m_Script: {fileID: 11500000, guid: 9e03e0927a13a4c9e80c8c8fa6bcee80, type: 3}
+  m_Name: Brick_Normal
   m_EditorClassIdentifier: 
-  _stateScript: Normal
-  _coolDownTime: 5
-  _clip: {fileID: 8300000, guid: 9d3f253c3ec134c89919173d68602815, type: 3}
+  coolDownTime: 5
+  clip: {fileID: 8300000, guid: 9d3f253c3ec134c89919173d68602815, type: 3}
