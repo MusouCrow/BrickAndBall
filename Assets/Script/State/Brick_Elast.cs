@@ -46,7 +46,7 @@ namespace Game.State {
 		}
 		
 		public override void OnCollide(Collider collider) {
-			Ball ball = collider.GetComponent<Ball>();
+			var ball = collider.GetComponent<Ball>();
 			
 			if (ball != null) {
 				float power = ball.velocity.x > 0 ? this.data.power : -this.data.power;

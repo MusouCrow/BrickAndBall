@@ -18,16 +18,22 @@ namespace Game.Component {
 		private Vector4 shakingValue;
 
 		private float begin;
+		private float process;
+		private new Collider collider;
 
 		protected void Awake () {
+			this.collider = this.GetComponent<Collider>();
+			this.collider.CollisionEnterEvent += this.OnCollide;
+
 			this.begin = this.transform.localPosition.x;
+			this.process = this.begin;
 		}
 
 		protected void OnEnable() {
-			Sequence s = DOTween.Sequence();
-			Tweener t1 = this.transform.DOLocalMoveX(this.end, this.time)
+			var s = DOTween.Sequence();
+			var t1 = this.MoveProcess(this.end, this.time)
 				.SetEase(Ease.InOutBack);
-			Tweener t2 = this.transform.DOLocalMoveX(this.begin, this.time)
+			var t2 = this.MoveProcess(this.begin, this.time)
 				.SetEase(Ease.InOutQuad);
 
 			s.Append (t1);
@@ -38,17 +44,26 @@ namespace Game.Component {
 			ViceCamera.Shake(this.shakingValue);
 		}
 
-		protected void OnCollisionEnter(Collision collision) {
-			Ball ball = collision.gameObject.GetComponent<Ball>();
+		public void SetActive(bool value) {
+			this.gameObject.SetActive(value);
+		}
+
+		private Tweener MoveProcess(float target, float time) {
+			return DOTween.To((float v) => {
+					this.process = v.ToFixed();
+					var pos = this.collider.Position;
+					pos.x = this.process;
+					this.collider.Position = pos;
+				}, this.process, target, time);
+		}
+
+		private void OnCollide(Collider collider) {
+			var ball = collider.GetComponent<Ball>();
 
 			if (ball != null) {
 				float power = ball.velocity.x > 0 ? POWER : -POWER;
 				ball.Move(power, 0, 0);
 			}
-		}
-
-		public void SetActive(bool value) {
-			this.gameObject.SetActive(value);
 		}
 	}
 }
