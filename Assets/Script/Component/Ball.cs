@@ -10,7 +10,7 @@ namespace Game.Component {
 
 	public class Ball : MonoBehaviour {
 		private class Stretch {
-			private static Vector3 SCALE = new Vector3 (1, 1, 1);
+			private static Vector3 SCALE = new Vector3(1, 1, 1);
 
 			private float rate;
 			private float time;
@@ -19,14 +19,14 @@ namespace Game.Component {
 			private Collider collider;
 			private Sequence sequence;
 
-			public Stretch (float rate, float time, Transform transform, Collider collider) {
+			public Stretch(float rate, float time, Transform transform, Collider collider) {
 				this.rate = rate;
 				this.time = time;
 				this.transform = transform;
 				this.collider = collider;
 			}
 
-			public void Update (ref Vector3 velocity) {
+			public void Update(ref Vector3 velocity) {
 				if (this.hasCollded) {
 					float x = SCALE.x;
 					float z = SCALE.z;
@@ -44,18 +44,17 @@ namespace Game.Component {
 						z += value * 2;
 					}
 
-					this.sequence = DOTween.Sequence ();
-					Tweener t1 = this.transform.DOScale (new Vector3 (x, SCALE.y, z), this.time);
-					Tweener t2 = this.transform.DOScale (SCALE, this.time);
-					this.sequence.Append (t1);
-					this.sequence.Append (t2);
-
+					this.sequence = DOTween.Sequence();
+					var t1 = this.transform.DOScale(new Vector3(x, SCALE.y, z), this.time);
+					var t2 = this.transform.DOScale(SCALE, this.time);
+					this.sequence.Append(t1);
+					this.sequence.Append(t2);
 					this.hasCollded = false;
 				}
 			}
 
-			public void OnCollide () {
-				if (this.sequence == null || !this.sequence.IsPlaying ()) {
+			public void OnCollide() {
+				if (this.sequence == null || !this.sequence.IsPlaying()) {
 					this.hasCollded = true;
 				}
 			}
@@ -79,26 +78,34 @@ namespace Game.Component {
 		private float stretchTime = 0.075f;
 
 		[NonSerialized]
-		public float rate = 1;
-		[NonSerialized]
 		public Vector3 velocity;
+		private float rate = 1;
 		private new Collider collider;
 		private Stretch stretch;
 		private bool hasDown = false;
 
-		protected void Awake () {
-			this.collider = this.GetComponent<Collider> ();
-			this.collider.CollisionEnterEvent += this.OnCollide;
-			this.stretch = new Stretch (this.stretchRate, this.stretchTime, this.transform, this.collider);
-			this.NewEffect (this.transform);
+		public float Rate {
+			get {
+				return this.rate;
+			}
+			set {
+				this.rate = value.ToFixed();
+			}
 		}
 
-		protected void FixedUpdate () {
+		protected void Awake() {
+			this.collider = this.GetComponent<Collider>();
+			this.collider.CollisionEnterEvent += this.OnCollide;
+			this.stretch = new Stretch(this.stretchRate, this.stretchTime, this.transform, this.collider);
+			this.NewEffect(this.transform);
+		}
+
+		protected void FixedUpdate() {
 			var pos = this.collider.Position;
 
 			if (pos.y < 0) {
-				Judge.Gain (pos);
-				Destroy (this.gameObject);
+				Judge.Gain(pos);
+				Destroy(this.gameObject);
 				return;
 			}
 			
@@ -111,7 +118,7 @@ namespace Game.Component {
 			}
 
 			if (this.hasDown) {
-				this.stretch.Update (ref this.velocity);
+				this.stretch.Update(ref this.velocity);
 				this.velocity = this.collider.Velocity;
 				float speed = this.speed * this.rate;
 				
@@ -126,17 +133,17 @@ namespace Game.Component {
 		}
 
 		private void OnCollide(Collider collider) {
-			Sound.Play (this.clip);
-			var obj = this.NewEffect (this.transform.parent);
+			Sound.Play(this.clip);
+			var obj = this.NewEffect(this.transform.parent);
 			var psr = obj.GetComponent<ParticleSystemRenderer>();
-			var mr = collider.GetComponent<MeshRenderer> ();
+			var mr = collider.GetComponent<MeshRenderer>();
 
 			if (psr && mr) {
 				psr.material.color = mr.material.color;
 			}
 
-			ViceCamera.Shake (this.collider.Velocity * this.shakingRate, this.shakingTime);
-			this.stretch.OnCollide ();
+			ViceCamera.Shake(this.collider.Velocity * this.shakingRate, this.shakingTime);
+			this.stretch.OnCollide();
 
 			if (!this.hasDown) {
 				this.collider.IsParticle = true;
@@ -145,7 +152,7 @@ namespace Game.Component {
 		}
 
 		private GameObject NewEffect(Transform parent) {
-			return GameObject.Instantiate (this.effect, this.transform.localPosition, this.transform.localRotation, parent) as GameObject;
+			return GameObject.Instantiate(this.effect, this.transform.localPosition, this.transform.localRotation, parent);
 		}
 
 		public void Move(float x, float y, float z) {

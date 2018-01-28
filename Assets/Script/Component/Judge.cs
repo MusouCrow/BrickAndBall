@@ -17,21 +17,23 @@ namespace Game.Component {
 			[System.NonSerialized]
 			public int score;
 
-			public void SetRunning (bool isRunning) {
-				this.brick.isRunning = isRunning;
-				this.mark.isRunning = isRunning;
+			public bool IsRunning {
+				set {
+					this.brick.isRunning = value;
+					this.mark.isRunning = value;
+				}
 			}
 
-			public void AddScore () {
+			public void AddScore() {
 				this.score += 1;
-				this.wall.SetLength ((float)this.score / (float)INSTANCE.scoreMax);
+				this.wall.SetLength((float)this.score / (float)INSTANCE.scoreMax);
 			}
 
-			public void Reset () {
+			public void Reset() {
 				this.score = 0;
-				this.wall.Reset ();
-				this.brick.Reset ();
-				this.mark.Reset ();
+				this.wall.Reset();
+				this.brick.Reset();
+				this.mark.Reset();
 			}
 		}
 
@@ -44,7 +46,33 @@ namespace Game.Component {
 
 		private static Judge INSTANCE;
 
-		public static ViceCamera.TargetType StartGame (GameType gameType) {
+		public static Vector3 BallPosition {
+			get {
+				if (INSTANCE.ball == null) {
+					return Vector3.zero;
+				}
+
+				return INSTANCE.ball.transform.localPosition;
+			}
+		}
+
+		public static bool IsRunning {
+			set {
+				INSTANCE.isRunning = value;
+
+				if (INSTANCE.isRunning) {
+					INSTANCE.Shoot(0.1f);
+					Sound.PlayMusic(INSTANCE.music);
+				} else {
+					Sound.PlayMusic();
+				}
+
+				INSTANCE.teamA.IsRunning = value;
+				INSTANCE.teamB.IsRunning = value;
+			}
+		}
+
+		public static ViceCamera.TargetType StartGame(GameType gameType) {
 			INSTANCE.gameType = gameType;
 			ViceCamera.TargetType targetType = ViceCamera.TargetType.Opening;
 
@@ -61,50 +89,24 @@ namespace Game.Component {
 			return targetType;
 		}
 
-		public static void SetRunning (bool isRunning) {
-			INSTANCE.isRunning = isRunning;
-
-			if (INSTANCE.isRunning) {
-				INSTANCE.Shoot (0.1f);
-				Sound.PlayMusic (INSTANCE.music);
-			} else {
-				Sound.PlayMusic ();
-			}
-
-			INSTANCE.teamA.SetRunning (isRunning);
-			INSTANCE.teamB.SetRunning (isRunning);
-		}
-
-		public static void Gain (Vector3 position) {
+		public static void Gain(Vector3 position) {
 			if (position.x < 0) {
-				INSTANCE.teamA.AddScore ();
+				INSTANCE.teamA.AddScore();
 			} else {
-				INSTANCE.teamB.AddScore ();
+				INSTANCE.teamB.AddScore();
 			}
 
 			for (int i = 0; i < INSTANCE.sounds.Length; i++) {
-				Sound.Play (INSTANCE.sounds [i], INSTANCE.volume);
+				Sound.Play(INSTANCE.sounds [i], INSTANCE.volume);
 			}
 
 			if (INSTANCE.teamA.score == INSTANCE.scoreMax || INSTANCE.teamB.score == INSTANCE.scoreMax) {
-				Judge.SetRunning (false);
+				Judge.IsRunning = false;
 				Team team = INSTANCE.teamA.brick.identity == Identity.Player ? INSTANCE.teamA : INSTANCE.teamB;
-				UI.Interface.Result (team.score == INSTANCE.scoreMax, 0.5f);
+				UI.Interface.Result(team.score == INSTANCE.scoreMax, 0.5f);
 			} else {
-				INSTANCE.Shoot (INSTANCE.shootingTime);
+				INSTANCE.Shoot(INSTANCE.shootingTime);
 			}
-		}
-
-		public static Vector3 GetBallPosition () {
-			if (INSTANCE.ball == null) {
-				return Vector3.zero;
-			}
-
-			return INSTANCE.ball.transform.localPosition;
-		}
-
-		public static GameType GetGameType () {
-			return INSTANCE.gameType;
 		}
 
 		[SerializeField]
@@ -143,14 +145,14 @@ namespace Game.Component {
 			}
 
 			this.pitch += this.acceleration;
-			Sound.SetMusicPitch (this.pitch);
+			Sound.MusicPitch = this.pitch;
 
 			if (this.ball != null) {
-				this.ball.rate = this.pitch;
+				this.ball.Rate = this.pitch;
 			}
 		}
 
-		private void Reset (ViceCamera.TargetType type) {
+		private void Reset(ViceCamera.TargetType type) {
 			if (type == ViceCamera.TargetType.Opening) {
 				this.aShooted = false;
 				this.pitch = 1;
@@ -159,24 +161,24 @@ namespace Game.Component {
 			}
 		}
 
-		public void Shoot (float time) {
-			this.StartCoroutine (this.TickShoot (time));
+		public void Shoot(float time) {
+			this.StartCoroutine(this.TickShoot(time));
 		}
 
-		private IEnumerator TickShoot (float time) {
-			yield return new WaitForSeconds (time);
+		private IEnumerator TickShoot(float time) {
+			yield return new WaitForSeconds(time);
 
 			if (this.aShooted) {
-				this.teamA.shooter.Shoot ();
+				this.teamA.shooter.Shoot();
 			} else {
-				this.teamB.shooter.Shoot ();
+				this.teamB.shooter.Shoot();
 			}
 
 			this.aShooted = !this.aShooted;
 		}
 
-		private void ReceiveBall (GameObject obj) {
-			this.ball = obj.GetComponent<Ball> ();
+		private void ReceiveBall(GameObject obj) {
+			this.ball = obj.GetComponent<Ball>();
 		}
 	}
 }

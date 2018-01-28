@@ -9,33 +9,31 @@ namespace Game.Component {
 	public class Sound : MonoBehaviour {
 		private static Sound INSTANCE;
 
-		public static void PlayMusic (AudioClip clip=null) {
+		public static float MusicPitch {
+			set {
+				INSTANCE.audioSource.pitch = value;
+			}
+		}
+
+		public static void PlayMusic(AudioClip clip=null) {
 			INSTANCE.targetClip = clip;
 			INSTANCE.audioSource.volume = INSTANCE.volume;
 
-			if (INSTANCE.sequence != null && INSTANCE.sequence.IsPlaying ()) {
-				INSTANCE.sequence.Complete ();
+			if (INSTANCE.sequence != null && INSTANCE.sequence.IsPlaying()) {
+				INSTANCE.sequence.Complete();
 			}
 
-			INSTANCE.sequence = DOTween.Sequence ();
-			Tweener t1 = INSTANCE.MoveVolume (0);
-			Tweener t2 = INSTANCE.MoveVolume (INSTANCE.volume);
+			INSTANCE.sequence = DOTween.Sequence();
+			Tweener t1 = INSTANCE.MoveVolume(0);
+			Tweener t2 = INSTANCE.MoveVolume(INSTANCE.volume);
 
-			INSTANCE.sequence.Append (t1);
-			INSTANCE.sequence.AppendCallback (INSTANCE.StartPlay);
-			INSTANCE.sequence.Append (t2);
+			INSTANCE.sequence.Append(t1);
+			INSTANCE.sequence.AppendCallback(INSTANCE.StartPlay);
+			INSTANCE.sequence.Append(t2);
 		}
 
-		public static void SetMusicPitch (float pitch) {
-			INSTANCE.audioSource.pitch = pitch;
-		}
-
-		public static bool MusicIsPlaying () {
-			return INSTANCE.audioSource.isPlaying;
-		}
-
-		public static void Play (AudioClip clip, float volume=1) {
-			AudioSource.PlayClipAtPoint (clip, Vector3.zero, volume);
+		public static void Play(AudioClip clip, float volume=1) {
+			AudioSource.PlayClipAtPoint(clip, Vector3.zero, volume);
 		}
 
 		[SerializeField]
@@ -48,27 +46,27 @@ namespace Game.Component {
 		private AudioClip targetClip;
 		private Sequence sequence;
 
-		private void Awake () {
+		private void Awake() {
 			INSTANCE = this;
-			this.audioSource = this.GetComponent<AudioSource> ();
+			this.audioSource = this.GetComponent<AudioSource>();
 		}
 
-		private Tweener MoveVolume (float target) {
-			return DOTween.To (INSTANCE.GetVolume, INSTANCE.SetVolume, target, INSTANCE.gradualTime);
+		private Tweener MoveVolume(float target) {
+			return DOTween.To(this.GetVolume, this.SetVolume, target, this.gradualTime);
 		}
 
-		private float GetVolume () {
+		private float GetVolume() {
 			return this.audioSource.volume;
 		}
 
-		private void SetVolume (float volume) {
+		private void SetVolume(float volume) {
 			this.audioSource.volume = volume;
 		}
 
-		private void StartPlay () {
+		private void StartPlay() {
 			this.audioSource.clip = this.targetClip;
 			this.audioSource.pitch = 1;
-			this.audioSource.Play ();
+			this.audioSource.Play();
 		}
 	}
 }

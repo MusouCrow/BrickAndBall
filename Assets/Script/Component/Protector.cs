@@ -21,7 +21,7 @@ namespace Game.Component {
 		private Vector3 position;
 		private new Collider collider;
 
-		protected void Awake () {
+		protected void Awake() {
 			this.collider = this.GetComponent<Collider>();
 			this.collider.CollisionEnterEvent += this.OnCollide;
 
@@ -36,8 +36,8 @@ namespace Game.Component {
 			var t2 = this.MoveProcess(this.begin, this.time)
 				.SetEase(Ease.InOutQuad);
 
-			s.Append (t1);
-			s.Append (t2);
+			s.Append(t1);
+			s.Append(t2);
 			s.AppendCallback(() => this.SetActive(false));
 
 			Sound.Play(this.clip);

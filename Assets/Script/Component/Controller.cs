@@ -47,9 +47,9 @@ namespace Game.Component {
 
 			this.timer.Update(Time.fixedDeltaTime);
 
-			if (!this.timer.IsRunning()) {
+			if (!this.timer.IsRunning) {
 				if (this.AITickEvent != null) {
-					this.AITickEvent(Judge.GetBallPosition());
+					this.AITickEvent(Judge.BallPosition);
 				}
 
 				this.timer.Enter(this.GetAIInterval());

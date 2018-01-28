@@ -11,37 +11,36 @@ namespace Game.Component.UI {
 	public class Mirage : MonoBehaviour {
 		private static GameObject PREFAB;
 
-		public static GameObject New (Transform transform, Transform parent, Image image, Vector3 targetScale, float time) {
+		public static GameObject New(Transform transform, Transform parent, Image image, Vector3 targetScale, float time) {
 			if (PREFAB == null) {
-				PREFAB = Resources.Load ("Prefab/UI/Mirage") as GameObject;
+				PREFAB = Resources.Load("Prefab/UI/Mirage") as GameObject;
 			}
 
-			GameObject obj = GameObject.Instantiate (PREFAB, parent) as GameObject;
-
+			var obj = GameObject.Instantiate(PREFAB, parent);
 			obj.transform.localPosition = transform.localPosition;
 			obj.transform.localScale = transform.localScale;
 			obj.transform.localRotation = transform.localRotation;
-			obj.GetComponent<Mirage> ().Init (image, targetScale, time);
+			obj.GetComponent<Mirage>().Init(image, targetScale, time);
 
 			return obj;
 		}
 
-		public void Init (Image image, Vector3 targetScale, float time) {
-			Image newImage = this.gameObject.AddComponent<Image> ();
+		public void Init(Image image, Vector3 targetScale, float time) {
+			var newImage = this.gameObject.AddComponent<Image>();
 			newImage.color = image.color;
 			newImage.sprite = image.sprite;
-			newImage.SetNativeSize ();
+			newImage.SetNativeSize();
 
-			Color targetColor = image.color;
+			var targetColor = image.color;
 			targetColor.a = 0;
 
-			newImage.DOColor (targetColor, time);
-			this.transform.DOScale (targetScale, time)
-				.OnComplete (this.DestroyObj);
+			newImage.DOColor(targetColor, time);
+			this.transform.DOScale(targetScale, time)
+				.OnComplete(this.DestroyObj);
 		}
 
-		private void DestroyObj () {
-			Destroy (this.gameObject);
+		private void DestroyObj() {
+			Destroy(this.gameObject);
 		}
 	}
 }

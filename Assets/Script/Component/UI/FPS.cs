@@ -9,17 +9,17 @@ namespace Game.Component.UI {
 		private float timer;
 		private int frame;
 
-		protected void Awake () {
-			this.text = this.GetComponent<Text> ();
+		protected void Awake() {
+			this.text = this.GetComponent<Text>();
 		}
 
-		protected void Update () {
+		protected void Update() {
 			this.timer += Time.deltaTime;
 			this.frame += 1;
 
 			if (this.timer >= 1) {
 				this.timer = 1 - this.timer;
-				this.text.text = this.frame.ToString ();
+				this.text.text = this.frame.ToString();
 				this.frame = 0;
 			}
 		}

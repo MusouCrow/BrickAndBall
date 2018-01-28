@@ -22,31 +22,31 @@ namespace Game.Component.UI {
 		[SerializeField]
 		private Slot[] onEndSlots;
 
-		protected void Awake () {
+		protected void Awake() {
 			for (int i = 0; i < this.showingClips.Length; i++) {
-				Sound.Play (this.showingClips [i]);
+				Sound.Play(this.showingClips [i]);
 			}
 
-			Sequence s = DOTween.Sequence ();
-			s.AppendInterval (this.livingTime);
-			s.AppendCallback (this.OnEnd);
+			var s = DOTween.Sequence();
+			s.AppendInterval(this.livingTime);
+			s.AppendCallback(this.OnEnd);
 
 			for (int i = 0; i < this.onAwakeSlots.Length; i++) {
-				this.onAwakeSlots [i].Run (this.gameObject);
+				this.onAwakeSlots[i].Run(this.gameObject);
 			}
 		}
 
-		private void OnEnd () {
+		private void OnEnd() {
 			if (this.next != null) {
-				GameObject.Instantiate (this.next, this.transform.parent);
+				GameObject.Instantiate(this.next, this.transform.parent);
 			}
 
 			if (this.willDestroy) {
-				Destroy (this.gameObject);
+				Destroy(this.gameObject);
 			}
 
 			for (int i = 0; i < this.onEndSlots.Length; i++) {
-				this.onEndSlots [i].Run (this.gameObject);
+				this.onEndSlots[i].Run(this.gameObject);
 			}
 		}
 	}

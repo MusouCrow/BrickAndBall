@@ -10,7 +10,7 @@ namespace Game.Slot {
 		private bool isRunning;
 
 		public override void Run (GameObject gameObject) {
-			Judge.SetRunning (this.isRunning);
+			Judge.IsRunning = this.isRunning;
 		}
 	}
 }

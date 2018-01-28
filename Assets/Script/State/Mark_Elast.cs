@@ -31,7 +31,7 @@ namespace Game.State {
 
 		public override void Enter() {
 			this.mark.Play();
-			this.mark.MoveColor(this.mark.targetColor, this.mark.GetTime())
+			this.mark.MoveColor(this.mark.targetColor, this.mark.Time)
 				.OnComplete(this.GotoNextState);
 		}
 	}

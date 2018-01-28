@@ -25,7 +25,7 @@ namespace Game.Component {
 		}
 
 		public void Reset() {
-			this.SetLength (0);
+			this.SetLength(0);
 		}
 
 		private void OnCollide(Collider collider) {

@@ -2,6 +2,18 @@
 
 namespace Game.Utility {
 	public class Timer {
+		public bool IsRunning {
+			get {
+				return this.isRunning;
+			}
+		}
+
+		public float Process {
+			get {
+				return this.value / this.max;
+			}
+		}
+
 		public float value;
 		public float max;
 		private bool isRunning;
@@ -16,7 +28,7 @@ namespace Game.Utility {
 			}
 		}
 
-		public void Update (float dt) {
+		public void Update(float dt) {
 			if (!this.isRunning) {
 				return;
 			}
@@ -25,7 +37,7 @@ namespace Game.Utility {
 
 			if (this.value >= this.max) {
 				this.value = this.max;
-				this.Exit ();
+				this.Exit();
 			}
 		}
 
@@ -48,14 +60,6 @@ namespace Game.Utility {
 
 		public void Exit() {
 			this.isRunning = false;
-		}
-
-		public bool IsRunning() {
-			return this.isRunning;
-		}
-
-		public float GetProcess() {
-			return this.value / this.max;
 		}
 	}
 }
