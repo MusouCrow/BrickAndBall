@@ -28,15 +28,14 @@ namespace Game.State {
 
 		public override void Enter() {
 			float time = this.data.time;
-
-			Sequence s = DOTween.Sequence();
-			Tweener t1 = this.brick.transform.DOScaleX(this.data.scaling [1], time)
-				.OnPlay (() => this.MovePosition (1));
-			Tweener t2 = this.brick.transform.DOScaleX(this.data.scaling [0], time)
-				.OnPlay (() => {
-				this.MovePosition(0);
-				this.brick.MoveColor(this.brick.targetColor, time);
-			})
+			var s = DOTween.Sequence();
+			var t1 = this.brick.MoveScale(0, this.data.scaling[1], time)
+				.OnPlay(() => this.MovePosition(1));
+			var t2 = this.brick.MoveScale(0, this.data.scaling[0], time)
+				.OnPlay(() => {
+					this.MovePosition(0);
+					this.brick.MoveColor(this.brick.targetColor, time);
+				})
 				.SetEase(Ease.InOutBack);
 
 			s.Append(t1);
@@ -45,10 +44,10 @@ namespace Game.State {
 
 			Sound.Play(this.data.clip);
 		}
-
-		public override void OnCollisionEnter(Collision collision) {
-			Ball ball = collision.gameObject.GetComponent<Ball>();
-
+		
+		public override void OnCollide(Collider collider) {
+			Ball ball = collider.GetComponent<Ball>();
+			
 			if (ball != null) {
 				float power = ball.velocity.x > 0 ? this.data.power : -this.data.power;
 				ball.Move(power, 0, 0);

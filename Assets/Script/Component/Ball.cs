@@ -7,7 +7,6 @@ using DG.Tweening;
 
 namespace Game.Component {
 	using Utility;
-	using Rigidbody = Utility.Rigidbody;
 
 	public class Ball : MonoBehaviour {
 		private class Stretch {
@@ -127,11 +126,11 @@ namespace Game.Component {
 			}
 		}
 
-		private void OnCollide(Rigidbody rigidbody) {
+		private void OnCollide(Collider collider) {
 			Sound.Play (this.clip);
 			var obj = this.NewEffect (this.transform.parent);
 			var psr = obj.GetComponent<ParticleSystemRenderer>();
-			var mr = rigidbody.collider.gameObject.GetComponent<MeshRenderer> ();
+			var mr = collider.GetComponent<MeshRenderer> ();
 
 			if (psr && mr) {
 				psr.material.color = mr.material.color;

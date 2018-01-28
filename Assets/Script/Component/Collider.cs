@@ -3,33 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
-using JMaterial = Jitter.Dynamics.Material;
-using JRigidbody = Jitter.Dynamics.RigidBody;
+
 using UCollider = UnityEngine.Collider;
+using JMaterial = Jitter.Dynamics.Material;
+using Rigidbody = Game.Utility.Rigidbody;
 
 namespace Game.Component {
     using Utility;
-    using Rigidbody = Utility.Rigidbody;
 
     public class Collider : MonoBehaviour {
-        public delegate void Delegate(Rigidbody body);
+        public delegate void Delegate(Collider collider);
         private enum CollisionState {
             Enter,
             Stay,
             Exit
         }
 
-        public Delegate CollisionDetectedEvent;
-        
+        [SerializeField]
+        private bool isStatic;
+
         public event Delegate CollisionEnterEvent;
         public event Delegate CollisionStayEvent;
         public event Delegate CollisionExitEvent;
-
-        [SerializeField]
-        private bool isStatic;
+        private Dictionary<Collider, CollisionState> collisionMap;
+        private List<Collider> collisionList;
+        private Vector3 size;
         private Rigidbody body;
-        private Dictionary<Rigidbody, CollisionState> collisionMap;
-        private List<Rigidbody> collisionList;
 
         public Vector3 Position {
             get {
@@ -50,39 +49,56 @@ namespace Game.Component {
             }
         }
 
-        public void AddForce(Vector3 power) {
-            this.body.AddForce(power.ToJVector());
+        public Vector3 Scale {
+            set {
+                value = value.ToFixed();
+                this.transform.localScale = value;
+
+                if (this.body.Shape is SphereShape) {
+                    var sphereShape = this.body.Shape as SphereShape;
+                    sphereShape.Radius = this.size.x * value.x;
+                }
+                else {
+                    var boxShape = this.body.Shape as BoxShape;
+                    boxShape.Size = new JVector(value.x * this.size.x, value.y * this.size.y, value.z * this.size.z);
+                }
+            }
         }
 
         protected void Awake() {
-            this.collisionMap = new Dictionary<Rigidbody, CollisionState>();
-            this.collisionList = new List<Rigidbody>();
+            this.collisionMap = new Dictionary<Collider, CollisionState>();
+            this.collisionList = new List<Collider>();
 
             var collider = this.GetComponent<UCollider>();
             Shape shape = null;
 
-            if (collider is SphereCollider) {
+            if (collider is BoxCollider) {
+                var boxCollider = collider as BoxCollider;
+                shape = new BoxShape(boxCollider.size.ToJVector());
+                this.size = boxCollider.size;
+            }
+            else if (collider is SphereCollider) {
                 var sphereCollider = collider as SphereCollider;
                 shape = new SphereShape(sphereCollider.radius);
+                this.size = new Vector3(sphereCollider.radius, sphereCollider.radius, sphereCollider.radius);
             }
             else {
-                shape = new BoxShape(collider.bounds.size.ToJVector());
+                var size = collider.bounds.size;
+                size.x /= this.transform.localScale.x;
+                size.y /= this.transform.localScale.y;
+                size.z /= this.transform.localScale.z;
+
+                shape = new BoxShape(size.ToJVector());
+                this.size = size;
             }
 
+            this.size.ToFixed();
             this.body = new Rigidbody(this, shape);
             this.body.IsStatic = this.isStatic;
             this.body.Position = this.transform.localPosition.ToJVector();
-
-            /*
-            if (collider.material != null) {
-                this.body.Material.kineticFriction = collider.material.dynamicFriction;
-                this.body.Material.staticFriction = collider.material.staticFriction;
-                this.body.Material.restitution = collider.material.bounciness;
-            }
-            */
+            this.Scale = this.transform.localScale;
 
             World.AddBody(this.body);
-            World.CollisionSystem.CollisionDetected += this.CollisionDetected;
         }
         
         protected void FixedUpdate() {
@@ -127,24 +143,26 @@ namespace Game.Component {
             Gizmos.DrawWireCube(this.transform.position, size);
         }
 
+        public void AddForce(Vector3 power) {
+            this.body.AddForce(power.ToJVector());
+        }
+
         public void AdjustPosition() {
             this.body.Position = this.body.Position.ToFixed();
             this.transform.localPosition = this.body.Position.ToVector3();
         }
 
-        private void CollisionDetected(JRigidbody body1, JRigidbody body2, JVector point1, JVector point2, JVector normal, float penetration) {
-            if (body1 != this.body && body2 != this.body) {
+        public void CollisionDetected(Collider collider) {
+            if (this.CollisionEnterEvent == null && this.CollisionStayEvent == null && this.CollisionExitEvent == null) {
                 return;
             }
-
-            var body = body1 == this.body ? body2 as Rigidbody : body1 as Rigidbody;
             
-            if (!this.collisionMap.ContainsKey(body)) {
-                this.collisionMap[body] = CollisionState.Enter;
-                this.collisionList.Add(body);
+            if (!this.collisionMap.ContainsKey(collider)) {
+                this.collisionMap[collider] = CollisionState.Enter;
+                this.collisionList.Add(collider);
             }
             else {
-                this.collisionMap[body] = CollisionState.Stay;
+                this.collisionMap[collider] = CollisionState.Stay;
             }
         }
     }

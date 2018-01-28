@@ -18,66 +18,72 @@ namespace Game.Component {
 		private Dictionary<string, State> stateMap;
 		private string nowStateName;
 
-		protected void Start () {
-			this.stateMap = new Dictionary<string, State> ();
+		protected void Awake() {
+			var collider = this.GetComponent<Collider>();
+
+			if (collider != null) {
+				//collider.CollisionEnterEvent += this.OnCollide;
+			}
+
+			this.stateMap = new Dictionary<string, State>();
 
 			for (int i = 0; i < this.values.Length; i++) {
-				State state = Activator.CreateInstance (this.values [i].type, new Object[] { this.gameObject, this.values [i] }) as State;
-				this.stateMap.Add (this.keys [i], state);
+				State state = Activator.CreateInstance(this.values [i].type, new Object[] {this.gameObject, this.values [i]}) as State;
+				this.stateMap.Add(this.keys [i], state);
 			}
 
 			this.keys = null;
 			this.values = null;
 
-			this.Play ("Normal");
+			this.Play("Normal");
 		}
 
-		protected void FixedUpdate () {
+		protected void FixedUpdate() {
 			if (this.nowState != null) {
-				this.nowState.Update ();
+				this.nowState.Update();
 			}
 		}
 
-		protected void OnMouseDown () {
+		protected void OnMouseDown() {
 			if (this.nowState != null) {
-				this.nowState.OnMouseDown ();
+				this.nowState.OnMouseDown();
 			}
 		}
 
-		protected void OnMouseDrag () {
+		protected void OnMouseDrag() {
 			if (this.nowState != null) {
-				this.nowState.OnMouseDrag ();
+				this.nowState.OnMouseDrag();
 			}
 		}
 
-		protected void OnCollisionEnter (Collision collision) {
+		protected void OnDrawGizmosSelected() {
 			if (this.nowState != null) {
-				this.nowState.OnCollisionEnter (collision);
+				this.nowState.OnDrawGizmosSelected();
 			}
 		}
 
-		protected void OnDrawGizmosSelected () {
+		public void Play(string name) {
 			if (this.nowState != null) {
-				this.nowState.OnDrawGizmosSelected ();
-			}
-		}
-
-		public void Play (string name) {
-			if (this.nowState != null) {
-				this.nowState.Exit ();
+				this.nowState.Exit();
 			}
 
 			this.nowStateName = name;
-			this.nowState = this.stateMap [name];
-			this.nowState.Enter ();
+			this.nowState = this.stateMap[name];
+			this.nowState.Enter();
 		}
 
-		public string GetStateName () {
+		public string GetStateName() {
 			return this.nowStateName;
 		}
 
-		public bool CheckRunning (State state) {
+		public bool CheckRunning(State state) {
 			return this.nowState == state;
+		}
+
+		private void OnCollide(Collider collider) {
+			if (this.nowState != null) {
+				this.nowState.OnCollide(collider);
+			}
 		}
 	}
 }
