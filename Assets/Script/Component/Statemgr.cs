@@ -7,8 +7,9 @@ using Object = System.Object;
 
 namespace Game.Component {
 	using Utility;
+	using Network;
 
-	public class Statemgr : MonoBehaviour {
+	public class Statemgr : LockBehaviour {
 		[SerializeField]
 		private string[] keys;
 		[SerializeField]
@@ -18,7 +19,9 @@ namespace Game.Component {
 		private Dictionary<string, State> stateMap;
 		private string nowStateName;
 
-		protected void Awake() {
+		protected new void Awake() {
+			base.Awake();
+
 			var collider = this.GetComponent<Collider>();
 
 			if (collider != null) {
@@ -38,7 +41,7 @@ namespace Game.Component {
 			this.Play("Normal");
 		}
 
-		protected void FixedUpdate() {
+		protected override void LockUpdate() {
 			if (this.nowState != null) {
 				this.nowState.Update();
 			}

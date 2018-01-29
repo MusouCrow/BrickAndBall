@@ -56,5 +56,9 @@ namespace Game.Utility {
         public static string ToBinStr(this float value) {
             return BytesToStr(BitConverter.GetBytes(value));
         }
+
+        public static float Lerp(float a, float b, float t) {
+            return Mathf.Lerp(a.ToFixed(), b.ToFixed(), t.ToFixed()).ToFixed();
+        }
     }
 }

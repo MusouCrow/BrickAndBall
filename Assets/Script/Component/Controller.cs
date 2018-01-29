@@ -5,8 +5,9 @@ using DG.Tweening;
 
 namespace Game.Component {
 	using Utility;
+	using Network;
 
-	public class Controller : MonoBehaviour {
+	public class Controller : LockBehaviour {
 		public delegate void ResetDelegate();
 		public delegate void AITickDelegate(Vector3 ballPosition);
 		public enum Identity {
@@ -33,31 +34,41 @@ namespace Game.Component {
 		public Statemgr statemgr;
 		private Timer timer;
 
-		protected void Awake() {
+		public bool CanConroll {
+			get {
+				return this.isRunning && this.identity == Identity.Player;
+			}
+		}
+
+		public float AIInterval {
+			get {
+				return Math.Lerp(this.AIIntervalRange.x, this.AIIntervalRange.y, Random.value);
+			}
+		}
+
+		protected new void Awake() {
+			base.Awake();
+
 			this.statemgr = this.GetComponent<Statemgr>();
-			this.timer = new Timer (this.GetAIInterval());
+			this.timer = new Timer (this.AIInterval);
 			this.renderer = this.GetComponent<MeshRenderer>();
 			this.originColor = this.renderer.material.color;
 		}
 
-		protected void FixedUpdate() {
+		protected override void LockUpdate() {
 			if (!this.isRunning || this.identity != Identity.AI) {
 				return;
 			}
 
-			this.timer.Update(Time.fixedDeltaTime);
+			this.timer.Update(Client.STDDT);
 
 			if (!this.timer.IsRunning) {
 				if (this.AITickEvent != null) {
 					this.AITickEvent(Judge.BallPosition);
 				}
 
-				this.timer.Enter(this.GetAIInterval());
+				this.timer.Enter(this.AIInterval);
 			}
-		}
-
-		private float GetAIInterval() {
-			return Mathf.Lerp(this.AIIntervalRange.x, this.AIIntervalRange.y, Random.value);
 		}
 
 		public void Reset() {
@@ -69,10 +80,6 @@ namespace Game.Component {
 		public Tweener MoveColor(Color value, float t) {
 			return this.renderer.material.DOColor(value, t.ToFixed())
 				.SetEase(Ease.Linear);
-		}
-
-		public bool CanConroll() {
-			return this.isRunning && this.identity == Identity.Player;
 		}
 	}
 }

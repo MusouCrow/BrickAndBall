@@ -8,17 +8,13 @@ namespace Game.Component.Network {
 
     public class Client : MonoBehaviour {
         public const int STDDT = 17;
-        public const int STD_WIDTH = 1280;
-        public const int STD_HEIGHT = 720;
         public delegate void Delegate();
         public static event Delegate LockUpdateEvent;
+        private static Client INSTANCE;
 
-        private static Vector2 MousePosition {
+        public static bool Online {
             get {
-                float x = Input.mousePosition.x * ((float)STD_WIDTH / (float)Screen.width).ToFixed();
-                float y = Input.mousePosition.y * ((float)STD_HEIGHT / (float)Screen.height).ToFixed();
-
-                return new Vector2(x, y);
+                return INSTANCE.online;
             }
         }
 
@@ -28,18 +24,19 @@ namespace Game.Component.Network {
         private List<PlayData> playDataList;
         private Dictionary<int, Controller> controllerMap;
         private NetworkConnection connection;
-        private bool start;
+        private bool online;
 
         protected void Awake() {
+            INSTANCE = this;
+
             this.playDataList = new List<PlayData>();
             this.controllerMap = new Dictionary<int, Controller>();
             Networkmgr.OnClientConnectEvent += this.OnStart;
             Networkmgr.OnStopClientEvent += this.OnStop;
-            /*
+            
             DOTween.defaultUpdateType = UpdateType.Manual;
             DOTween.Init();
             Client.LockUpdateEvent += () => DOTween.ManualUpdate(0.017f, 0.017f);
-            */
         }
 
         private void OnStart(NetworkConnection conn) {
@@ -61,14 +58,10 @@ namespace Game.Component.Network {
         */
 
         protected void Update() {
-            if (!this.start) {
-                return;
-            }
-
             this.updateTimer += Mathf.CeilToInt(Time.deltaTime * 1000);
 
             while (this.updateTimer >= STDDT) {
-                if ((this.frame + 1) % Server.WAITTING_INTERVAL == 0 && this.playDataList.Count > 1) {
+                if (this.online && (this.frame + 1) % Server.WAITTING_INTERVAL == 0 && this.playDataList.Count > 1) {
                     while (this.playDataList.Count > 0) {
                         this.LockUpdate();
                     }
@@ -82,43 +75,46 @@ namespace Game.Component.Network {
         }
 
         private void LockUpdate() {
-            if ((this.frame + 1) % Server.WAITTING_INTERVAL == 0 && this.playDataList.Count == 0) {
+            if (this.online && (this.frame + 1) % Server.WAITTING_INTERVAL == 0 && this.playDataList.Count == 0) {
                 return;
             }
 
-            this.frame++;
+            if (this.online) {
+                this.frame++;
 
-            if (this.frame % Server.WAITTING_INTERVAL == 0) {
-                var data = this.playDataList[0];
-                
-                /*
-                for (int i = 0; i < data.newPlayers.Length; i++) {
-                    var player = GameObject.Instantiate(playerPrefab);
-                    var controller = player.GetComponent<Controller>();
-
-                    controller.connectionId = data.newPlayers[i];
-                    this.controllerMap.Add(controller.connectionId, controller);
-                }
-
-                for (int i = 0; i < data.connIds.Length; i++) {
-                    this.controllerMap[data.connIds[i]].SetInput(data.inputDatas[i].mousePos, data.inputDatas[i].isDown);
-                }
-                */
-
-                this.playFrame++;
-                this.playDataList.RemoveAt(0);
-
-                if (this.playDataList.Count == 0) {
-                    var msg = new Message.ReceiveReport() {
-                        playFrame = this.playFrame,
-                        inputData = new InputData() {
-                            mousePos = Client.MousePosition,
-                            isDown = Input.GetMouseButton(0)
-                        },
-                        comparison = (this.controllerMap[0].transform.localScale.x).ToBinStr()
-                    };
+                if (this.frame % Server.WAITTING_INTERVAL == 0) {
+                    var data = this.playDataList[0];
                     
-                    this.connection.Send(CustomMsgType.ReceiveReport, msg);
+                    /*
+                    for (int i = 0; i < data.newPlayers.Length; i++) {
+                        var player = GameObject.Instantiate(playerPrefab);
+                        var controller = player.GetComponent<Controller>();
+
+                        controller.connectionId = data.newPlayers[i];
+                        this.controllerMap.Add(controller.connectionId, controller);
+                    }
+
+                    for (int i = 0; i < data.connIds.Length; i++) {
+                        this.controllerMap[data.connIds[i]].SetInput(data.inputDatas[i].mousePos, data.inputDatas[i].isDown);
+                    }
+                    */
+
+                    this.playFrame++;
+                    this.playDataList.RemoveAt(0);
+                    /*
+                    if (this.playDataList.Count == 0) {
+                        var msg = new Message.ReceiveReport() {
+                            playFrame = this.playFrame,
+                            inputData = new InputData() {
+                                mousePos = Client.MousePosition,
+                                isDown = Input.GetMouseButton(0)
+                            },
+                            comparison = (this.controllerMap[0].transform.localScale.x).ToBinStr()
+                        };
+                        
+                        this.connection.Send(CustomMsgType.ReceiveReport, msg);
+                    }
+                    */
                 }
             }
 
@@ -126,7 +122,9 @@ namespace Game.Component.Network {
         }
 
         private void Init(NetworkMessage netMsg) {
-            this.start = true;
+            this.online = true;
+            this.frame = 0;
+            this.playFrame = 0;
         }
 
         private void AddPlayData(NetworkMessage netMsg) {

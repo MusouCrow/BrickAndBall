@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 43443912259564e339e72c26dc20fd50
-timeCreated: 1516954846
+timeCreated: 1517229878
 licenseType: Free
 PluginImporter:
   externalObjects: {}
@@ -8,7 +8,7 @@ PluginImporter:
   iconMap: {}
   executionOrder:
     DG.Tweening.Core.DOTweenComponent: 50
-    DG.Tweening.Core.DOTweenSettings: -100
+    DG.Tweening.Core.DOTweenSettings: -300
   isPreloaded: 0
   isOverridable: 0
   platformData:

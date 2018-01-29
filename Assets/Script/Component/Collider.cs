@@ -10,8 +10,9 @@ using Rigidbody = Game.Utility.Rigidbody;
 
 namespace Game.Component {
     using Utility;
+    using Network;
 
-    public class Collider : MonoBehaviour {
+    public class Collider : LockBehaviour {
         public delegate void Delegate(Collider collider);
         private enum CollisionState {
             Enter,
@@ -71,7 +72,9 @@ namespace Game.Component {
             }
         }
 
-        protected void Awake() {
+        protected new void Awake() {
+            base.Awake();
+
             this.collisionMap = new Dictionary<Collider, CollisionState>();
             this.collisionList = new List<Collider>();
 
@@ -105,7 +108,7 @@ namespace Game.Component {
             this.Scale = this.transform.localScale;
         }
         
-        protected void FixedUpdate() {
+        protected override void LockUpdate() {
             if (!this.body.IsStaticOrInactive) {
                 this.AdjustPosition();
             }

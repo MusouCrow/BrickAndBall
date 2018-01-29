@@ -8,7 +8,9 @@ using JRigidbody = Jitter.Dynamics.RigidBody;
 using Rigidbody = Game.Utility.Rigidbody;
 
 namespace Game.Component {
-    public class World : MonoBehaviour {
+    using Network;
+
+    public class World : LockBehaviour {
         private static World INSTANCE;
 
         public static void AddBody(Rigidbody rigidbody) {
@@ -21,15 +23,16 @@ namespace Game.Component {
 
         private JWorld world;
 
-        protected void Awake() {
-            INSTANCE = this;
+        protected new void Awake() {
+            base.Awake();
 
+            INSTANCE = this;
             this.world = new JWorld(new CollisionSystemSAP());
             this.world.CollisionSystem.CollisionDetected += this.CollisionDetected;
         }
 
-        protected void FixedUpdate() {
-            this.world.Step(0.017f, true);
+        protected override void LockUpdate() {
+            this.world.Step(0.017f, false);
         }
 
         private void CollisionDetected(JRigidbody body1, JRigidbody body2, JVector point1, JVector point2, JVector normal, float penetration) {

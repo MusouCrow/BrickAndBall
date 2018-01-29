@@ -39,7 +39,6 @@ namespace Game.Component.UI {
 		protected void Awake() {
 			INSTANCE = this;
 
-			DOTween.Init();
 			ViceCamera.OnEndEvent += this.OnCameraEnd;
 			Interface.Instantiate(this.logo);
 			Screen.SetResolution(225, 400, false);

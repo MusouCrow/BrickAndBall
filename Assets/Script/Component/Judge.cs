@@ -4,10 +4,11 @@ using UnityEngine;
 
 namespace Game.Component {
 	using Utility;
+	using Network;
 	using Component.UI;
 	using Identity = Controller.Identity;
 
-	public class Judge : MonoBehaviour {
+	public class Judge : LockBehaviour {
 		[System.Serializable]
 		public class Team {
 			public Wall wall;
@@ -132,14 +133,15 @@ namespace Game.Component {
 		private bool isRunning = false;
 		private GameType gameType;
 
-		protected void Awake() {
-			INSTANCE = this;
+		protected new void Awake() {
+			base.Awake();
 
+			INSTANCE = this;
 			ViceCamera.OnEndEvent += this.Reset;
 			Shooter.OnShootEvent += this.ReceiveBall;
 		}
 
-		protected void FixedUpdate() {
+		protected override void LockUpdate() {
 			if (!this.isRunning) {
 				return;
 			}

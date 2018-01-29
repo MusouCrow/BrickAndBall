@@ -47,7 +47,7 @@ namespace Game.Component {
 		}
 
 		protected void OnMouseDown() {
-			if (!this.CanConroll()) {
+			if (!this.CanConroll) {
 				return;
 			}
 
@@ -55,7 +55,7 @@ namespace Game.Component {
 		}
 
 		protected void OnMouseDrag() {
-			if (!this.CanConroll()) {
+			if (!this.CanConroll) {
 				return;
 			}
 
@@ -80,8 +80,8 @@ namespace Game.Component {
 			var ball = collider.GetComponent<Ball>();
 
 			if (ball != null) {
-				float valueX = Mathf.Lerp(POWER.x, POWER.y, Random.value);
-				float valueZ = Mathf.Lerp(POWER.x, POWER.y, Random.value);
+				float valueX = Math.Lerp(POWER.x, POWER.y, Random.value);
+				float valueZ = Math.Lerp(POWER.x, POWER.y, Random.value);
 
 				valueX = ball.velocity.x > 0 ? valueX : -valueX;
 				valueZ = Random.value < 0.5f ? valueZ : -valueZ;
@@ -121,7 +121,7 @@ namespace Game.Component {
 				direction = -1;
 			}
 
-			this.MovePosition(2, ballPosition.z * direction, Mathf.Lerp(AI_MOTION_TIME.x, AI_MOTION_TIME.y, Random.value));
+			this.MovePosition(2, ballPosition.z * direction, Math.Lerp(AI_MOTION_TIME.x, AI_MOTION_TIME.y, Random.value));
 		}
 	}
 }

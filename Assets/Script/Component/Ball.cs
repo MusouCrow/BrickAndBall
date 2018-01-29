@@ -7,8 +7,9 @@ using DG.Tweening;
 
 namespace Game.Component {
 	using Utility;
+	using Network;
 
-	public class Ball : MonoBehaviour {
+	public class Ball : LockBehaviour {
 		private class Stretch {
 			private static Vector3 SCALE = new Vector3(1, 1, 1);
 
@@ -89,18 +90,20 @@ namespace Game.Component {
 				return this.rate;
 			}
 			set {
-				this.rate = value.ToFixed();
+				this.rate = value;
 			}
 		}
 
-		protected void Awake() {
+		protected new void Awake() {
+			base.Awake();
+			
 			this.collider = this.GetComponent<Collider>();
 			this.collider.CollisionEnterEvent += this.OnCollide;
 			this.stretch = new Stretch(this.stretchRate, this.stretchTime, this.transform, this.collider);
 			this.NewEffect(this.transform);
 		}
 
-		protected void FixedUpdate() {
+		protected override void LockUpdate() {
 			var pos = this.collider.Position;
 
 			if (pos.y < 0) {

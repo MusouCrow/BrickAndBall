@@ -5,8 +5,9 @@ using DG.Tweening;
 
 namespace Game.Component {
 	using Utility;
+	using Network;
 
-	public class ViceCamera : MonoBehaviour {
+	public class ViceCamera : LockBehaviour {
 		public enum TargetType {
 			Opening,
 			A,
@@ -79,13 +80,14 @@ namespace Game.Component {
 		private bool isGame = false;
 		private bool isMoving = false;
 
-		protected void Awake() {
-			INSTANCE = this;
+		protected new void Awake() {
+			base.Awake();
 
+			INSTANCE = this;
 			this.camera = this.GetComponent<Camera>();
 		}
 
-		protected void FixedUpdate() {
+		protected override void LockUpdate() {
 			if (!this.isGame && !this.isMoving && this.target) {
 				this.transform.RotateAround(this.target.position, Vector3.up, this.speed);
 			}

@@ -122,7 +122,7 @@ namespace Game.State {
 		}
 
 		public override void OnMouseDown() {
-			if (this.coolDown || !this.controller.CanConroll()) {
+			if (this.coolDown || !this.controller.CanConroll) {
 				return;
 			}
 
@@ -130,7 +130,7 @@ namespace Game.State {
 		}
 
 		public override void OnMouseDrag() {
-			if (this.coolDown || !this.controller.CanConroll()) {
+			if (this.coolDown || !this.controller.CanConroll) {
 				return;
 			}
 
