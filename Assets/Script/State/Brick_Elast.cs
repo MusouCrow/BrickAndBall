@@ -89,6 +89,8 @@ namespace Game.State {
 			
 			if (ball != null) {
 				float power = ball.velocity.x > 0 ? this.data.Power : -this.data.Power;
+				Debug.Log(ball.velocity);
+				Debug.Log(power);
 				ball.Move(power, 0, 0);
 			}
 		}

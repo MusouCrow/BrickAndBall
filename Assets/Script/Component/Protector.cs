@@ -7,7 +7,7 @@ namespace Game.Component {
 	using Utility;
 
 	public class Protector : MonoBehaviour {
-		private static float POWER = 15;
+		private static float POWER = 20;
 
 		public float time;
 		[SerializeField]

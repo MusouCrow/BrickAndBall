@@ -109,6 +109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4068a60a7b2c4897b223bdd730aa136, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  orderType: 1
   isStatic: 1
 --- !u!114 &114467319013393604
 MonoBehaviour:
@@ -121,6 +122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9245a8636fd94d038a733c0ec3a42cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  orderType: 0
   targetColor: {r: 0, g: 0, b: 0, a: 0}
   direction: 0
   AIIntervalRange: {x: 0.2, y: 0.5}
@@ -135,6 +137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808aabb8688a243c484118c00899163f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  orderType: 0
   keys:
   - Normal
   - Elast

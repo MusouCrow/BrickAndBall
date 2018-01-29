@@ -9,7 +9,8 @@ namespace Game.Component.Network {
     public class Client : MonoBehaviour {
         public const int STDDT = 17;
         public delegate void Delegate();
-        public static event Delegate LockUpdateEvent;
+        public static event Delegate UpdateEvent;
+        public static event Delegate LateUpdateEvent;
         private static Client INSTANCE;
 
         public static bool Online {
@@ -36,7 +37,7 @@ namespace Game.Component.Network {
             
             DOTween.defaultUpdateType = UpdateType.Manual;
             DOTween.Init();
-            Client.LockUpdateEvent += () => DOTween.ManualUpdate(0.017f, 0.017f);
+            Client.LateUpdateEvent += () => DOTween.ManualUpdate(0.017f, 0.017f);
         }
 
         private void OnStart(NetworkConnection conn) {
@@ -118,7 +119,8 @@ namespace Game.Component.Network {
                 }
             }
 
-            Client.LockUpdateEvent();
+            Client.UpdateEvent();
+            Client.LateUpdateEvent();
         }
 
         private void Init(NetworkMessage netMsg) {

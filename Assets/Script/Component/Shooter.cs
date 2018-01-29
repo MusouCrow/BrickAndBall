@@ -4,27 +4,15 @@ using UnityEngine;
 
 namespace Game.Component {
 	public class Shooter : MonoBehaviour {
-		public delegate void Delegate(GameObject obj);
-		public static event Delegate OnShootEvent;
-
-		[SerializeField]
-		private GameObject ball;
 		[SerializeField]
 		private AudioClip clip;
 		[SerializeField]
 		private Vector4 shakingValue;
 
-		private GameObject NewBall() {
-			var obj = GameObject.Instantiate(this.ball, this.transform.localPosition, Quaternion.identity, this.transform.parent);
-			obj.GetComponent<Collider>().AddForce(this.transform.localScale);
-		
-			return obj;
-		}
-
-		public void Shoot() {
-			if (Shooter.OnShootEvent != null) {
-				Shooter.OnShootEvent(this.NewBall());
-			}
+		public void Shoot(Ball ball) {
+			ball.transform.localPosition = this.transform.localPosition;
+			ball.gameObject.SetActive(true);
+			ball.GetComponent<Collider>().AddForce(this.transform.localScale);
 
 			Sound.Play(this.clip);
 			ViceCamera.Shake(this.shakingValue);

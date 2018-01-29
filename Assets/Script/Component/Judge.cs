@@ -115,6 +115,8 @@ namespace Game.Component {
 		[SerializeField]
 		private Team teamB;
 		[SerializeField]
+		private Ball ball;
+		[SerializeField]
 		private AudioClip[] sounds;
 		[SerializeField]
 		private AudioClip music;
@@ -128,7 +130,6 @@ namespace Game.Component {
 		private int scoreMax = 5;
 
 		private bool aShooted;
-		private Ball ball;
 		private float pitch = 1;
 		private bool isRunning = false;
 		private GameType gameType;
@@ -138,7 +139,6 @@ namespace Game.Component {
 
 			INSTANCE = this;
 			ViceCamera.OnEndEvent += this.Reset;
-			Shooter.OnShootEvent += this.ReceiveBall;
 		}
 
 		protected override void LockUpdate() {
@@ -148,10 +148,7 @@ namespace Game.Component {
 
 			this.pitch += this.acceleration;
 			Sound.MusicPitch = this.pitch;
-
-			if (this.ball != null) {
-				this.ball.Rate = this.pitch;
-			}
+			this.ball.Rate = this.pitch;
 		}
 
 		private void Reset(ViceCamera.TargetType type) {
@@ -171,16 +168,12 @@ namespace Game.Component {
 			yield return new WaitForSeconds(time);
 
 			if (this.aShooted) {
-				this.teamA.shooter.Shoot();
+				this.teamA.shooter.Shoot(this.ball);
 			} else {
-				this.teamB.shooter.Shoot();
+				this.teamB.shooter.Shoot(this.ball);
 			}
 
 			this.aShooted = !this.aShooted;
-		}
-
-		private void ReceiveBall(GameObject obj) {
-			this.ball = obj.GetComponent<Ball>();
 		}
 	}
 }

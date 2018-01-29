@@ -12,7 +12,7 @@ namespace Game.Component {
 	public class Brick : Controller {
 		public delegate void Delegate(Vector3 pos);
 		private const float RANGE_Z = 2.5f;
-		private static Vector2 POWER = new Vector2(3, 6);
+		private static Vector2 POWER = new Vector2(5, 8);
 		private static Vector2 AI_MOTION_TIME = new Vector2(0.2f, 0.6f);
 		private static Vector4 SHAKING_VALUE = new Vector4(0.1f, 0, 0, 0.2f);
 

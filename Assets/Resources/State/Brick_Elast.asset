@@ -14,6 +14,6 @@ MonoBehaviour:
   scaling: {x: 0.5, y: 1.5}
   positioning: {x: 4, y: 3}
   time: 0.15
-  power: 0
+  power: 10
   clip: {fileID: 8300000, guid: 188e2c55bd2e64e7caaee5d53cee7268, type: 3}
   nextState: Normal

@@ -83,14 +83,14 @@ namespace Game.Component {
 		private float rate = 1;
 		private new Collider collider;
 		private Stretch stretch;
-		private bool hasDown = false;
+		private bool hasDown;
 
 		public float Rate {
 			get {
 				return this.rate;
 			}
 			set {
-				this.rate = value;
+				this.rate = value.ToFixed();
 			}
 		}
 
@@ -100,7 +100,6 @@ namespace Game.Component {
 			this.collider = this.GetComponent<Collider>();
 			this.collider.CollisionEnterEvent += this.OnCollide;
 			this.stretch = new Stretch(this.stretchRate, this.stretchTime, this.transform, this.collider);
-			this.NewEffect(this.transform);
 		}
 
 		protected override void LockUpdate() {
@@ -108,7 +107,7 @@ namespace Game.Component {
 
 			if (pos.y < 0) {
 				Judge.Gain(pos);
-				Destroy(this.gameObject);
+				this.gameObject.SetActive(false);
 				return;
 			}
 			
@@ -122,9 +121,11 @@ namespace Game.Component {
 
 			if (this.hasDown) {
 				this.stretch.Update(ref this.velocity);
-				this.velocity = this.collider.Velocity;
-				float speed = this.speed * this.rate;
 				
+				this.velocity = this.collider.Velocity;
+				
+				float speed = this.speed * this.rate;
+
 				if (this.velocity.x < 0 && this.velocity.x > -speed) {
 					this.velocity.x = -speed;
 					this.collider.Velocity = this.velocity;
@@ -133,6 +134,16 @@ namespace Game.Component {
 					this.collider.Velocity = this.velocity;
 				}
 			}
+		}
+
+		protected void OnEnable() {
+			this.hasDown = false;
+			this.velocity = Vector3.zero;
+			this.NewEffect(this.transform);
+		}
+
+		protected void OnDisable() {
+			this.transform.localScale = Vector3.one;
 		}
 
 		private void OnCollide(Collider collider) {
@@ -162,7 +173,9 @@ namespace Game.Component {
 			x *= this.rate;
 			y *= this.rate;
 			z *= this.rate;
+			//print(this.collider.Velocity);
 			this.collider.Velocity += new Vector3 (x, y, z);
+			//print(this.collider.Velocity);
 		}
 	}
 }

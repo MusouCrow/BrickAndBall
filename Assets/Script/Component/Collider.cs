@@ -29,6 +29,7 @@ namespace Game.Component {
         private Dictionary<Collider, CollisionState> collisionMap;
         private List<Collider> collisionList;
         private Vector3 size;
+        private Shape shape;
         private Rigidbody body;
 
         public Vector3 Position {
@@ -73,22 +74,22 @@ namespace Game.Component {
         }
 
         protected new void Awake() {
+            this.orderType = OrderType.Late;
             base.Awake();
 
             this.collisionMap = new Dictionary<Collider, CollisionState>();
             this.collisionList = new List<Collider>();
 
             var collider = this.GetComponent<UCollider>();
-            Shape shape = null;
 
             if (collider is BoxCollider) {
                 var boxCollider = collider as BoxCollider;
-                shape = new BoxShape(boxCollider.size.ToJVector());
+                this.shape = new BoxShape(boxCollider.size.ToJVector());
                 this.size = boxCollider.size;
             }
             else if (collider is SphereCollider) {
                 var sphereCollider = collider as SphereCollider;
-                shape = new SphereShape(sphereCollider.radius);
+                this.shape = new SphereShape(sphereCollider.radius);
                 this.size = new Vector3(sphereCollider.radius, sphereCollider.radius, sphereCollider.radius);
             }
             else {
@@ -97,15 +98,11 @@ namespace Game.Component {
                 size.y /= this.transform.localScale.y;
                 size.z /= this.transform.localScale.z;
 
-                shape = new BoxShape(size.ToJVector());
+                this.shape = new BoxShape(size.ToJVector());
                 this.size = size;
             }
 
             this.size.ToFixed();
-            this.body = new Rigidbody(this, shape);
-            this.body.IsStatic = this.isStatic;
-            this.body.Position = this.transform.localPosition.ToJVector();
-            this.Scale = this.transform.localScale;
         }
         
         protected override void LockUpdate() {
@@ -151,11 +148,16 @@ namespace Game.Component {
         }
 
         protected void OnEnable() {
+            this.body = new Rigidbody(this, this.shape);
+            this.body.IsStatic = this.isStatic;
+            this.body.Position = this.transform.localPosition.ToJVector();
+            this.Scale = this.transform.localScale;
             World.AddBody(this.body);
         }
 
         protected void OnDisable() {
             World.RemoveBody(this.body);
+            this.body = null;
         }
 
         public void AddForce(Vector3 power) {

@@ -108,8 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2580a9bd75494d9b87ceb4e70b2b3b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 0.2
-  power: 20
+  time: 0.25
   end: 0
   clip: {fileID: 8300000, guid: 7f06606fd134142138370f27b335fd40, type: 3}
   shakingValue: {x: 0.2, y: 0, z: 0, w: 0.4}
@@ -124,4 +123,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4068a60a7b2c4897b223bdd730aa136, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  orderType: 1
   isStatic: 1
