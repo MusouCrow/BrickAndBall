@@ -1,3 +1,5 @@
+using System;
+using System.Text;
 using UnityEngine;
 using DG.Tweening;
 using DG.Tweening.Core;
@@ -39,6 +41,20 @@ namespace Game.Utility {
             float v = startValue;
             
             return DOTween.To(() => v, (float x) => {v = x.ToFixed(); setter(v);}, endValue, duration);
+        }
+
+        public static string BytesToStr(byte[] bytes) {
+            var sb = new StringBuilder(); 
+
+            for (int i = 0; i < bytes.Length; i++) {
+                sb.Append(bytes[i]);
+            }
+
+            return sb.ToString();
+        }
+
+        public static string ToBinStr(this float value) {
+            return BytesToStr(BitConverter.GetBytes(value));
         }
     }
 }
