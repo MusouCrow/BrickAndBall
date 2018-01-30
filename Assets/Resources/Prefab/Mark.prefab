@@ -22,7 +22,6 @@ GameObject:
   - component: {fileID: 33207334460165010}
   - component: {fileID: 65641396235454546}
   - component: {fileID: 23644500949991310}
-  - component: {fileID: 114383444515033126}
   - component: {fileID: 114081810873422022}
   m_Layer: 0
   m_Name: Mark
@@ -111,23 +110,5 @@ MonoBehaviour:
   orderType: 0
   targetColor: {r: 0, g: 0, b: 0, a: 0}
   direction: 0
-  AIIntervalRange: {x: 0.5, y: 0.8}
+  AIIntervalRange: {x: 1, y: 2}
   protector: {fileID: 0}
---- !u!114 &114383444515033126
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1162257301094918}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 808aabb8688a243c484118c00899163f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  orderType: 0
-  keys:
-  - Normal
-  - Elast
-  values:
-  - {fileID: 11400000, guid: aa424137075df4c17a19072ee6d6db74, type: 2}
-  - {fileID: 11400000, guid: d599230b2442344a1aeb70f1b7591884, type: 2}

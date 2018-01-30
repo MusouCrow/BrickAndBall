@@ -27,7 +27,7 @@ namespace Game.Component {
             base.Awake();
 
             INSTANCE = this;
-            this.world = new JWorld(new CollisionSystemSAP());
+            this.world = new JWorld(new CollisionSystemPersistentSAP());
             this.world.CollisionSystem.CollisionDetected += this.CollisionDetected;
         }
 

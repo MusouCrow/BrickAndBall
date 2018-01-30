@@ -11,9 +11,9 @@ namespace Game.Component {
 
 	public class Brick : Controller {
 		public delegate void Delegate(Vector3 pos);
-		private const float RANGE_Z = 2.5f;
+		private const float RANGE_Z = 2.3f;
 		private static Vector2 POWER = new Vector2(5, 10);
-		private static Vector2 AI_MOTION_TIME = new Vector2(0.2f, 0.6f);
+		private static Vector2 AI_MOTION_TIME = new Vector2(1f, 1.5f);
 		private static Vector4 SHAKING_VALUE = new Vector4(0.1f, 0, 0, 0.2f);
 
 		private static void HandleValueWithRange(ref float value) {
@@ -84,7 +84,7 @@ namespace Game.Component {
 				float valueZ = Math.Lerp(POWER.x, POWER.y, Random.value);
 
 				valueZ = Random.value < 0.5f ? valueZ : -valueZ;
-				ball.Move(valueX * this.direction, 0, valueZ);
+				ball.Move(valueX * this.direction * ball.Rate, 0, valueZ * ball.Rate);
 			}
 			
 			DOTween.Punch(this.GetShakingPos, this.SetShakingPos, this.shakingValue, SHAKING_VALUE.w);
@@ -113,14 +113,16 @@ namespace Game.Component {
 
 		private void FollowBall(Vector3 ballPosition) {
 			Brick.HandleValueWithRange(ref ballPosition.z);
+			/*
 			int direction = 1;
-
+			
 			if ((this.direction == 1 && ballPosition.x < this.transform.localPosition.x)
 				|| (this.direction == -1 && ballPosition.x > this.transform.localPosition.x)) {
 				direction = -1;
 			}
+			*/
 
-			this.MovePosition(2, ballPosition.z * direction, Math.Lerp(AI_MOTION_TIME.x, AI_MOTION_TIME.y, Random.value));
+			this.MovePosition(2, ballPosition.z, Math.Lerp(AI_MOTION_TIME.x, AI_MOTION_TIME.y, Random.value));
 		}
 	}
 }

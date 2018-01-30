@@ -84,8 +84,14 @@ namespace Game.Component {
 
             if (collider is BoxCollider) {
                 var boxCollider = collider as BoxCollider;
-                this.shape = new BoxShape(boxCollider.size.ToJVector());
-                this.size = boxCollider.size;
+                var size = boxCollider.size;
+
+                for (int i = 0; i < 3; i++) {
+                    size[i] *= this.transform.lossyScale[i] / this.transform.localScale[i];
+                }
+
+                this.shape = new BoxShape(size.ToJVector());
+                this.size = size;
             }
             else if (collider is SphereCollider) {
                 var sphereCollider = collider as SphereCollider;
@@ -150,7 +156,7 @@ namespace Game.Component {
         protected void OnEnable() {
             this.body = new Rigidbody(this, this.shape);
             this.body.IsStatic = this.isStatic;
-            this.body.Position = this.transform.localPosition.ToJVector();
+            this.body.Position = this.transform.position.ToJVector();
             this.Scale = this.transform.localScale;
             World.AddBody(this.body);
         }
@@ -166,7 +172,7 @@ namespace Game.Component {
 
         public void AdjustPosition() {
             this.body.Position = this.body.Position.ToFixed();
-            this.transform.localPosition = this.body.Position.ToVector3();
+            this.transform.position = this.body.Position.ToVector3();
         }
 
         public void CollisionDetected(Collider collider) {

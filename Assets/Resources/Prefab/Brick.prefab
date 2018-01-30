@@ -40,7 +40,7 @@ Transform:
   m_GameObject: {fileID: 1196681888188112}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.3, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 3}
+  m_LocalScale: {x: 0.7, y: 0.5, z: 2.8}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -125,7 +125,7 @@ MonoBehaviour:
   orderType: 0
   targetColor: {r: 0, g: 0, b: 0, a: 0}
   direction: 0
-  AIIntervalRange: {x: 0.7, y: 1.2}
+  AIIntervalRange: {x: 1, y: 2}
 --- !u!114 &114868950200349630
 MonoBehaviour:
   m_ObjectHideFlags: 1

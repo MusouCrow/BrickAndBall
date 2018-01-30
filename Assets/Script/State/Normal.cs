@@ -46,7 +46,6 @@ namespace Game.State {
 			var center = bounds.center;
 			var size = bounds.size;
 			center.x += bounds.size.x * this.controller.direction;
-			size.x *= 2;
 			size.y = 1;
 
 			this.bounds = new Bounds(center, size);
@@ -126,11 +125,15 @@ namespace Game.State {
 				return;
 			}
 
+			if (this.controller is Mark) {
+				this.statemgr.Play("Elast");
+			}
+
 			this.draggingPos = ViceCamera.ScreenToWorldPoint(Input.mousePosition);
 		}
 
 		public override void OnMouseDrag() {
-			if (this.coolDown || !this.controller.CanConroll) {
+			if (this.controller is Mark || this.coolDown || !this.controller.CanConroll) {
 				return;
 			}
 

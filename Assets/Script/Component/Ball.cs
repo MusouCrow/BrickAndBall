@@ -111,34 +111,46 @@ namespace Game.Component {
 		}
 
 		protected override void LockUpdate() {
-			var pos = this.collider.Position;
+			if (!this.hasDown) {
+				return;
+			}
 
-			if (pos.y < 0) {
+			var pos = this.collider.Position;
+			bool hasChanged = false;
+			
+			if (pos.y < 0 || Mathf.Abs(pos.x) > 8) {
 				Judge.Gain(pos);
 				this.gameObject.SetActive(false);
 				return;
 			}
+
+			if (pos.y > 0.3f) {
+				pos.y = 0.287f;
+				hasChanged = true;
+			}
 			
 			if (pos.z > this.rangeZ) {
 				pos.z = this.rangeZ;
-				this.collider.Position = pos;
+				hasChanged = true;
 			} else if (pos.z < -this.rangeZ) {
 				pos.z = -this.rangeZ;
+				hasChanged = true;
+			}
+
+			if (hasChanged) {
 				this.collider.Position = pos;
 			}
 
-			if (this.hasDown) {
-				this.stretch.Update(ref this.velocity);
-				this.velocity = this.collider.Velocity;
-				float speed = this.speed * this.rate;
+			this.stretch.Update(ref this.velocity);
+			this.velocity = this.collider.Velocity;
+			var speed = (this.speed * this.rate).ToFixed();
 
-				if (this.velocity.x <= 0 && this.velocity.x > -speed) {
-					this.velocity.x = -speed;
-					this.collider.Velocity = this.velocity;
-				} else if (this.velocity.x > 0 && this.velocity.x < speed) {
-					this.velocity.x = speed;
-					this.collider.Velocity = this.velocity;
-				}
+			if (this.velocity.x <= 0 && this.velocity.x > -speed) {
+				this.velocity.x = -speed;
+				this.collider.Velocity = this.velocity;
+			} else if (this.velocity.x > 0 && this.velocity.x < speed) {
+				this.velocity.x = speed;
+				this.collider.Velocity = this.velocity;
 			}
 		}
 
@@ -176,9 +188,6 @@ namespace Game.Component {
 		}
 
 		public void Move(float x, float y, float z) {
-			x *= this.rate;
-			y *= this.rate;
-			z *= this.rate;
 			this.collider.Velocity += new Vector3 (x, y, z);
 		}
 	}

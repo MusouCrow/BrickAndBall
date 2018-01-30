@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b588656cdfcbc4cdaa3bea6269510f6a, type: 3}
   m_Name: Brick_Elast
   m_EditorClassIdentifier: 
-  scaling: {x: 0.5, y: 1.5}
+  scaling: {x: 0.7, y: 1.5}
   positioning: {x: 4, y: 3}
   time: 0.15
   power: 5
