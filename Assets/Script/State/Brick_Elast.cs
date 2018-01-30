@@ -88,10 +88,8 @@ namespace Game.State {
 			var ball = collider.GetComponent<Ball>();
 			
 			if (ball != null) {
-				float power = ball.velocity.x > 0 ? this.data.Power : -this.data.Power;
-				Debug.Log(ball.velocity);
-				Debug.Log(power);
-				ball.Move(power, 0, 0);
+				var powerZ = ball.Velocity.z < 0 ? -this.data.Power : this.data.Power;
+				ball.Move(this.data.Power * this.brick.direction, 0, powerZ);
 			}
 		}
 	}

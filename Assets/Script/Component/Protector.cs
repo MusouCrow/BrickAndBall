@@ -7,7 +7,7 @@ namespace Game.Component {
 	using Utility;
 
 	public class Protector : MonoBehaviour {
-		private static float POWER = 20;
+		private static float POWER = 15;
 
 		public float time;
 		[SerializeField]
@@ -59,7 +59,7 @@ namespace Game.Component {
 			var ball = collider.GetComponent<Ball>();
 
 			if (ball != null) {
-				float power = ball.velocity.x > 0 ? POWER : -POWER;
+				float power = this.end < 0 ? POWER : -POWER;
 				ball.Move(power, 0, 0);
 			}
 		}

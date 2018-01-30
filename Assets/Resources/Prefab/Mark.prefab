@@ -108,9 +108,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca3e4a59b846941359ee3049bd6686bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  orderType: 0
   targetColor: {r: 0, g: 0, b: 0, a: 0}
   direction: 0
-  AIIntervalRange: {x: 0.2, y: 0.2}
+  AIIntervalRange: {x: 0.5, y: 0.8}
   protector: {fileID: 0}
 --- !u!114 &114383444515033126
 MonoBehaviour:
@@ -123,6 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808aabb8688a243c484118c00899163f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  orderType: 0
   keys:
   - Normal
   - Elast

@@ -29,6 +29,12 @@ namespace Game.Component {
 		}
 
 		private void OnCollide(Collider collider) {
+			var ball = collider.GetComponent<Ball>();
+
+			if (ball != null) {
+				ball.Velocity *= ball.Rate; 
+			}
+
 			if (this.tweener == null || !this.tweener.IsPlaying()) {
 				this.tweener = this.transform.DOPunchPosition(this.shakingValue, this.shakingValue.w)
 					.SetEase(Ease.InOutElastic);

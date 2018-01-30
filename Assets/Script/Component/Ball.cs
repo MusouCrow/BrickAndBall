@@ -78,8 +78,7 @@ namespace Game.Component {
 		[SerializeField]
 		private float stretchTime = 0.075f;
 
-		[NonSerialized]
-		public Vector3 velocity;
+		private Vector3 velocity;
 		private float rate = 1;
 		private new Collider collider;
 		private Stretch stretch;
@@ -91,6 +90,15 @@ namespace Game.Component {
 			}
 			set {
 				this.rate = value.ToFixed();
+			}
+		}
+
+		public Vector3 Velocity {
+			get {
+				return this.velocity;
+			}
+			set {
+				this.collider.Velocity = value;
 			}
 		}
 
@@ -121,12 +129,10 @@ namespace Game.Component {
 
 			if (this.hasDown) {
 				this.stretch.Update(ref this.velocity);
-				
 				this.velocity = this.collider.Velocity;
-				
 				float speed = this.speed * this.rate;
 
-				if (this.velocity.x < 0 && this.velocity.x > -speed) {
+				if (this.velocity.x <= 0 && this.velocity.x > -speed) {
 					this.velocity.x = -speed;
 					this.collider.Velocity = this.velocity;
 				} else if (this.velocity.x > 0 && this.velocity.x < speed) {
@@ -173,9 +179,7 @@ namespace Game.Component {
 			x *= this.rate;
 			y *= this.rate;
 			z *= this.rate;
-			//print(this.collider.Velocity);
 			this.collider.Velocity += new Vector3 (x, y, z);
-			//print(this.collider.Velocity);
 		}
 	}
 }

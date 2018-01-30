@@ -41,7 +41,7 @@ namespace Game.Component.UI {
 
 			ViceCamera.OnEndEvent += this.OnCameraEnd;
 			Interface.Instantiate(this.logo);
-			Screen.SetResolution(225, 400, false);
+			//Screen.SetResolution(225, 400, false);
 		}
 
 		private IEnumerator TickClear(float time, Delegate OnComplete=null, bool exceptPoster=false) {

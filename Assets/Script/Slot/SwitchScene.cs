@@ -14,14 +14,14 @@ namespace Game.Slot {
 		[SerializeField]
 		private float movingTime = 3;
 
-		public override void Run (GameObject gameObject) {
-			Interface.Clear (this.wattingTime, this.OnComplete);
-			Sound.PlayMusic ();
+		public override void Run(GameObject gameObject) {
+			Interface.Clear(this.wattingTime, this.OnComplete);
+			Sound.PlayMusic();
 		}
 
-		private void OnComplete () {
+		private void OnComplete() {
 			var targetType = Judge.StartGame (this.gameType);
-			ViceCamera.Move (targetType, this.movingTime);
+			ViceCamera.Move(targetType, this.movingTime);
 		}
 	}
 }
