@@ -66,8 +66,6 @@ namespace Game.Component {
 		[SerializeField]
 		private GameObject effect;
 		[SerializeField]
-		private float rangeZ = 3.5f;
-		[SerializeField]
 		private float speed = 6;
 		[SerializeField]
 		private float shakingRate = 0.005f;
@@ -83,6 +81,7 @@ namespace Game.Component {
 		private new Collider collider;
 		private Stretch stretch;
 		private bool hasDown;
+		private Vector3 latePosition;
 
 		public float Rate {
 			get {
@@ -114,33 +113,21 @@ namespace Game.Component {
 			if (!this.hasDown) {
 				return;
 			}
-
-			var pos = this.collider.Position;
-			bool hasChanged = false;
 			
-			if (pos.y < 0 || Mathf.Abs(pos.x) > 8) {
-				Judge.Gain(pos);
+			if (this.collider.Position.y < 0 || Mathf.Abs(this.collider.Position.x) > 8) {
+				Judge.Gain(this.collider.Position);
 				this.gameObject.SetActive(false);
 				return;
 			}
 
-			if (pos.y > 0.3f) {
-				pos.y = 0.287f;
-				hasChanged = true;
-			}
-			
-			if (pos.z > this.rangeZ) {
-				pos.z = this.rangeZ;
-				hasChanged = true;
-			} else if (pos.z < -this.rangeZ) {
-				pos.z = -this.rangeZ;
-				hasChanged = true;
-			}
-
-			if (hasChanged) {
+			if (this.latePosition == this.collider.Position) {
+				var pos = this.collider.Position;
+				var direction = this.collider.Position.x < 0 ? 1 : -1;
+				pos.x += 0.5f * direction;
 				this.collider.Position = pos;
 			}
 
+			this.latePosition = this.collider.Position;
 			this.stretch.Update(ref this.velocity);
 			this.velocity = this.collider.Velocity;
 			var speed = (this.speed * this.rate).ToFixed();
