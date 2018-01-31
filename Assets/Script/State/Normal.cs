@@ -46,6 +46,7 @@ namespace Game.State {
 			var center = bounds.center;
 			var size = bounds.size;
 			center.x += bounds.size.x * this.controller.direction;
+			size.x *= 2;
 			size.y = 1;
 
 			this.bounds = new Bounds(center, size);

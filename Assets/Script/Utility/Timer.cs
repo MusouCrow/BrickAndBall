@@ -1,7 +1,11 @@
 ﻿using System;
 
 namespace Game.Utility {
+	using Component.Network;
+
 	public class Timer {
+		public delegate void Delegate();
+
 		public bool IsRunning {
 			get {
 				return this.isRunning;
@@ -17,18 +21,15 @@ namespace Game.Utility {
 		public float value;
 		public float max;
 		private bool isRunning;
+		private Delegate OnComplete;
 
-		public Timer(float time=0) {
+		public Timer() {
 			this.value = 0;
 			this.max = 0;
 			this.isRunning = false;
-
-			if (time > 0) {
-				this.Enter (time);
-			}
 		}
 
-		public void Update(float dt) {
+		public void Update(float dt=Client.STDDT) {
 			if (!this.isRunning) {
 				return;
 			}
@@ -38,24 +39,15 @@ namespace Game.Utility {
 			if (this.value >= this.max) {
 				this.value = this.max;
 				this.Exit();
+				this.OnComplete();
 			}
 		}
 
-		public void Enter(float time=0, bool inherited=false) {
+		public void Enter(float time=0, Delegate OnComplete=null) {
+			this.value = 0;
 			this.isRunning = true;
-
-			if (!inherited) {
-				this.value = 0;
-			}
-
-			if (time != 0) {
-				this.max = time;
-			}
-
-			if (this.value >= this.max) {
-				this.value = this.value - this.max;
-				this.isRunning = false;
-			}
+			this.max = time == 0 ? this.max : time.ToFixed();
+			this.OnComplete = OnComplete == null ? this.OnComplete : OnComplete;
 		}
 
 		public void Exit() {

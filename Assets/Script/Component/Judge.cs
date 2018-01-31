@@ -133,12 +133,14 @@ namespace Game.Component {
 		private float pitch = 1;
 		private bool isRunning = false;
 		private GameType gameType;
+		private Timer timer;
 
 		protected new void Awake() {
 			base.Awake();
 
 			INSTANCE = this;
 			ViceCamera.OnEndEvent += this.Reset;
+			this.timer = new Timer();
 		}
 
 		protected override void LockUpdate() {
@@ -146,9 +148,14 @@ namespace Game.Component {
 				return;
 			}
 
+			this.timer.Update();
 			this.pitch += this.acceleration;
 			Sound.MusicPitch = this.pitch;
 			this.ball.Rate = this.pitch;
+		}
+
+		public void Shoot(float time) {
+			this.timer.Enter(time, this.TickShoot);
 		}
 
 		private void Reset(ViceCamera.TargetType type) {
@@ -160,13 +167,7 @@ namespace Game.Component {
 			}
 		}
 
-		public void Shoot(float time) {
-			this.StartCoroutine(this.TickShoot(time));
-		}
-
-		private IEnumerator TickShoot(float time) {
-			yield return new WaitForSeconds(time);
-
+		private void TickShoot() {
 			if (this.aShooted) {
 				this.teamA.shooter.Shoot(this.ball);
 			} else {

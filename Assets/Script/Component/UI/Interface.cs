@@ -6,17 +6,20 @@ using DG.Tweening;
 
 namespace Game.Component.UI {
 	using Utility;
+	using Network;
 
-	public class Interface : MonoBehaviour {
+	public class Interface : LockBehaviour {
 		private static Interface INSTANCE;
 		public delegate void Delegate();
 
 		public static void Clear(float time=0, Delegate OnComplete=null, bool exceptPoster=false) {
-			INSTANCE.StartCoroutine(INSTANCE.TickClear(time, OnComplete, exceptPoster));
+			INSTANCE.eventSystem.SetActive(false);
+			INSTANCE.timer.Enter(time, () => INSTANCE.TickClear(OnComplete, exceptPoster));
 		}
 
 		public static void Result(bool isVictory, float time=0) {
-			INSTANCE.StartCoroutine(INSTANCE.TickResult(isVictory, time));
+			Sound.PlayMusic(INSTANCE.endingMusic);
+			INSTANCE.timer.Enter(time, () => INSTANCE.TickResult(isVictory));
 		}
 
 		public static void Instantiate(GameObject gameObject) {
@@ -36,19 +39,24 @@ namespace Game.Component.UI {
 		[SerializeField]
 		private AudioClip endingMusic;
 
-		protected void Awake() {
-			INSTANCE = this;
+		private Timer timer;
 
+		protected new void Awake() {
+			base.Awake();
+
+			INSTANCE = this;
 			ViceCamera.OnEndEvent += this.OnCameraEnd;
 			Interface.Instantiate(this.logo);
 			//Screen.SetResolution(225, 400, false);
+
+			this.timer = new Timer();
 		}
 
-		private IEnumerator TickClear(float time, Delegate OnComplete=null, bool exceptPoster=false) {
-			this.eventSystem.SetActive(false);
+		protected override void LockUpdate() {
+			this.timer.Update();
+		}
 
-			yield return new WaitForSeconds(time);
-
+		private void TickClear(Delegate OnComplete=null, bool exceptPoster=false) {
 			for (int i = 0; i < this.transform.childCount; i++) {
 				Transform child = this.transform.GetChild(i);
 
@@ -69,11 +77,7 @@ namespace Game.Component.UI {
 			OnComplete();
 		}
 
-		private IEnumerator TickResult(bool isVictory, float time) {
-			Sound.PlayMusic(this.endingMusic);
-
-			yield return new WaitForSeconds(time);
-
+		private void TickResult(bool isVictory) {
 			if (isVictory) {
 				Interface.Instantiate(this.victory);
 			} else {

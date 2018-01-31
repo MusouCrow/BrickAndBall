@@ -21,13 +21,11 @@ namespace Game.Slot {
 			Image image = gameObject.GetComponent<Image> ();
 			Transform transform = gameObject.transform;
 
-			image.StartCoroutine (this.TickMirage (image, transform));
-		}
-
-		private IEnumerator TickMirage (Image image, Transform transform) {
-			yield return new WaitForSeconds (this.wattingTime);
-
-			MirageCP.New (transform, transform.parent, image, this.targetScale, this.runningTime);
+			DOTween.Sequence()
+				.AppendInterval(this.wattingTime)
+				.OnComplete(() => {
+					MirageCP.New (transform, transform.parent, image, this.targetScale, this.runningTime);
+				});
 		}
 	}
 }

@@ -20,13 +20,8 @@ namespace Game.Component.UI {
 			obj.transform.localPosition = transform.localPosition;
 			obj.transform.localScale = transform.localScale;
 			obj.transform.localRotation = transform.localRotation;
-			obj.GetComponent<Mirage>().Init(image, targetScale, time);
 
-			return obj;
-		}
-
-		public void Init(Image image, Vector3 targetScale, float time) {
-			var newImage = this.gameObject.AddComponent<Image>();
+			var newImage = obj.AddComponent<Image>();
 			newImage.color = image.color;
 			newImage.sprite = image.sprite;
 			newImage.SetNativeSize();
@@ -35,12 +30,10 @@ namespace Game.Component.UI {
 			targetColor.a = 0;
 
 			newImage.DOColor(targetColor, time);
-			this.transform.DOScale(targetScale, time)
-				.OnComplete(this.DestroyObj);
-		}
+			obj.transform.DOScale(targetScale, time)
+				.OnComplete(() => Destroy(obj));
 
-		private void DestroyObj() {
-			Destroy(this.gameObject);
+			return obj;
 		}
 	}
 }

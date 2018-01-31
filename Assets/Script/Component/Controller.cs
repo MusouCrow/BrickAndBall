@@ -50,25 +50,19 @@ namespace Game.Component {
 			base.Awake();
 
 			this.statemgr = this.GetComponent<Statemgr>();
-			this.timer = new Timer (this.AIInterval);
 			this.renderer = this.GetComponent<MeshRenderer>();
 			this.originColor = this.renderer.material.color;
+
+			this.timer = new Timer ();
+			this.timer.Enter(this.AIInterval, this.TickAI);
 		}
 
 		protected override void LockUpdate() {
 			if (!this.isRunning || this.identity != Identity.AI) {
 				return;
 			}
-
-			this.timer.Update(Client.STDDT);
-
-			if (!this.timer.IsRunning) {
-				if (this.AITickEvent != null) {
-					this.AITickEvent(Judge.BallPosition);
-				}
-
-				this.timer.Enter(this.AIInterval);
-			}
+			
+			this.timer.Update();
 		}
 
 		public void Reset() {
@@ -80,6 +74,14 @@ namespace Game.Component {
 		public Tweener MoveColor(Color value, float t) {
 			return this.renderer.material.DOColor(value, t.ToFixed())
 				.SetEase(Ease.Linear);
+		}
+
+		private void TickAI() {
+			if (this.AITickEvent != null) {
+				this.AITickEvent(Judge.BallPosition);
+			}
+
+			this.timer.Enter(this.AIInterval, this.TickAI);
 		}
 	}
 }

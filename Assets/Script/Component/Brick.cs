@@ -13,7 +13,7 @@ namespace Game.Component {
 		public delegate void Delegate(Vector3 pos);
 		private const float RANGE_Z = 2.3f;
 		private static Vector2 POWER = new Vector2(5, 10);
-		private static Vector2 AI_MOTION_TIME = new Vector2(1f, 1.5f);
+		private static Vector2 AI_MOTION_TIME = new Vector2(0.3f, 0.7f);
 		private static Vector4 SHAKING_VALUE = new Vector4(0.1f, 0, 0, 0.2f);
 
 		private static void HandleValueWithRange(ref float value) {

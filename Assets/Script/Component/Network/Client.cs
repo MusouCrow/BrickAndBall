@@ -7,11 +7,12 @@ namespace Game.Component.Network {
     using Utility;
 
     public class Client : MonoBehaviour {
-        public const int STDDT = 17;
+        public const float STDDT = 0.017f; 
         public delegate void Delegate();
         public static event Delegate UpdateEvent;
         public static event Delegate LateUpdateEvent;
         private static Client INSTANCE;
+        private const int DT = 17;
 
         public static bool Online {
             get {
@@ -37,7 +38,7 @@ namespace Game.Component.Network {
             
             DOTween.defaultUpdateType = UpdateType.Manual;
             DOTween.Init();
-            Client.LateUpdateEvent += () => DOTween.ManualUpdate(0.017f, 0.017f);
+            Client.LateUpdateEvent += () => DOTween.ManualUpdate(STDDT, STDDT);
         }
 
         private void OnStart(NetworkConnection conn) {
@@ -61,7 +62,7 @@ namespace Game.Component.Network {
         protected void Update() {
             this.updateTimer += Mathf.CeilToInt(Time.deltaTime * 1000);
 
-            while (this.updateTimer >= STDDT) {
+            while (this.updateTimer >= DT) {
                 if (this.online && (this.frame + 1) % Server.WAITTING_INTERVAL == 0 && this.playDataList.Count > 1) {
                     while (this.playDataList.Count > 0) {
                         this.LockUpdate();
@@ -71,7 +72,7 @@ namespace Game.Component.Network {
                     this.LockUpdate();
                 }
                 
-                this.updateTimer -= STDDT;
+                this.updateTimer -= DT;
             }
         }
 

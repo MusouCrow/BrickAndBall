@@ -125,7 +125,7 @@ MonoBehaviour:
   orderType: 0
   targetColor: {r: 0, g: 0, b: 0, a: 0}
   direction: 0
-  AIIntervalRange: {x: 1, y: 2}
+  AIIntervalRange: {x: 0.1, y: 0.3}
 --- !u!114 &114868950200349630
 MonoBehaviour:
   m_ObjectHideFlags: 1
