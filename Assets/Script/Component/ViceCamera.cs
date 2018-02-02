@@ -56,9 +56,13 @@ namespace Game.Component {
 				.SetEase(Ease.InOutBack);
 		}
 
-		public static Vector3 ScreenToWorldPoint(Vector3 pos) {
-			pos.z = 10;
+		public static Vector3 ScreenToWorldPoint(Vector3 pos, float height=0) {
+			pos.z = INSTANCE.camera.transform.position.y - height;
 			return INSTANCE.camera.ScreenToWorldPoint(pos);
+		}
+
+		public static Ray ScreenToRay(Vector3 pos) {
+			return INSTANCE.camera.ScreenPointToRay(pos);
 		}
 
 		[SerializeField]

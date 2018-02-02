@@ -41,21 +41,17 @@ namespace Game.Component {
 			this.Play("Normal");
 		}
 
+		protected void Start() {
+			var brick = this.GetComponent<Brick>();
+
+			if (brick != null) {
+				brick.dragging.OnDragEvent += this.OnDrag;
+			}
+		}
+
 		protected override void LockUpdate() {
 			if (this.nowState != null) {
 				this.nowState.Update();
-			}
-		}
-
-		protected void OnMouseDown() {
-			if (this.nowState != null) {
-				this.nowState.OnMouseDown();
-			}
-		}
-
-		protected void OnMouseDrag() {
-			if (this.nowState != null) {
-				this.nowState.OnMouseDrag();
 			}
 		}
 
@@ -86,6 +82,12 @@ namespace Game.Component {
 		private void OnCollide(Collider collider) {
 			if (this.nowState != null) {
 				this.nowState.OnCollide(collider);
+			}
+		}
+
+		private void OnDrag(Vector3 oldPos, Vector3 newPos) {
+			if (this.nowState != null) {
+				this.nowState.OnDrag(oldPos, newPos);
 			}
 		}
 	}

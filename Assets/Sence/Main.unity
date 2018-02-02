@@ -530,6 +530,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b715e17ec3ba44d449f5f6a00e079ccf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  orderType: 0
   eventSystem: {fileID: 1798831885}
   count: {fileID: 1479093816765346, guid: 2e832f1b94e334174a4dea5ffe75cc41, type: 2}
   logo: {fileID: 1348527961546954, guid: 45b01c378eca941dba6295bb824e8c70, type: 2}
@@ -795,7 +796,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.03
-  far clip plane: 100.1
+  far clip plane: 100
   field of view: 74
   orthographic: 0
   orthographic size: 5

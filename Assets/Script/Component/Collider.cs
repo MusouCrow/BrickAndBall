@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Jitter.LinearMath;
+using Jitter.Collision;
 using Jitter.Collision.Shapes;
 
 using UCollider = UnityEngine.Collider;
@@ -108,6 +109,7 @@ namespace Game.Component {
                 this.size = size;
             }
 
+            Destroy(collider);
             this.size.ToFixed();
         }
         
@@ -187,6 +189,12 @@ namespace Game.Component {
             else {
                 this.collisionMap[collider] = CollisionState.Stay;
             }
+        }
+
+        public bool Pointcast(Vector3 point) {
+            var jPoint = point.ToJVector();
+            
+            return GJKCollide.Pointcast(this.body.Shape, ref this.body.orientation, ref this.body.position, ref jPoint);
         }
     }
 }

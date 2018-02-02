@@ -121,26 +121,11 @@ namespace Game.State {
 			this.coolDown = true;
 		}
 
-		public override void OnMouseDown() {
+		public override void OnDrag(Vector3 oldPos, Vector3 newPos) {
 			if (this.coolDown || !this.controller.CanConroll) {
 				return;
 			}
-
-			if (this.controller is Mark) {
-				this.statemgr.Play("Elast");
-			}
-
-			this.draggingPos = ViceCamera.ScreenToWorldPoint(Input.mousePosition);
-		}
-
-		public override void OnMouseDrag() {
-			if (this.controller is Mark || this.coolDown || !this.controller.CanConroll) {
-				return;
-			}
-
-			Vector3 oldPos = this.draggingPos;
-			this.draggingPos = ViceCamera.ScreenToWorldPoint(Input.mousePosition);
-			Vector3 newPos = this.draggingPos;
+			
 			float delta = newPos.x - oldPos.x;
 
 			if ((this.controller.direction > 0 && delta > DRAG_DELTA) || (this.controller.direction < 0 && delta < -DRAG_DELTA)) {

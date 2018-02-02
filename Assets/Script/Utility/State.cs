@@ -26,9 +26,8 @@ namespace Game.Utility {
 		public virtual void Update() {}
 		public virtual void Enter() {}
 		public virtual void Exit() {}
-		public virtual void OnMouseDown() {}
-		public virtual void OnMouseDrag() {}
 		public virtual void OnCollide(Collider collider) {}
+		public virtual void OnDrag(Vector3 oldPos, Vector3 newPos) {}
 		public virtual void OnDrawGizmosSelected() {}
 	}
 }

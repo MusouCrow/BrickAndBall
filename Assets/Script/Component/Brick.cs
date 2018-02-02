@@ -10,6 +10,35 @@ namespace Game.Component {
 	using Utility;
 
 	public class Brick : Controller {
+		public class Dragging {
+			public delegate void Delegate(Vector3 oldPos, Vector3 newPos);
+			
+			public event Delegate OnDragEvent;
+			private Vector3 position;
+			private bool hasDraged;
+			private Collider collider;
+
+			public Dragging(Collider collider) {
+				this.collider = collider;
+			}
+
+			public void Drag(Vector3 position, bool isDown) {
+				if (!isDown) {
+					this.hasDraged = false;
+				}
+				else if (!this.hasDraged && this.collider.Pointcast(position)) {
+                    this.hasDraged = true;
+                }
+				else if (this.hasDraged && this.OnDragEvent != null){
+                    this.OnDragEvent(this.position, position);
+				}
+
+				if (this.hasDraged) {
+					this.position = position;
+				}
+			}
+		}
+
 		public delegate void Delegate(Vector3 pos);
 		private const float RANGE_Z = 2.3f;
 		private static Vector2 POWER = new Vector2(5, 10);
@@ -25,12 +54,14 @@ namespace Game.Component {
 		}
 
 		public event Delegate AdjustPositionEvent;
+		public Dragging dragging;
 		private new Collider collider;
 		private Vector3 draggingPos;
 		private Vector3 shakingPos;
 		private Vector3 shakingValue;
 		private Vector3 position;
 		private Vector3 scale;
+		private Tweener tweener;
 
 		protected new void Awake() {
 			base.Awake();
@@ -38,34 +69,20 @@ namespace Game.Component {
 			this.collider = this.GetComponent<Collider>();
 			this.collider.CollisionEnterEvent += this.OnCollide;
 
+			this.dragging = new Dragging(this.collider);
 			this.position = this.transform.localPosition;
 			this.scale = this.transform.localScale;
 			this.shakingValue = SHAKING_VALUE * this.direction;
 
 			this.ResetEvent += this.ResetPostion;
 			this.AITickEvent += this.FollowBall;
+			this.dragging.OnDragEvent += this.OnDrag;
 		}
 
-		protected void OnMouseDown() {
-			if (!this.CanConroll) {
-				return;
-			}
+		protected override void LockUpdate() {
+			base.LockUpdate();
 
-			this.draggingPos = ViceCamera.ScreenToWorldPoint(Input.mousePosition);
-		}
-
-		protected void OnMouseDrag() {
-			if (!this.CanConroll) {
-				return;
-			}
-
-			Vector3 oldPos = this.draggingPos;
-			this.draggingPos = ViceCamera.ScreenToWorldPoint(Input.mousePosition);
-			Vector3 newPos = this.draggingPos;
-
-			this.position.z += (newPos.z - oldPos.z).ToFixed();
-			Brick.HandleValueWithRange(ref this.position.z);
-			this.AdjustPosition();
+			this.dragging.Drag(ViceCamera.ScreenToWorldPoint(Input.mousePosition, this.transform.position.y), Input.GetMouseButton(0));
 		}
 
 		public Tweener MovePosition(int type, float target, float time) {
@@ -74,6 +91,16 @@ namespace Game.Component {
 
 		public Tweener MoveScale(int type, float target, float time) {
 			return Math.MoveFixedFloat((float v) => {this.scale[type] = v; this.collider.Scale = this.scale;}, this.scale[type], target, time);
+		}
+
+		private void OnDrag(Vector3 oldPos, Vector3 newPos) {
+			if (!this.CanConroll) {
+				return;
+			}
+
+			this.position.z += newPos.z - oldPos.z;
+			Brick.HandleValueWithRange(ref this.position.z);
+			this.AdjustPosition();
 		}
 
 		private void OnCollide(Collider collider) {
@@ -87,7 +114,9 @@ namespace Game.Component {
 				ball.Move(valueX * this.direction * ball.Rate, 0, valueZ * ball.Rate);
 			}
 			
-			DOTween.Punch(this.GetShakingPos, this.SetShakingPos, this.shakingValue, SHAKING_VALUE.w);
+			if (this.tweener == null || !this.tweener.IsPlaying()) {
+				this.tweener = DOTween.Punch(this.GetShakingPos, this.SetShakingPos, this.shakingValue, SHAKING_VALUE.w);
+			}
 		}
 
 		private Vector3 GetShakingPos() {
@@ -113,15 +142,6 @@ namespace Game.Component {
 
 		private void FollowBall(Vector3 ballPosition) {
 			Brick.HandleValueWithRange(ref ballPosition.z);
-			/*
-			int direction = 1;
-			
-			if ((this.direction == 1 && ballPosition.x < this.transform.localPosition.x)
-				|| (this.direction == -1 && ballPosition.x > this.transform.localPosition.x)) {
-				direction = -1;
-			}
-			*/
-
 			this.MovePosition(2, ballPosition.z, Math.Lerp(AI_MOTION_TIME.x, AI_MOTION_TIME.y, Random.value));
 		}
 	}
