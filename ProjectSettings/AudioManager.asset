@@ -3,7 +3,7 @@
 --- !u!11 &1
 AudioManager:
   m_ObjectHideFlags: 0
-  m_Volume: 1
+  m_Volume: 0
   Rolloff Scale: 1
   Doppler Factor: 1
   Default Speaker Mode: 2

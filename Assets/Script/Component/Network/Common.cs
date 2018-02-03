@@ -24,6 +24,8 @@ namespace Game.Component.Network {
     }
 
     namespace Message {
+        public class Empty : MessageBase {}
+
         public class AddPlayer : MessageBase {
             public int seed;
         }
@@ -32,16 +34,10 @@ namespace Game.Component.Network {
             public PlayData playData;
         }
 
-        public class AddConnection : MessageBase {}
-
         public class ReceiveReport : MessageBase {
             public int playFrame;
             public InputData inputData;
             public string comparison;
-        }
-
-        public class DelConnection : MessageBase {
-            public int connectionId;
         }
     }
 }

@@ -24,7 +24,6 @@ namespace Game.Component.Network {
         private int frame;
         private int playFrame;
         private List<PlayData> playDataList;
-        private Dictionary<int, Controller> controllerMap;
         private NetworkConnection connection;
         private bool online;
 
@@ -32,25 +31,12 @@ namespace Game.Component.Network {
             INSTANCE = this;
 
             this.playDataList = new List<PlayData>();
-            this.controllerMap = new Dictionary<int, Controller>();
             Networkmgr.OnClientConnectEvent += this.OnStart;
             Networkmgr.OnStopClientEvent += this.OnStop;
             
             DOTween.defaultUpdateType = UpdateType.Manual;
             DOTween.Init();
             Client.LateUpdateEvent += () => DOTween.ManualUpdate(STDDT, STDDT);
-        }
-
-        private void OnStart(NetworkConnection conn) {
-            this.connection = conn;
-            this.connection.RegisterHandler(CustomMsgType.AddPlayer, this.Init);
-            this.connection.RegisterHandler(CustomMsgType.AddPlayData, this.AddPlayData);
-            this.connection.RegisterHandler(CustomMsgType.DelConnection, this.DelPlayer);
-            this.connection.Send(CustomMsgType.AddConnection, new Message.AddConnection());
-        }
-
-        private void OnStop() {
-            Application.Quit();
         }
         
         /*
@@ -124,10 +110,28 @@ namespace Game.Component.Network {
             Client.LateUpdateEvent();
         }
 
-        private void Init(NetworkMessage netMsg) {
-            this.online = true;
+        private void OnStart(NetworkConnection conn) {
+            this.connection = conn;
+            this.connection.RegisterHandler(CustomMsgType.AddPlayer, this.Init);
+            this.connection.RegisterHandler(CustomMsgType.AddPlayData, this.AddPlayData);
+            this.connection.RegisterHandler(CustomMsgType.DelConnection, this.Disconnect);
+            this.connection.Send(CustomMsgType.AddConnection, new Message.Empty());
+        }
+
+        private void OnStop() {
+            Debug.LogError("stop");
+            this.playDataList.Clear();
+            //this.connection = null;
+            this.updateTimer = 0;
             this.frame = 0;
             this.playFrame = 0;
+            this.online = false;
+            //Application.Quit();
+        }
+
+        private void Init(NetworkMessage netMsg) {
+            Debug.LogError("init");
+            //this.online = true;
         }
 
         private void AddPlayData(NetworkMessage netMsg) {
@@ -135,13 +139,8 @@ namespace Game.Component.Network {
             this.playDataList.Add(msg.playData);
         }
 
-        private void DelPlayer(NetworkMessage netMsg) {
-            var msg = netMsg.ReadMessage<Message.DelConnection>();
-            
-            if (this.controllerMap.ContainsKey(msg.connectionId)) {
-                GameObject.Destroy(this.controllerMap[msg.connectionId].gameObject);
-                this.controllerMap.Remove(msg.connectionId);
-            }
+        private void Disconnect(NetworkMessage netMsg) {
+            Networkmgr.ExitMatch();
         }
     }
 }

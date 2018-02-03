@@ -8,7 +8,6 @@ namespace Game.Component.Network {
         public const int WAITTING_INTERVAL = 3;
 
         private List<NetworkConnection> connList;
-        private List<int> newPlayerList;
         private Dictionary<int, Message.ReceiveReport> reportMap;
         private int wattingFrame;
         private int playFrame;
@@ -16,15 +15,25 @@ namespace Game.Component.Network {
 
         protected void Awake() {
             this.connList = new List<NetworkConnection>();
-            this.newPlayerList = new List<int>();
             this.reportMap = new Dictionary<int, Message.ReceiveReport>();
-            this.canNext = true;
 
-            NetworkServer.RegisterHandler(CustomMsgType.AddConnection, this.AddConnection);
-            NetworkServer.RegisterHandler(CustomMsgType.ReceiveReport, this.ReceiveReport);
             Networkmgr.OnServerDisconnectEvent += this.DelConnection;
         }
 
+        protected void OnEnable() {
+            print("enable");
+            NetworkServer.RegisterHandler(CustomMsgType.AddConnection, this.AddConnection);
+            NetworkServer.RegisterHandler(CustomMsgType.ReceiveReport, this.ReceiveReport);
+        }
+
+        protected void OnDisable() {
+            this.wattingFrame = 0;
+            this.playFrame = 0;
+            this.connList.Clear();
+            this.reportMap.Clear();
+        }
+
+        /*
         protected void Update() {
             if (this.canNext && this.connList.Count > 0) {
                 this.wattingFrame++;
@@ -79,17 +88,7 @@ namespace Game.Component.Network {
                 }
             }
         }
-
-        private void DelConnection(NetworkConnection conn) {
-            this.connList.Remove(conn);
-            
-            var msg = new Message.DelConnection() {
-                connectionId = conn.connectionId
-            };
-            
-            this.SendToAll(CustomMsgType.DelConnection, msg);
-            this.TryCanNext();
-        }
+        */
 
         private void SendToAll(short msgType, MessageBase msg) {
             for (int i = 0; i < this.connList.Count; i++) {
@@ -98,12 +97,20 @@ namespace Game.Component.Network {
         }
 
         private void AddConnection(NetworkMessage netMsg) {
-            var id = netMsg.conn.connectionId;
-            var msg = new Message.AddPlayer();
-            
-            netMsg.conn.Send(CustomMsgType.AddPlayer, msg);
+            Debug.LogError(netMsg.conn);
             this.connList.Add(netMsg.conn);
-            this.newPlayerList.Add(id);
+
+            if (this.connList.Count == 2) {
+                var msg = new Message.Empty();
+                this.SendToAll(CustomMsgType.AddPlayer, msg);
+                this.canNext = true;
+            }
+        }
+
+        private void DelConnection(NetworkConnection conn) {
+            var msg = new Message.Empty();
+            this.SendToAll(CustomMsgType.DelConnection, msg);
+            this.gameObject.SetActive(false);
         }
 
         private void ReceiveReport(NetworkMessage netMsg) {

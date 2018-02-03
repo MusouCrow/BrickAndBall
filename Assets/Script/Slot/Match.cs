@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Game.Slot {
 	using Component;
 	using Component.UI;
+	using Component.Network;
 
 	[CreateAssetMenuAttribute(menuName="Game/Slot/Match")]
 	public class Match : Utility.Slot {
@@ -15,20 +16,18 @@ namespace Game.Slot {
 		[SerializeField]
 		private float wattingTime;
 
-		public override void Run (GameObject gameObject) {
-			Interface.Clear (this.wattingTime, this.OnComplete, true);
+		public override void Run(GameObject gameObject) {
+			Interface.Clear(this.wattingTime, this.OnComplete, true);
 		}
 
-		private void OnComplete () {
-			/*
+		private void OnComplete() {
 			if (this.isStart) {
-				Networkmgr.StartMatch ();
+				Networkmgr.StartMatch();
 			} else {
-				Networkmgr.ExitMatch ();
+				Networkmgr.ExitMatch();
 			}
-			*/
 
-			Interface.Instantiate (this.next);
+			Interface.Instantiate(this.next);
 		}
 	}
 }
