@@ -4,11 +4,12 @@ using UnityEngine;
 namespace Game.Slot {
 	using Component;
 	using Component.UI;
+	using TargetType = Component.ViceCamera.TargetType;
 
 	[CreateAssetMenuAttribute(menuName="Game/Slot/SwitchScene")]
 	public class SwitchScene : Utility.Slot {
 		[SerializeField]
-		private Judge.GameType gameType;
+		private GameType gameType;
 		[SerializeField]
 		private float wattingTime = 0.3f;
 		[SerializeField]
@@ -20,7 +21,20 @@ namespace Game.Slot {
 		}
 
 		private void OnComplete() {
-			var targetType = Judge.StartGame (this.gameType);
+			Judge.GameType = this.gameType;
+			TargetType targetType = TargetType.Opening;
+
+			if (this.gameType == GameType.NONE) {
+				targetType = TargetType.Opening;
+			}
+			else if (this.gameType == GameType.PVE) {
+				targetType = TargetType.B;
+				Judge.PlayerType = PlayerType.B;
+			}
+			else if (this.gameType == GameType.PVP) {
+				targetType = Judge.PlayerType == PlayerType.A ? TargetType.A : TargetType.B;
+			}
+
 			ViceCamera.Move(targetType, this.movingTime);
 		}
 	}

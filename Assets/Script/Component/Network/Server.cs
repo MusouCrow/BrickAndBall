@@ -8,22 +8,21 @@ namespace Game.Component.Network {
         public const int WAITTING_INTERVAL = 3;
 
         private List<NetworkConnection> connList;
-        private Dictionary<int, Message.ReceiveReport> reportMap;
+        private Dictionary<int, Message.Report> reportMap;
         private int wattingFrame;
         private int playFrame;
         private bool canNext;
 
         protected void Awake() {
             this.connList = new List<NetworkConnection>();
-            this.reportMap = new Dictionary<int, Message.ReceiveReport>();
+            this.reportMap = new Dictionary<int, Message.Report>();
 
             Networkmgr.OnServerDisconnectEvent += this.DelConnection;
         }
 
         protected void OnEnable() {
-            print("enable");
             NetworkServer.RegisterHandler(CustomMsgType.AddConnection, this.AddConnection);
-            NetworkServer.RegisterHandler(CustomMsgType.ReceiveReport, this.ReceiveReport);
+            NetworkServer.RegisterHandler(CustomMsgType.Report, this.ReceiveReport);
         }
 
         protected void OnDisable() {
@@ -33,7 +32,6 @@ namespace Game.Component.Network {
             this.reportMap.Clear();
         }
 
-        /*
         protected void Update() {
             if (this.canNext && this.connList.Count > 0) {
                 this.wattingFrame++;
@@ -46,7 +44,7 @@ namespace Game.Component.Network {
                     var connIds = new int[this.reportMap.Count];
                     var inputDatas = new InputData[this.reportMap.Count];
                     int i = 0;
-                    Message.ReceiveReport late = null;
+                    Message.Report late = null;
 
                     foreach (var index in this.reportMap) {
                         if (late != null) {
@@ -73,22 +71,16 @@ namespace Game.Component.Network {
                         inputDatas = inputDatas
                     };
 
-                    if (this.newPlayerList.Count > 0) {
-                        playData.newPlayers = this.newPlayerList.ToArray();
-                        this.newPlayerList.Clear();
-                    }
-
                     this.reportMap.Clear();
 
-                    var msg = new Message.AddPlayData() {
+                    var msg = new Message.PlayData() {
                         playData = playData
                     };
                     
-                    this.SendToAll(CustomMsgType.AddPlayData, msg);
+                    this.SendToAll(CustomMsgType.PlayData, msg);
                 }
             }
         }
-        */
 
         private void SendToAll(short msgType, MessageBase msg) {
             for (int i = 0; i < this.connList.Count; i++) {
@@ -97,12 +89,21 @@ namespace Game.Component.Network {
         }
 
         private void AddConnection(NetworkMessage netMsg) {
-            Debug.LogError(netMsg.conn);
             this.connList.Add(netMsg.conn);
 
             if (this.connList.Count == 2) {
-                var msg = new Message.Empty();
-                this.SendToAll(CustomMsgType.AddPlayer, msg);
+                var connIds = new int[this.connList.Count];
+
+                for (int i = 0; i < this.connList.Count; i++) {
+                    connIds[i] = this.connList[i].connectionId;
+                }
+
+                var msg = new Message.Init() {
+                    seed = Time.frameCount,
+                    connIds = connIds
+                };
+
+                this.SendToAll(CustomMsgType.Init, msg);
                 this.canNext = true;
             }
         }
@@ -114,8 +115,8 @@ namespace Game.Component.Network {
         }
 
         private void ReceiveReport(NetworkMessage netMsg) {
-            var msg = netMsg.ReadMessage<Message.ReceiveReport>(); 
-
+            var msg = netMsg.ReadMessage<Message.Report>(); 
+            
             if (!this.canNext && msg.playFrame == this.playFrame) {
                 this.reportMap.Add(netMsg.conn.connectionId, msg);
                 this.TryCanNext();

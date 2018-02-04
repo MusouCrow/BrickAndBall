@@ -8,6 +8,18 @@ namespace Game.Component {
 	using Component.UI;
 	using Identity = Controller.Identity;
 
+	public enum GameType {
+		NONE,
+		PVP,
+		PVE,
+		HELP
+	}
+
+	public enum PlayerType {
+		A,
+		B
+	}
+
 	public class Judge : LockBehaviour {
 		[System.Serializable]
 		public class Team {
@@ -25,6 +37,13 @@ namespace Game.Component {
 				}
 			}
 
+			public Identity Identity {
+				set {
+					this.brick.identity = value;
+					this.mark.identity = value;
+				}
+			}
+
 			public void AddScore() {
 				this.score += 1;
 				this.wall.SetLength((float)this.score / (float)INSTANCE.scoreMax);
@@ -36,13 +55,6 @@ namespace Game.Component {
 				this.brick.Reset();
 				this.mark.Reset();
 			}
-		}
-
-		public enum GameType {
-			NONE,
-			PVP,
-			PVE,
-			HELP
 		}
 
 		private static Judge INSTANCE;
@@ -73,21 +85,39 @@ namespace Game.Component {
 			}
 		}
 
-		public static ViceCamera.TargetType StartGame(GameType gameType) {
-			INSTANCE.gameType = gameType;
-			ViceCamera.TargetType targetType = ViceCamera.TargetType.Opening;
+		public static PlayerType PlayerType {
+			set {
+				Team others = null;
 
-			if (gameType == GameType.PVP) {
-				
-			} else if (gameType == GameType.PVE) {
-				targetType = ViceCamera.TargetType.B;
-				INSTANCE.teamA.brick.identity = Identity.AI;
-				INSTANCE.teamB.brick.identity = Identity.Player;
-				INSTANCE.teamA.mark.identity = Identity.AI;
-				INSTANCE.teamB.mark.identity = Identity.Player;
+				if (value == PlayerType.A) {
+					INSTANCE.playerTeam = INSTANCE.teamA;
+					others = INSTANCE.teamB;
+				}
+				else {
+					INSTANCE.playerTeam = INSTANCE.teamB;
+					others = INSTANCE.teamA;
+				}
+
+				INSTANCE.playerTeam.Identity = Identity.Player;
+
+				if (INSTANCE.gameType == GameType.PVP) {
+					others.Identity = Identity.Network;
+				} else if (INSTANCE.gameType == GameType.PVE) {
+					others.Identity = Identity.AI;
+				}
 			}
+			get {
+				return INSTANCE.playerTeam == INSTANCE.teamA ? PlayerType.A : PlayerType.B;
+			}
+		}
 
-			return targetType;
+		public static GameType GameType {
+			set {
+				INSTANCE.gameType = value;
+			}
+			get {
+				return INSTANCE.gameType;
+			}
 		}
 
 		public static void Gain(Vector3 position) {
@@ -131,8 +161,9 @@ namespace Game.Component {
 
 		private bool aShooted;
 		private float pitch = 1;
-		private bool isRunning = false;
+		private bool isRunning;
 		private GameType gameType;
+		private Team playerTeam;
 		private Timer timer;
 
 		protected new void Awake() {

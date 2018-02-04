@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Game.Component.Network {
+    using _PlayData = PlayData;
+
     public class PlayData {
         public int[] newPlayers;
         public int frame;
@@ -16,25 +18,26 @@ namespace Game.Component.Network {
     }
 
     public static class CustomMsgType {
-        public static short AddPlayer = MsgType.Highest + 1;
-        public static short AddPlayData = MsgType.Highest + 2;
+        public static short Init = MsgType.Highest + 1;
+        public static short PlayData = MsgType.Highest + 2;
         public static short AddConnection = MsgType.Highest + 3;
-        public static short ReceiveReport = MsgType.Highest + 4;
+        public static short Report = MsgType.Highest + 4;
         public static short DelConnection = MsgType.Highest + 5;
     }
 
     namespace Message {
         public class Empty : MessageBase {}
 
-        public class AddPlayer : MessageBase {
+        public class Init : MessageBase {
             public int seed;
+            public int[] connIds;
         }
 
-        public class AddPlayData : MessageBase {
-            public PlayData playData;
+        public class PlayData : MessageBase {
+            public _PlayData playData;
         }
 
-        public class ReceiveReport : MessageBase {
+        public class Report : MessageBase {
             public int playFrame;
             public InputData inputData;
             public string comparison;

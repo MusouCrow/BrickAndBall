@@ -18,7 +18,13 @@ namespace Game.Component.Network {
             get {
                 return INSTANCE.online;
             }
+            set {
+                INSTANCE.online = value;
+            }
         }
+
+        [SerializeField]
+        private Slot startGameSlot;
 
         private int updateTimer;
         private int frame;
@@ -39,11 +45,11 @@ namespace Game.Component.Network {
             Client.LateUpdateEvent += () => DOTween.ManualUpdate(STDDT, STDDT);
         }
         
-        /*
         protected void OnGUI() {
-            GUILayout.TextField(this.playFrame.ToString());
+            if (this.online) {
+                GUILayout.TextField(this.playFrame.ToString());
+            }
         }
-        */
 
         protected void Update() {
             this.updateTimer += Mathf.CeilToInt(Time.deltaTime * 1000);
@@ -74,14 +80,6 @@ namespace Game.Component.Network {
                     var data = this.playDataList[0];
                     
                     /*
-                    for (int i = 0; i < data.newPlayers.Length; i++) {
-                        var player = GameObject.Instantiate(playerPrefab);
-                        var controller = player.GetComponent<Controller>();
-
-                        controller.connectionId = data.newPlayers[i];
-                        this.controllerMap.Add(controller.connectionId, controller);
-                    }
-
                     for (int i = 0; i < data.connIds.Length; i++) {
                         this.controllerMap[data.connIds[i]].SetInput(data.inputDatas[i].mousePos, data.inputDatas[i].isDown);
                     }
@@ -89,8 +87,9 @@ namespace Game.Component.Network {
 
                     this.playFrame++;
                     this.playDataList.RemoveAt(0);
-                    /*
+                    
                     if (this.playDataList.Count == 0) {
+                        /*
                         var msg = new Message.ReceiveReport() {
                             playFrame = this.playFrame,
                             inputData = new InputData() {
@@ -99,10 +98,12 @@ namespace Game.Component.Network {
                             },
                             comparison = (this.controllerMap[0].transform.localScale.x).ToBinStr()
                         };
-                        
-                        this.connection.Send(CustomMsgType.ReceiveReport, msg);
+                        */
+                        var msg = new Message.Report() {
+                            playFrame = this.playFrame
+                        };
+                        this.connection.Send(CustomMsgType.Report, msg);
                     }
-                    */
                 }
             }
 
@@ -112,35 +113,45 @@ namespace Game.Component.Network {
 
         private void OnStart(NetworkConnection conn) {
             this.connection = conn;
-            this.connection.RegisterHandler(CustomMsgType.AddPlayer, this.Init);
-            this.connection.RegisterHandler(CustomMsgType.AddPlayData, this.AddPlayData);
+            this.connection.RegisterHandler(CustomMsgType.Init, this.Init);
+            this.connection.RegisterHandler(CustomMsgType.PlayData, this.ReceivePlayData);
             this.connection.RegisterHandler(CustomMsgType.DelConnection, this.Disconnect);
             this.connection.Send(CustomMsgType.AddConnection, new Message.Empty());
         }
 
         private void OnStop() {
-            Debug.LogError("stop");
-            this.playDataList.Clear();
-            //this.connection = null;
-            this.updateTimer = 0;
-            this.frame = 0;
-            this.playFrame = 0;
             this.online = false;
-            //Application.Quit();
+            this.connection = null;
         }
 
         private void Init(NetworkMessage netMsg) {
-            Debug.LogError("init");
-            //this.online = true;
+            var msg = netMsg.ReadMessage<Message.Init>();
+
+            Random.InitState(msg.seed);
+            Judge.PlayerType = this.connection.connectionId == msg.connIds[0] ? PlayerType.A : PlayerType.B;
+            this.startGameSlot.Run(this.gameObject);
+
+            this.online = true;
+            this.playDataList.Clear();
+            this.updateTimer = 0;
+            this.frame = 0;
+            this.playFrame = 0;
         }
 
-        private void AddPlayData(NetworkMessage netMsg) {
-            var msg = netMsg.ReadMessage<Message.AddPlayData>();
+        private void ReceivePlayData(NetworkMessage netMsg) {
+            var msg = netMsg.ReadMessage<Message.PlayData>();
             this.playDataList.Add(msg.playData);
         }
 
         private void Disconnect(NetworkMessage netMsg) {
             Networkmgr.ExitMatch();
+
+            if (Judge.GameType == GameType.NONE) {
+                Networkmgr.StartMatch();
+            }
+            else {
+                Judge.GameType = GameType.PVE;
+            }
         }
     }
 }
