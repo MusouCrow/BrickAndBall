@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace Game.Component {
 	using Utility;
+	using Network;
 
 	public class Brick : Controller {
 		public class Dragging {
@@ -82,7 +83,9 @@ namespace Game.Component {
 		protected override void LockUpdate() {
 			base.LockUpdate();
 
-			this.dragging.Drag(ViceCamera.ScreenToWorldPoint(Input.mousePosition, this.transform.position.y), Input.GetMouseButton(0));
+			if (Judge.GameType == GameType.PVE && this.isPlayer) {
+				this.dragging.Drag(Client.MousePosition, Input.GetMouseButton(0));
+			}
 		}
 
 		public Tweener MovePosition(int type, float target, float time) {
@@ -94,10 +97,6 @@ namespace Game.Component {
 		}
 
 		private void OnDrag(Vector3 oldPos, Vector3 newPos) {
-			if (!this.CanConroll) {
-				return;
-			}
-
 			this.position.z += newPos.z - oldPos.z;
 			Brick.HandleValueWithRange(ref this.position.z);
 			this.AdjustPosition();

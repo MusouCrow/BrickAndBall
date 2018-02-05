@@ -11,7 +11,7 @@ namespace Game.Component.Network {
     }
 
     public struct InputData {
-        public Vector2 mousePos;
+        public Vector3 mousePos;
         public bool isDown;
     }
 

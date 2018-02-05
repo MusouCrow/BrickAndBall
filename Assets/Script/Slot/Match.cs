@@ -40,7 +40,7 @@ namespace Game.Slot {
 			} else {
 				NetworkManager.singleton.StopHost();
 			}
-
+			
 			Interface.Instantiate(this.next);
 		}
 	}

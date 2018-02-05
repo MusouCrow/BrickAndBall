@@ -51,7 +51,7 @@ namespace Game.Component.Network {
                 var connIds = new int[this.reportMap.Count];
                 var inputDatas = new InputData[this.reportMap.Count];
                 int i = 0;
-                /*
+                
                 Message.Report late = null;
 
                 foreach (var index in this.reportMap) {
@@ -66,7 +66,6 @@ namespace Game.Component.Network {
 
                     late = index.Value;
                 }
-                */
 
                 foreach (var index in this.reportMap) {
                     connIds[i] = index.Key;

@@ -10,11 +10,6 @@ namespace Game.Component {
 	public class Controller : LockBehaviour {
 		public delegate void ResetDelegate();
 		public delegate void AITickDelegate(Vector3 ballPosition);
-		public enum Identity {
-			Player,
-			AI,
-			Network
-		}
 
 		public Color targetColor;
 		public int direction;
@@ -29,14 +24,14 @@ namespace Game.Component {
 		[System.NonSerialized]
 		public bool isRunning;
 		[System.NonSerialized]
-		public Identity identity;
+		public bool isPlayer;
 		[System.NonSerialized]
 		public Statemgr statemgr;
 		private Timer timer;
 
 		public bool CanConroll {
 			get {
-				return this.isRunning && this.identity == Identity.Player;
+				return this.isRunning && this.isPlayer;
 			}
 		}
 
@@ -58,7 +53,7 @@ namespace Game.Component {
 		}
 
 		protected override void LockUpdate() {
-			if (!this.isRunning || this.identity != Identity.AI) {
+			if (!this.isRunning || Judge.GameType != GameType.PVE || this.isPlayer) {
 				return;
 			}
 			

@@ -23,6 +23,12 @@ namespace Game.Component.Network {
             }
         }
 
+        public static Vector3 MousePosition {
+            get {
+                return ViceCamera.ScreenToWorldPoint(Input.mousePosition, 0.3f).ToFixed();
+            }
+        }
+
         [SerializeField]
         private Slot startGameSlot;
 
@@ -46,26 +52,27 @@ namespace Game.Component.Network {
         }
         
         protected void OnGUI() {
+            /*
             if (this.online) {
                 GUILayout.TextField(this.playFrame.ToString());
             }
+            */
+            GUILayout.TextArea(Client.MousePosition.ToString());
         }
 
         protected void Update() {
             this.updateTimer += Mathf.CeilToInt(Time.deltaTime * 1000);
 
             while (this.updateTimer >= DT) {
-                this.LockUpdate();
-                /*
                 if (this.online && (this.frame + 1) % Server.WAITTING_INTERVAL == 0 && this.playDataList.Count > 1) {
-                    while (this.playDataList.Count > 0) {
+                    while (this.playDataList.Count > 1) {
                         this.LockUpdate();
                     }
                 }
                 else {
                     this.LockUpdate();
                 }
-                */
+                
                 this.updateTimer -= DT;
             }
         }
@@ -81,29 +88,23 @@ namespace Game.Component.Network {
                 if (this.frame % Server.WAITTING_INTERVAL == 0) {
                     var data = this.playDataList[0];
                     
-                    /*
-                    for (int i = 0; i < data.connIds.Length; i++) {
-                        this.controllerMap[data.connIds[i]].SetInput(data.inputDatas[i].mousePos, data.inputDatas[i].isDown);
+                    if (data.connIds != null) {
+                        for (int i = 0; i < data.connIds.Length; i++) {
+                            Judge.SetInput(i, data.inputDatas[i]);
+                        }
                     }
-                    */
 
                     this.playFrame++;
                     this.playDataList.RemoveAt(0);
                     
-                    /*
-                    var msg = new Message.ReceiveReport() {
+                    var msg = new Message.Report() {
                         playFrame = this.playFrame,
                         inputData = new InputData() {
                             mousePos = Client.MousePosition,
                             isDown = Input.GetMouseButton(0)
-                        },
-                        comparison = (this.controllerMap[0].transform.localScale.x).ToBinStr()
+                        }
                     };
-                    */
 
-                    var msg = new Message.Report() {
-                        playFrame = this.playFrame
-                    };
                     this.connection.Send(CustomMsgType.Report, msg);
                 }
             }
@@ -123,6 +124,10 @@ namespace Game.Component.Network {
         private void OnStop() {
             this.online = false;
             this.connection = null;
+
+            if (Judge.GameType == GameType.PVP) {
+                Judge.GameType = GameType.PVE;
+            }
         }
 
         private void Init(NetworkMessage netMsg) {
@@ -150,9 +155,6 @@ namespace Game.Component.Network {
 
             if (Judge.GameType == GameType.NONE) {
                 Networkmgr.StartMatch();
-            }
-            else {
-                Judge.GameType = GameType.PVE;
             }
         }
     }

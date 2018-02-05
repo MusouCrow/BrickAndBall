@@ -6,7 +6,6 @@ namespace Game.Component {
 	using Utility;
 	using Network;
 	using Component.UI;
-	using Identity = Controller.Identity;
 
 	public enum GameType {
 		NONE,
@@ -26,23 +25,8 @@ namespace Game.Component {
 			public Wall wall;
 			public Shooter shooter;
 			public Brick brick;
-			public Mark mark;
 			[System.NonSerialized]
 			public int score;
-
-			public bool IsRunning {
-				set {
-					this.brick.isRunning = value;
-					this.mark.isRunning = value;
-				}
-			}
-
-			public Identity Identity {
-				set {
-					this.brick.identity = value;
-					this.mark.identity = value;
-				}
-			}
 
 			public void AddScore() {
 				this.score += 1;
@@ -53,7 +37,6 @@ namespace Game.Component {
 				this.score = 0;
 				this.wall.Reset();
 				this.brick.Reset();
-				this.mark.Reset();
 			}
 		}
 
@@ -80,31 +63,17 @@ namespace Game.Component {
 					Sound.PlayMusic();
 				}
 
-				INSTANCE.teamA.IsRunning = value;
-				INSTANCE.teamB.IsRunning = value;
+				INSTANCE.teamA.brick.isRunning = value;
+				INSTANCE.teamB.brick.isRunning = value;
 			}
 		}
 
 		public static PlayerType PlayerType {
 			set {
-				Team others = null;
-
-				if (value == PlayerType.A) {
-					INSTANCE.playerTeam = INSTANCE.teamA;
-					others = INSTANCE.teamB;
-				}
-				else {
-					INSTANCE.playerTeam = INSTANCE.teamB;
-					others = INSTANCE.teamA;
-				}
-
-				INSTANCE.playerTeam.Identity = Identity.Player;
-
-				if (INSTANCE.gameType == GameType.PVP) {
-					others.Identity = Identity.Network;
-				} else if (INSTANCE.gameType == GameType.PVE) {
-					others.Identity = Identity.AI;
-				}
+				INSTANCE.playerTeam = value == PlayerType.A ? INSTANCE.teamA : INSTANCE.teamB;
+				INSTANCE.opponentTeam = value == PlayerType.A ? INSTANCE.teamB : INSTANCE.teamA;
+				INSTANCE.playerTeam.brick.isPlayer = true;
+				INSTANCE.opponentTeam.brick.isPlayer = false;
 			}
 			get {
 				return INSTANCE.playerTeam == INSTANCE.teamA ? PlayerType.A : PlayerType.B;
@@ -133,11 +102,15 @@ namespace Game.Component {
 
 			if (INSTANCE.teamA.score == INSTANCE.scoreMax || INSTANCE.teamB.score == INSTANCE.scoreMax) {
 				Judge.IsRunning = false;
-				Team team = INSTANCE.teamA.brick.identity == Identity.Player ? INSTANCE.teamA : INSTANCE.teamB;
-				UI.Interface.Result(team.score == INSTANCE.scoreMax, 0.5f);
+				UI.Interface.Result(INSTANCE.playerTeam.score == INSTANCE.scoreMax, 0.5f);
 			} else {
 				INSTANCE.Shoot(INSTANCE.shootingTime);
 			}
+		}
+
+		public static void SetInput(int type, InputData inputData) {
+			var team = type == 0 ? INSTANCE.teamA : INSTANCE.teamB;
+			team.brick.dragging.Drag(inputData.mousePos, inputData.isDown);
 		}
 
 		[SerializeField]
@@ -164,6 +137,7 @@ namespace Game.Component {
 		private bool isRunning;
 		private GameType gameType;
 		private Team playerTeam;
+		private Team opponentTeam;
 		private Timer timer;
 
 		protected new void Awake() {
