@@ -5,9 +5,7 @@ using UnityEngine.Networking;
 namespace Game.Component.Network {
     using _PlayData = PlayData;
 
-    public class PlayData {
-        public int[] newPlayers;
-        public int frame;
+    public struct PlayData {
         public int[] connIds;
         public InputData[] inputDatas;
     }

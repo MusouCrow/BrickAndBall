@@ -20,7 +20,7 @@ MonoBehaviour:
   drawGizmos: 1
   defaultRecyclable: 0
   defaultAutoPlay: 3
-  defaultUpdateType: 2
+  defaultUpdateType: 3
   defaultTimeScaleIndependent: 0
   defaultEaseType: 18
   defaultEaseOvershootOrAmplitude: 1.70158

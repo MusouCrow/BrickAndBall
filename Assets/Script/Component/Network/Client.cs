@@ -55,6 +55,8 @@ namespace Game.Component.Network {
             this.updateTimer += Mathf.CeilToInt(Time.deltaTime * 1000);
 
             while (this.updateTimer >= DT) {
+                this.LockUpdate();
+                /*
                 if (this.online && (this.frame + 1) % Server.WAITTING_INTERVAL == 0 && this.playDataList.Count > 1) {
                     while (this.playDataList.Count > 0) {
                         this.LockUpdate();
@@ -63,7 +65,7 @@ namespace Game.Component.Network {
                 else {
                     this.LockUpdate();
                 }
-                
+                */
                 this.updateTimer -= DT;
             }
         }
@@ -88,22 +90,21 @@ namespace Game.Component.Network {
                     this.playFrame++;
                     this.playDataList.RemoveAt(0);
                     
-                    if (this.playDataList.Count == 0) {
-                        /*
-                        var msg = new Message.ReceiveReport() {
-                            playFrame = this.playFrame,
-                            inputData = new InputData() {
-                                mousePos = Client.MousePosition,
-                                isDown = Input.GetMouseButton(0)
-                            },
-                            comparison = (this.controllerMap[0].transform.localScale.x).ToBinStr()
-                        };
-                        */
-                        var msg = new Message.Report() {
-                            playFrame = this.playFrame
-                        };
-                        this.connection.Send(CustomMsgType.Report, msg);
-                    }
+                    /*
+                    var msg = new Message.ReceiveReport() {
+                        playFrame = this.playFrame,
+                        inputData = new InputData() {
+                            mousePos = Client.MousePosition,
+                            isDown = Input.GetMouseButton(0)
+                        },
+                        comparison = (this.controllerMap[0].transform.localScale.x).ToBinStr()
+                    };
+                    */
+
+                    var msg = new Message.Report() {
+                        playFrame = this.playFrame
+                    };
+                    this.connection.Send(CustomMsgType.Report, msg);
                 }
             }
 
@@ -136,6 +137,7 @@ namespace Game.Component.Network {
             this.updateTimer = 0;
             this.frame = 0;
             this.playFrame = 0;
+            this.playDataList.Add(new PlayData());
         }
 
         private void ReceivePlayData(NetworkMessage netMsg) {
