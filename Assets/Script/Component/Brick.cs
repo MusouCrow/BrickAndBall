@@ -76,7 +76,7 @@ namespace Game.Component {
 			this.shakingValue = SHAKING_VALUE * this.direction;
 
 			this.ResetEvent += this.ResetPostion;
-			this.AITickEvent += this.FollowBall;
+			//this.AITickEvent += this.FollowBall;
 			this.dragging.OnDragEvent += this.OnDrag;
 		}
 

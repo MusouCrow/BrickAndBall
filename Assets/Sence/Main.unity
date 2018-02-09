@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1794604517}
-  m_IndirectSpecularColor: {r: 0.7716639, g: 0.69808596, b: 0.5874858, a: 1}
+  m_IndirectSpecularColor: {r: 0.77575, g: 0.698448, b: 0.5850189, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -601,18 +601,6 @@ Transform:
   m_PrefabParentObject: {fileID: 4288772827920644, guid: 2e5dad5aee8594c0d8fe3707dfcd425d,
     type: 2}
   m_PrefabInternal: {fileID: 636020811}
---- !u!114 &723460967 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114081810873422022, guid: 716720a0a9c1040429dfdf06e30ac0e6,
-    type: 2}
-  m_PrefabInternal: {fileID: 923803113}
-  m_Script: {fileID: 11500000, guid: ca3e4a59b846941359ee3049bd6686bd, type: 3}
---- !u!114 &724459474 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114081810873422022, guid: 716720a0a9c1040429dfdf06e30ac0e6,
-    type: 2}
-  m_PrefabInternal: {fileID: 1426561435}
-  m_Script: {fileID: 11500000, guid: ca3e4a59b846941359ee3049bd6686bd, type: 3}
 --- !u!114 &783902391 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114716635580030828, guid: db2346bc5f04e4fcf8490b9fa4647c5e,
@@ -1557,12 +1545,10 @@ MonoBehaviour:
     wall: {fileID: 819522418}
     shooter: {fileID: 2115577906}
     brick: {fileID: 212081984}
-    mark: {fileID: 723460967}
   teamB:
     wall: {fileID: 1764544986}
     shooter: {fileID: 783902391}
     brick: {fileID: 1209522993}
-    mark: {fileID: 724459474}
   ball: {fileID: 11083400}
   sounds:
   - {fileID: 8300000, guid: 2768c4b4319a740f587c97ab3e1973c3, type: 3}
@@ -1907,10 +1893,10 @@ MonoBehaviour:
   m_NetworkPort: 7777
   m_ServerBindToIP: 0
   m_ServerBindAddress: 
-  m_NetworkAddress: localhost
+  m_NetworkAddress: 192.168.31.5
   m_DontDestroyOnLoad: 1
   m_RunInBackground: 1
-  m_ScriptCRCCheck: 1
+  m_ScriptCRCCheck: 0
   m_MaxDelay: 0.01
   m_LogLevel: 2
   m_PlayerPrefab: {fileID: 0}
@@ -1967,7 +1953,7 @@ MonoBehaviour:
   m_SimulatedLatency: 1
   m_PacketLossPercentage: 0
   m_MaxBufferedPackets: 16
-  m_AllowFragmentation: 1
+  m_AllowFragmentation: 0
   m_MatchHost: mm.unet.unity3d.com
   m_MatchPort: 443
   matchName: default

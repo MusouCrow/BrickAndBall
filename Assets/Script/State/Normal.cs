@@ -40,7 +40,7 @@ namespace Game.State {
 			this.controller = gameObject.GetComponent<Controller>();
 			this.coolDown = false;
 			this.controller.ResetEvent += this.Reset;
-			this.controller.AITickEvent += this.Elast;
+			//this.controller.AITickEvent += this.Elast;
 
 			var bounds = this.gameObject.GetComponent<MeshRenderer>().bounds;
 			var center = bounds.center;
@@ -122,7 +122,7 @@ namespace Game.State {
 		}
 
 		public override void OnDrag(Vector3 oldPos, Vector3 newPos) {
-			if (this.coolDown || !this.controller.CanConroll) {
+			if (this.coolDown) {
 				return;
 			}
 			

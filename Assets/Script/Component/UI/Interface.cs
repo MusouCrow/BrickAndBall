@@ -47,8 +47,11 @@ namespace Game.Component.UI {
 			INSTANCE = this;
 			ViceCamera.OnEndEvent += this.OnCameraEnd;
 			Interface.Instantiate(this.logo);
-			Screen.SetResolution(225, 400, false);
 
+			if (Application.platform != RuntimePlatform.Android) {
+				Screen.SetResolution(225, 400, false);
+			}
+			
 			this.timer = new Timer();
 		}
 

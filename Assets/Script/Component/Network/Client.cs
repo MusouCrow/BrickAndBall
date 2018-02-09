@@ -13,6 +13,7 @@ namespace Game.Component.Network {
         public static event Delegate LateUpdateEvent;
         private static Client INSTANCE;
         private const int DT = 17;
+        private const int WAITTING_INTERVAL = 3;
 
         public static bool Online {
             get {
@@ -35,14 +36,13 @@ namespace Game.Component.Network {
         private int updateTimer;
         private int frame;
         private int playFrame;
-        private List<PlayData> playDataList;
+        private PlayData playData;
         private NetworkConnection connection;
         private bool online;
 
         protected void Awake() {
             INSTANCE = this;
 
-            this.playDataList = new List<PlayData>();
             Networkmgr.OnClientConnectEvent += this.OnStart;
             Networkmgr.OnStopClientEvent += this.OnStop;
             
@@ -52,57 +52,48 @@ namespace Game.Component.Network {
         }
         
         protected void OnGUI() {
-            /*
             if (this.online) {
                 GUILayout.TextField(this.playFrame.ToString());
             }
-            */
-            GUILayout.TextArea(Client.MousePosition.ToString());
         }
 
         protected void Update() {
             this.updateTimer += Mathf.CeilToInt(Time.deltaTime * 1000);
 
             while (this.updateTimer >= DT) {
-                if (this.online && (this.frame + 1) % Server.WAITTING_INTERVAL == 0 && this.playDataList.Count > 1) {
-                    while (this.playDataList.Count > 1) {
-                        this.LockUpdate();
-                    }
-                }
-                else {
-                    this.LockUpdate();
-                }
-                
+                this.LockUpdate();
                 this.updateTimer -= DT;
             }
         }
 
         private void LockUpdate() {
-            if (this.online && (this.frame + 1) % Server.WAITTING_INTERVAL == 0 && this.playDataList.Count == 0) {
+            if (this.online && this.frame + 1 == WAITTING_INTERVAL && this.playData == null) {
                 return;
             }
 
             if (this.online) {
                 this.frame++;
 
-                if (this.frame % Server.WAITTING_INTERVAL == 0) {
-                    var data = this.playDataList[0];
+                if (this.frame == WAITTING_INTERVAL) {
+                    var data = this.playData;
+                    this.playData = null;
                     
                     if (data.connIds != null) {
                         for (int i = 0; i < data.connIds.Length; i++) {
-                            Judge.SetInput(i, data.inputDatas[i]);
+                            Judge.SetInput(data.connIds[i], data.inputDatas[i]);
                         }
                     }
 
                     this.playFrame++;
-                    this.playDataList.RemoveAt(0);
+                    this.frame = 0;
                     
                     var msg = new Message.Report() {
-                        playFrame = this.playFrame,
+                        //playFrame = this.playFrame,
                         inputData = new InputData() {
                             mousePos = Client.MousePosition,
                             isDown = Input.GetMouseButton(0)
-                        }
+                        },
+                        comparison = Judge.NewPack()
                     };
 
                     this.connection.Send(CustomMsgType.Report, msg);
@@ -138,16 +129,15 @@ namespace Game.Component.Network {
             this.startGameSlot.Run(this.gameObject);
 
             this.online = true;
-            this.playDataList.Clear();
             this.updateTimer = 0;
             this.frame = 0;
             this.playFrame = 0;
-            this.playDataList.Add(new PlayData());
+            this.playData = new PlayData();
         }
 
         private void ReceivePlayData(NetworkMessage netMsg) {
             var msg = netMsg.ReadMessage<Message.PlayData>();
-            this.playDataList.Add(msg.playData);
+            this.playData = msg.playData;
         }
 
         private void Disconnect(NetworkMessage netMsg) {

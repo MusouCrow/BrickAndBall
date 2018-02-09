@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Text;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -111,6 +112,17 @@ namespace Game.Component {
 		public static void SetInput(int type, InputData inputData) {
 			var team = type == 0 ? INSTANCE.teamA : INSTANCE.teamB;
 			team.brick.dragging.Drag(inputData.mousePos, inputData.isDown);
+		}
+
+		public static string NewPack() {
+			var sb = new StringBuilder();
+			sb.Append(Judge.BallPosition.x + ",");
+			sb.Append(Judge.BallPosition.y + ",");
+			sb.Append(Judge.BallPosition.z + ",");
+			sb.Append(INSTANCE.teamB.brick.transform.localScale.x + ",");
+			sb.Append(INSTANCE.teamB.brick.transform.position.x + ",");
+
+			return sb.ToString();
 		}
 
 		[SerializeField]

@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 namespace Game.Component.Network {
     using _PlayData = PlayData;
 
-    public struct PlayData {
+    public class PlayData {
         public int[] connIds;
         public InputData[] inputDatas;
     }
@@ -36,7 +36,7 @@ namespace Game.Component.Network {
         }
 
         public class Report : MessageBase {
-            public int playFrame;
+            //public int playFrame;
             public InputData inputData;
             public string comparison;
         }
