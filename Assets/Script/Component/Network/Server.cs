@@ -9,10 +9,12 @@ namespace Game.Component.Network {
 
         private List<NetworkConnection> connList;
         private Dictionary<int, Message.Report> reportMap;
+        private Dictionary<int, Dictionary<int, string>> comparisonMap;
 
         protected void Awake() {
             this.connList = new List<NetworkConnection>();
             this.reportMap = new Dictionary<int, Message.Report>();
+            this.comparisonMap = new Dictionary<int, Dictionary<int, string>>();
 
             Networkmgr.OnServerDisconnectEvent += this.DelConnection;
         }
@@ -20,11 +22,13 @@ namespace Game.Component.Network {
         protected void OnEnable() {
             NetworkServer.RegisterHandler(CustomMsgType.AddConnection, this.AddConnection);
             NetworkServer.RegisterHandler(CustomMsgType.Report, this.ReceiveReport);
+            NetworkServer.RegisterHandler(CustomMsgType.Comparison, this.ReceiveComparison);
         }
 
         protected void OnDisable() {
             this.connList.Clear();
             this.reportMap.Clear();
+            this.comparisonMap.Clear();
         }
 
         private void SendToAll(short msgType, MessageBase msg) {
@@ -62,8 +66,56 @@ namespace Game.Component.Network {
             var msg = netMsg.ReadMessage<Message.Report>();
             this.reportMap.Add(netMsg.conn.connectionId, msg);
 
-            if (this.CheckCanNext()) {
-                this.SendPlayData();
+            if (this.reportMap.Count == PLAYER_COUNT) {
+                var connIds = new int[this.reportMap.Count];
+                var inputDatas = new InputData[this.reportMap.Count];
+                int i = 0;
+
+                foreach (var index in this.reportMap) {
+                    connIds[i] = index.Key;
+                    inputDatas[i] = index.Value.inputData;
+                    i++;
+                }
+
+                var playDataMsg = new Message.PlayData() {
+                    playData = new PlayData() {
+                        connIds = connIds,
+                        inputDatas = inputDatas
+                    }
+                };
+
+                this.SendToAll(CustomMsgType.PlayData, playDataMsg);
+                this.reportMap.Clear();
+            }
+        }
+
+        private void ReceiveComparison(NetworkMessage netMsg) {
+            var msg = netMsg.ReadMessage<Message.Comparison>();
+            
+            if (!this.comparisonMap.ContainsKey(msg.playFrame)) {
+                this.comparisonMap.Add(msg.playFrame, new Dictionary<int, string>());
+            }
+
+            var map = this.comparisonMap[msg.playFrame];
+            map.Add(netMsg.conn.connectionId, msg.content);
+
+            if (map.Count == PLAYER_COUNT) {
+                string late = null;
+
+                foreach (var index in map) {
+                    if (late != null) {
+                        var a = index.Value;
+                        var b = late;
+
+                        if (a != b) {
+                            Debug.LogError(a + " != " + b);
+                        }
+                    }
+
+                    late = index.Value;
+                }
+
+                this.comparisonMap.Remove(msg.playFrame);
             }
         }
 
@@ -75,43 +127,6 @@ namespace Game.Component.Network {
             }
 
             return true;
-        }
-
-        private void SendPlayData() {
-            var connIds = new int[this.reportMap.Count];
-            var inputDatas = new InputData[this.reportMap.Count];
-            int i = 0;
-            
-            Message.Report late = null;
-
-            foreach (var index in this.reportMap) {
-                if (late != null) {
-                    var a = index.Value.comparison;
-                    var b = late.comparison;
-
-                    if (a != b) {
-                        Debug.LogError(a + " != " + b);
-                    }
-                }
-
-                late = index.Value;
-            }
-
-            foreach (var index in this.reportMap) {
-                connIds[i] = index.Key;
-                inputDatas[i] = index.Value.inputData;
-                i++;
-            }
-
-            var msg = new Message.PlayData() {
-                playData = new PlayData() {
-                    connIds = connIds,
-                    inputDatas = inputDatas
-                }
-            };
-
-            this.SendToAll(CustomMsgType.PlayData, msg);
-            this.reportMap.Clear();
         }
     }
 }

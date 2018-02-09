@@ -26,6 +26,8 @@ using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
 #endregion
 
+using GMath = Game.Utility.Math;
+
 namespace Jitter.LinearMath
 {
     /// <summary>

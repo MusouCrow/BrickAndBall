@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 namespace Game.Component {
@@ -63,7 +64,7 @@ namespace Game.Component {
 				} else {
 					Sound.PlayMusic();
 				}
-
+				
 				INSTANCE.teamA.brick.isRunning = value;
 				INSTANCE.teamB.brick.isRunning = value;
 			}
@@ -114,13 +115,38 @@ namespace Game.Component {
 			team.brick.dragging.Drag(inputData.mousePos, inputData.isDown);
 		}
 
-		public static string NewPack() {
+		public static string GetMD5() {
 			var sb = new StringBuilder();
+			
 			sb.Append(Judge.BallPosition.x + ",");
 			sb.Append(Judge.BallPosition.y + ",");
 			sb.Append(Judge.BallPosition.z + ",");
+			
+			sb.Append(INSTANCE.ball.Velocity.x + ",");
+			sb.Append(INSTANCE.ball.Velocity.y + ",");
+			sb.Append(INSTANCE.ball.Velocity.z + ",");
+			
+			/*
+			sb.Append(INSTANCE.teamA.brick.transform.localScale.x + ",");
+			sb.Append(INSTANCE.teamA.brick.transform.position.x + ",");
 			sb.Append(INSTANCE.teamB.brick.transform.localScale.x + ",");
 			sb.Append(INSTANCE.teamB.brick.transform.position.x + ",");
+ 			*/
+			/*
+			sb.Append(INSTANCE.teamA.wall.scale.x + ",");
+			sb.Append(INSTANCE.teamB.wall.scale.x + ",");
+			sb.Append(INSTANCE.teamA.wall.transform.position.z + ",");
+			sb.Append(INSTANCE.teamB.wall.transform.position.z + ",");
+			*/
+			/*
+			var md5 = MD5.Create();
+			var bytes = md5.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()));
+			sb = new StringBuilder();
+
+			for (int i = 0; i < bytes.Length; i++) {
+				sb.Append(bytes[i].ToString("x2"));
+			}
+			*/
 
 			return sb.ToString();
 		}

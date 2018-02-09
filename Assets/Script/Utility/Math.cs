@@ -60,5 +60,11 @@ namespace Game.Utility {
         public static float Lerp(float a, float b, float t) {
             return Mathf.Lerp(a.ToFixed(), b.ToFixed(), t.ToFixed()).ToFixed();
         }
+
+        public static float Random() {
+            var value = UnityEngine.Random.value.ToFixed();
+            //Debug.LogError(value);
+            return value;
+        }
     }
 }

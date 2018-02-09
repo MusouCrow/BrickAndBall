@@ -21,6 +21,8 @@ namespace Game.Component.Network {
         public static short AddConnection = MsgType.Highest + 3;
         public static short Report = MsgType.Highest + 4;
         public static short DelConnection = MsgType.Highest + 5;
+        public static short Comparison = MsgType.Highest + 6;
+        public static short Sync = MsgType.Highest + 7;
     }
 
     namespace Message {
@@ -38,7 +40,12 @@ namespace Game.Component.Network {
         public class Report : MessageBase {
             //public int playFrame;
             public InputData inputData;
-            public string comparison;
+            //public string comparison;
+        }
+
+        public class Comparison : MessageBase {
+            public int playFrame;
+            public string content;
         }
     }
 }

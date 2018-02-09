@@ -37,7 +37,7 @@ namespace Game.Component {
 
 		public float AIInterval {
 			get {
-				return Math.Lerp(this.AIIntervalRange.x, this.AIIntervalRange.y, Random.value);
+				return Math.Lerp(this.AIIntervalRange.x, this.AIIntervalRange.y, Math.Random());
 			}
 		}
 
@@ -49,11 +49,12 @@ namespace Game.Component {
 			this.originColor = this.renderer.material.color;
 
 			this.timer = new Timer ();
-			this.timer.Enter(this.AIInterval, this.TickAI);
+			this.timer.Enter(1, this.TickAI);
 		}
 
 		protected override void LockUpdate() {
-			if (!this.isRunning || Judge.GameType != GameType.PVE || this.isPlayer) {
+			// || Judge.GameType != GameType.PVE || this.isPlayer
+			if (!this.isRunning) {
 				return;
 			}
 			
@@ -76,6 +77,7 @@ namespace Game.Component {
 				this.AITickEvent(Judge.BallPosition);
 			}
 
+			//Debug.LogError(Client.PlayFrame + "," + this.AIInterval);
 			this.timer.Enter(this.AIInterval, this.TickAI);
 		}
 	}

@@ -12,12 +12,6 @@ namespace Game.Utility {
 			}
 		}
 
-		public float Process {
-			get {
-				return this.value / this.max;
-			}
-		}
-
 		public float value;
 		public float max;
 		private bool isRunning;

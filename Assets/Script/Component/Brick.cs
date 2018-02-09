@@ -76,7 +76,7 @@ namespace Game.Component {
 			this.shakingValue = SHAKING_VALUE * this.direction;
 
 			this.ResetEvent += this.ResetPostion;
-			//this.AITickEvent += this.FollowBall;
+			this.AITickEvent += this.FollowBall;
 			this.dragging.OnDragEvent += this.OnDrag;
 		}
 
@@ -106,10 +106,10 @@ namespace Game.Component {
 			var ball = collider.GetComponent<Ball>();
 
 			if (ball != null) {
-				float valueX = Math.Lerp(POWER.x, POWER.y, Random.value);
-				float valueZ = Math.Lerp(POWER.x, POWER.y, Random.value);
+				float valueX = Math.Lerp(POWER.x, POWER.y, Math.Random());
+				float valueZ = Math.Lerp(POWER.x, POWER.y, Math.Random());
 
-				valueZ = Random.value < 0.5f ? valueZ : -valueZ;
+				valueZ = Math.Random() < 0.5f ? valueZ : -valueZ;
 				ball.Move(valueX * this.direction * ball.Rate, 0, valueZ * ball.Rate);
 			}
 			
@@ -141,7 +141,7 @@ namespace Game.Component {
 
 		private void FollowBall(Vector3 ballPosition) {
 			Brick.HandleValueWithRange(ref ballPosition.z);
-			this.MovePosition(2, ballPosition.z, Math.Lerp(AI_MOTION_TIME.x, AI_MOTION_TIME.y, Random.value));
+			this.MovePosition(2, ballPosition.z, Math.Lerp(AI_MOTION_TIME.x, AI_MOTION_TIME.y, Math.Random()));
 		}
 	}
 }

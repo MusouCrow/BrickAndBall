@@ -15,7 +15,8 @@ namespace Game.Component {
 		private Vector4 shakingValue;
 
 		private Tweener tweener;
-		private Vector3 scale;
+		[System.NonSerialized]
+		public Vector3 scale;
 		private Collider barCollider;
 
 		protected void Awake() {

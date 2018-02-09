@@ -31,6 +31,8 @@ using Jitter.Dynamics.Constraints;
 using Jitter.DataStructures;
 #endregion
 
+using GMath = Game.Utility.Math;
+
 namespace Jitter
 {
 
@@ -816,8 +818,8 @@ namespace Jitter
         private void IntegrateCallback(object obj)
         {
             RigidBody body = obj as RigidBody;
-
             JVector temp;
+            body.linearVelocity = GMath.ToFixed(body.linearVelocity);
             JVector.Multiply(ref body.linearVelocity, timestep, out temp);
             JVector.Add(ref temp, ref body.position, out body.position);
 

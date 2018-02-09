@@ -13,7 +13,7 @@ namespace Game.Component.Network {
         public static event Delegate LateUpdateEvent;
         private static Client INSTANCE;
         private const int DT = 17;
-        private const int WAITTING_INTERVAL = 3;
+        private const int WAITTING_INTERVAL = 4;
 
         public static bool Online {
             get {
@@ -27,6 +27,12 @@ namespace Game.Component.Network {
         public static Vector3 MousePosition {
             get {
                 return ViceCamera.ScreenToWorldPoint(Input.mousePosition, 0.3f).ToFixed();
+            }
+        }
+
+        public static int PlayFrame {
+            get {
+                return INSTANCE.playFrame;
             }
         }
 
@@ -93,10 +99,17 @@ namespace Game.Component.Network {
                             mousePos = Client.MousePosition,
                             isDown = Input.GetMouseButton(0)
                         },
-                        comparison = Judge.NewPack()
+                        //comparison = Judge.GetMD5()
                     };
 
                     this.connection.Send(CustomMsgType.Report, msg);
+
+                    var msg2 = new Message.Comparison() {
+                        playFrame = this.playFrame,
+                        content = Judge.GetMD5()
+                    };
+
+                    this.connection.Send(CustomMsgType.Comparison, msg2);
                 }
             }
 

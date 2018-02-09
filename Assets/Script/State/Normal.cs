@@ -40,7 +40,7 @@ namespace Game.State {
 			this.controller = gameObject.GetComponent<Controller>();
 			this.coolDown = false;
 			this.controller.ResetEvent += this.Reset;
-			//this.controller.AITickEvent += this.Elast;
+			this.controller.AITickEvent += this.Elast;
 
 			var bounds = this.gameObject.GetComponent<MeshRenderer>().bounds;
 			var center = bounds.center;
