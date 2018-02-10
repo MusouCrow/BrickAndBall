@@ -119,7 +119,7 @@ namespace Game.Component {
 				this.gameObject.SetActive(false);
 				return;
 			}
-
+			
 			if (this.latePosition == this.collider.Position) {
 				var pos = this.collider.Position;
 				var direction = this.collider.Position.x < 0 ? 1 : -1;
@@ -166,6 +166,9 @@ namespace Game.Component {
 
 			if (!this.hasDown) {
 				this.collider.IsParticle = true;
+				var pos = this.collider.Position;
+				pos.y = 0.287f;
+				this.collider.Position = pos;
 				this.hasDown = true;
 			}
 		}

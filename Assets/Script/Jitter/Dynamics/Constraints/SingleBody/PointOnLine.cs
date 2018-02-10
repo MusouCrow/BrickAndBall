@@ -120,7 +120,7 @@ namespace Jitter.Dynamics.Constraints.SingleBody
             if (effectiveMass != 0) effectiveMass = 1.0f / effectiveMass;
 
             bias = -(l % (p1 - anchor)).Length() * biasFactor * (1.0f / timestep);
-
+            UnityEngine.Debug.Log("PointOnLine");
             if (!body1.isStatic)
             {
                 body1.linearVelocity += body1.inverseMass * accumulatedImpulse * jacobian[0];
@@ -143,7 +143,7 @@ namespace Jitter.Dynamics.Constraints.SingleBody
             float lambda = -effectiveMass * (jv + bias + softnessScalar);
 
             accumulatedImpulse += lambda;
-
+            UnityEngine.Debug.Log("PointOnLine");
             if (!body1.isStatic)
             {
                 body1.linearVelocity += body1.inverseMass * lambda * jacobian[0];

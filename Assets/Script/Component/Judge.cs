@@ -117,10 +117,11 @@ namespace Game.Component {
 
 		public static string GetMD5() {
 			var sb = new StringBuilder();
-			
+			/*
 			sb.Append(Judge.BallPosition.x + ",");
 			sb.Append(Judge.BallPosition.y + ",");
 			sb.Append(Judge.BallPosition.z + ",");
+			*/
 			
 			sb.Append(INSTANCE.ball.Velocity.x + ",");
 			sb.Append(INSTANCE.ball.Velocity.y + ",");

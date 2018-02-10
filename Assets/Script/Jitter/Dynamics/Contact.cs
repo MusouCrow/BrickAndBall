@@ -27,6 +27,8 @@ using Jitter.Collision.Shapes;
 using Jitter.Dynamics.Constraints;
 #endregion
 
+using GMath = Game.Utility.Math;
+
 namespace Jitter.Dynamics
 {
 
@@ -237,7 +239,7 @@ namespace Jitter.Dynamics
             impulse.X = normal.X * normalImpulse + tangent.X * tangentImpulse;
             impulse.Y = normal.Y * normalImpulse + tangent.Y * tangentImpulse;
             impulse.Z = normal.Z * normalImpulse + tangent.Z * tangentImpulse;
-
+            
             if (!treatBody1AsStatic)
             {
                 body1.linearVelocity.X -= (impulse.X * body1.inverseMass);
@@ -272,7 +274,6 @@ namespace Jitter.Dynamics
 
             if (!treatBody2AsStatic)
             {
-
                 body2.linearVelocity.X += (impulse.X * body2.inverseMass);
                 body2.linearVelocity.Y += (impulse.Y * body2.inverseMass);
                 body2.linearVelocity.Z += (impulse.Z * body2.inverseMass);
@@ -698,7 +699,7 @@ namespace Jitter.Dynamics
             impulse.X = normal.X * accumulatedNormalImpulse + tangent.X * accumulatedTangentImpulse;
             impulse.Y = normal.Y * accumulatedNormalImpulse + tangent.Y * accumulatedTangentImpulse;
             impulse.Z = normal.Z * accumulatedNormalImpulse + tangent.Z * accumulatedTangentImpulse;
-
+            //UnityEngine.Debug.Log(2);
             if (!treatBody1AsStatic)
             {
                 body1.linearVelocity.X -= (impulse.X * body1.inverseMass);

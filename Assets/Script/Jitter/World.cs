@@ -791,17 +791,16 @@ namespace Jitter
                 if (!body.isStatic && body.IsActive)
                 {
                     JVector temp;
-                    JVector.Multiply(ref body.force, body.inverseMass * timestep, out temp);
-                    JVector.Add(ref temp, ref body.linearVelocity, out body.linearVelocity);
+                    if (!body.isParticle) {
+                        JVector.Multiply(ref body.force, body.inverseMass * timestep, out temp);
+                        JVector.Add(ref temp, ref body.linearVelocity, out body.linearVelocity);
 
-                    if (!(body.isParticle))
-                    {
                         JVector.Multiply(ref body.torque, timestep, out temp);
                         JVector.Transform(ref temp, ref body.invInertiaWorld, out temp);
                         JVector.Add(ref temp, ref body.angularVelocity, out body.angularVelocity);
                     }
 
-                    if (body.affectedByGravity)
+                    if (body.affectedByGravity && !body.isParticle)
                     {
                         JVector.Multiply(ref gravity, timestep, out temp);
                         JVector.Add(ref body.linearVelocity, ref temp, out body.linearVelocity);
@@ -818,10 +817,16 @@ namespace Jitter
         private void IntegrateCallback(object obj)
         {
             RigidBody body = obj as RigidBody;
-            JVector temp;
-            body.linearVelocity = GMath.ToFixed(body.linearVelocity);
-            JVector.Multiply(ref body.linearVelocity, timestep, out temp);
-            JVector.Add(ref temp, ref body.position, out body.position);
+
+            //if (!body.isParticle) {
+                JVector temp;
+                body.linearVelocity = GMath.ToFixed(body.linearVelocity);
+                if (body.isParticle) {
+                    body.linearVelocity.Y = 0;
+                }
+                JVector.Multiply(ref body.linearVelocity, timestep, out temp);
+                JVector.Add(ref temp, ref body.position, out body.position);
+            //}
 
             if (!(body.isParticle))
             {
@@ -850,8 +855,8 @@ namespace Jitter
                 dorn.Normalize(); JMatrix.CreateFromQuaternion(ref dorn, out body.orientation);
             }
 
-            if ((body.Damping & RigidBody.DampingType.Linear) != 0)
-                JVector.Multiply(ref body.linearVelocity, currentLinearDampFactor, out body.linearVelocity);
+            //if ((body.Damping & RigidBody.DampingType.Linear) != 0)
+                //JVector.Multiply(ref body.linearVelocity, currentLinearDampFactor, out body.linearVelocity);
 
             if ((body.Damping & RigidBody.DampingType.Angular) != 0)
                 JVector.Multiply(ref body.angularVelocity, currentAngularDampFactor, out body.angularVelocity);

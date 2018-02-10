@@ -128,17 +128,17 @@ namespace Jitter.Dynamics.Constraints
             if(effectiveMass != 0) effectiveMass = 1.0f / effectiveMass;
 
             bias = - (l % (p2-p1)).Length() * biasFactor * (1.0f / timestep);
-
+            UnityEngine.Debug.Log("PointOnLine");
             if (!body1.isStatic)
             {
-                body1.linearVelocity += body1.inverseMass * accumulatedImpulse * jacobian[0];
-                body1.angularVelocity += JVector.Transform(accumulatedImpulse * jacobian[1], body1.invInertiaWorld);
+                //body1.linearVelocity += body1.inverseMass * accumulatedImpulse * jacobian[0];
+                //body1.angularVelocity += JVector.Transform(accumulatedImpulse * jacobian[1], body1.invInertiaWorld);
             }
 
             if (!body2.isStatic)
             {
-                body2.linearVelocity += body2.inverseMass * accumulatedImpulse * jacobian[2];
-                body2.angularVelocity += JVector.Transform(accumulatedImpulse * jacobian[3], body2.invInertiaWorld);
+                //body2.linearVelocity += body2.inverseMass * accumulatedImpulse * jacobian[2];
+                //body2.angularVelocity += JVector.Transform(accumulatedImpulse * jacobian[3], body2.invInertiaWorld);
             }
         }
 
@@ -158,17 +158,17 @@ namespace Jitter.Dynamics.Constraints
             float lambda = -effectiveMass * (jv + bias + softnessScalar);
 
             accumulatedImpulse += lambda;
-
+            UnityEngine.Debug.Log("PointOnLine");
             if (!body1.isStatic)
             {
-                body1.linearVelocity += body1.inverseMass * lambda * jacobian[0];
-                body1.angularVelocity += JVector.Transform(lambda * jacobian[1], body1.invInertiaWorld);
+                //body1.linearVelocity += body1.inverseMass * lambda * jacobian[0];
+                //body1.angularVelocity += JVector.Transform(lambda * jacobian[1], body1.invInertiaWorld);
             }
 
             if (!body2.isStatic)
             {
-                body2.linearVelocity += body2.inverseMass * lambda * jacobian[2];
-                body2.angularVelocity += JVector.Transform(lambda * jacobian[3], body2.invInertiaWorld);
+                //body2.linearVelocity += body2.inverseMass * lambda * jacobian[2];
+                //body2.angularVelocity += JVector.Transform(lambda * jacobian[3], body2.invInertiaWorld);
             }
         }
 
