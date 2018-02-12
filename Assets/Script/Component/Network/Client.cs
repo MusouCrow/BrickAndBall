@@ -94,22 +94,21 @@ namespace Game.Component.Network {
                     this.frame = 0;
                     
                     var msg = new Message.Report() {
-                        //playFrame = this.playFrame,
                         inputData = new InputData() {
                             mousePos = Client.MousePosition,
                             isDown = Input.GetMouseButton(0)
-                        },
-                        //comparison = Judge.GetMD5()
+                        }
                     };
 
                     this.connection.Send(CustomMsgType.Report, msg);
-
+                    /*
                     var msg2 = new Message.Comparison() {
                         playFrame = this.playFrame,
                         content = Judge.GetMD5()
                     };
 
                     this.connection.Send(CustomMsgType.Comparison, msg2);
+                    */
                 }
             }
 

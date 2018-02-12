@@ -7,8 +7,6 @@ namespace Game.Component {
 	using Utility;
 
 	public class Wall : MonoBehaviour {
-		private static float POWER = 3;
-
 		[SerializeField]
 		private Transform barTransform;
 		[SerializeField]
@@ -25,6 +23,7 @@ namespace Game.Component {
 
 			this.scale = this.barTransform.localScale;
 			this.barCollider = this.barTransform.GetComponent<Collider>();
+			this.barCollider.CollisionEnterEvent += this.OnBarCollide;
 		}
 
 		public void SetLength(float value) {
@@ -39,17 +38,25 @@ namespace Game.Component {
 			this.SetLength(0.01f);
 		}
 
-		private void OnCollide(Collider collider) {
-			var ball = collider.GetComponent<Ball>();
+		private bool CheckedFunc(int type, float pos, float point, float velocity) {
+			return (point > pos && velocity > 0) || (point < pos && velocity < 0);
+		}
 
-			if (ball != null) {
-				var power = ball.Velocity.x > 0 ? ball.Rate : -ball.Rate;
-				ball.Move(power, 0, 0);
-			}
+		private void OnCollide(Collider collider, Vector3 point) {
+			this.OnBarCollide(collider, point);
 
 			if (this.tweener == null || !this.tweener.IsPlaying()) {
 				this.tweener = this.transform.DOPunchPosition(this.shakingValue, this.shakingValue.w)
 					.SetEase(Ease.InOutElastic);
+			}
+		}
+
+		private void OnBarCollide(Collider collider, Vector3 point) {
+			var ball = collider.GetComponent<Ball>();
+
+			if (ball != null) {
+				ball.Rebound(point, this.CheckedFunc);
+				ball.Move(ball.Rate * ball.Velocity.x.ToDirection(), 0, ball.Rate * 2 * ball.Velocity.z.ToDirection());
 			}
 		}
 	}

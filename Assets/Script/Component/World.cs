@@ -9,6 +9,7 @@ using Rigidbody = Game.Utility.Rigidbody;
 
 namespace Game.Component {
     using Network;
+    using Utility;
 
     public class World : LockBehaviour {
         private static World INSTANCE;
@@ -39,8 +40,8 @@ namespace Game.Component {
             var b1 = body1 as Rigidbody;
             var b2 = body2 as Rigidbody;
             
-            b1.collider.CollisionDetected(b2.collider);
-            b2.collider.CollisionDetected(b1.collider);
+            b1.collider.CollisionDetected(b2.collider, point1.ToVector3());
+            b2.collider.CollisionDetected(b1.collider, point2.ToVector3());
         }
     }
 }

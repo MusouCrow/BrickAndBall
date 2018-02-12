@@ -38,9 +38,7 @@ namespace Game.Component.Network {
         }
 
         public class Report : MessageBase {
-            //public int playFrame;
             public InputData inputData;
-            //public string comparison;
         }
 
         public class Comparison : MessageBase {

@@ -14,11 +14,16 @@ namespace Game.Component {
     using Network;
 
     public class Collider : LockBehaviour {
-        public delegate void Delegate(Collider collider);
-        private enum CollisionState {
+        public delegate void Delegate(Collider collider, Vector3 point);
+        public enum State {
             Enter,
             Stay,
             Exit
+        }
+
+        public struct Data {
+            public State state;
+            public Vector3 point;
         }
 
         [SerializeField]
@@ -27,7 +32,7 @@ namespace Game.Component {
         public event Delegate CollisionEnterEvent;
         public event Delegate CollisionStayEvent;
         public event Delegate CollisionExitEvent;
-        private Dictionary<Collider, CollisionState> collisionMap;
+        private Dictionary<Collider, Data> collisionMap;
         private List<Collider> collisionList;
         private Vector3 size;
         private Shape shape;
@@ -45,6 +50,10 @@ namespace Game.Component {
 
         public Vector3 Velocity {
             get {
+                if (this.body == null) {
+                    return Vector3.zero;
+                }
+
                 return this.body.LinearVelocity.ToVector3();
             }
             set {
@@ -78,7 +87,7 @@ namespace Game.Component {
             this.orderType = OrderType.Late;
             base.Awake();
 
-            this.collisionMap = new Dictionary<Collider, CollisionState>();
+            this.collisionMap = new Dictionary<Collider, Data>();
             this.collisionList = new List<Collider>();
 
             var collider = this.GetComponent<UCollider>();
@@ -122,14 +131,14 @@ namespace Game.Component {
                 var key = this.collisionList[i];
                 var value = this.collisionMap[key];
                 
-                if (value == CollisionState.Enter) {
+                if (value.state == State.Enter) {
                     if (this.CollisionEnterEvent != null) {
-                        this.CollisionEnterEvent(key);
+                        this.CollisionEnterEvent(key, value.point);
                     }
                 }
-                else if (value == CollisionState.Exit) {
+                else if (value.state == State.Exit) {
                     if (this.CollisionExitEvent != null) {
-                        this.CollisionExitEvent(key);
+                        this.CollisionExitEvent(key, value.point);
                     }
                     
                     this.collisionMap.Remove(key);
@@ -138,11 +147,14 @@ namespace Game.Component {
                 }
                 else {
                     if (this.CollisionStayEvent != null) {
-                        this.CollisionStayEvent(key);
+                        this.CollisionStayEvent(key, value.point);
                     }
                 }
                 
-                this.collisionMap[key] = CollisionState.Exit;
+                this.collisionMap[key] = new Data() {
+                    state = State.Exit,
+                    point = value.point
+                };
             }
         }
 
@@ -177,18 +189,24 @@ namespace Game.Component {
             this.transform.position = this.body.Position.ToVector3();
         }
 
-        public void CollisionDetected(Collider collider) {
+        public void CollisionDetected(Collider collider, Vector3 point) {
             if (this.CollisionEnterEvent == null && this.CollisionStayEvent == null && this.CollisionExitEvent == null) {
                 return;
             }
             
             if (!this.collisionMap.ContainsKey(collider)) {
-                this.collisionMap[collider] = CollisionState.Enter;
+                this.collisionMap.Add(collider, new Data() {
+                    state = State.Enter,
+                    point = point
+                });
                 this.collisionList.Add(collider);
             }
             else {
-                this.collisionMap[collider] = CollisionState.Stay;
-            }
+                this.collisionMap[collider] = new Data() {
+                    state = State.Stay,
+                    point = point
+                };
+            } 
         }
 
         public bool Pointcast(Vector3 point) {

@@ -88,7 +88,7 @@ namespace Game.State {
 			var ball = collider.GetComponent<Ball>();
 			
 			if (ball != null) {
-				ball.Move(this.data.Power * this.brick.direction, 0, ball.Velocity.z);
+				ball.Move(this.data.Power * this.brick.direction, 0, ball.Velocity.z * ball.Rate);
 			}
 		}
 	}

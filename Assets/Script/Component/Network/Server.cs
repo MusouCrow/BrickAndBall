@@ -8,12 +8,12 @@ namespace Game.Component.Network {
         private const int PLAYER_COUNT = 2;
 
         private List<NetworkConnection> connList;
-        private Dictionary<int, Message.Report> reportMap;
+        private Dictionary<int, InputData> inputMap;
         private Dictionary<int, Dictionary<int, string>> comparisonMap;
 
         protected void Awake() {
             this.connList = new List<NetworkConnection>();
-            this.reportMap = new Dictionary<int, Message.Report>();
+            this.inputMap = new Dictionary<int, InputData>();
             this.comparisonMap = new Dictionary<int, Dictionary<int, string>>();
 
             Networkmgr.OnServerDisconnectEvent += this.DelConnection;
@@ -27,7 +27,7 @@ namespace Game.Component.Network {
 
         protected void OnDisable() {
             this.connList.Clear();
-            this.reportMap.Clear();
+            this.inputMap.Clear();
             this.comparisonMap.Clear();
         }
 
@@ -64,16 +64,16 @@ namespace Game.Component.Network {
 
         private void ReceiveReport(NetworkMessage netMsg) {
             var msg = netMsg.ReadMessage<Message.Report>();
-            this.reportMap.Add(netMsg.conn.connectionId, msg);
+            this.inputMap.Add(netMsg.conn.connectionId, msg.inputData);
 
-            if (this.reportMap.Count == PLAYER_COUNT) {
-                var connIds = new int[this.reportMap.Count];
-                var inputDatas = new InputData[this.reportMap.Count];
+            if (this.inputMap.Count == PLAYER_COUNT) {
+                var connIds = new int[this.inputMap.Count];
+                var inputDatas = new InputData[this.inputMap.Count];
                 int i = 0;
 
-                foreach (var index in this.reportMap) {
+                foreach (var index in this.inputMap) {
                     connIds[i] = index.Key;
-                    inputDatas[i] = index.Value.inputData;
+                    inputDatas[i] = index.Value;
                     i++;
                 }
 
@@ -85,7 +85,7 @@ namespace Game.Component.Network {
                 };
 
                 this.SendToAll(CustomMsgType.PlayData, playDataMsg);
-                this.reportMap.Clear();
+                this.inputMap.Clear();
             }
         }
 
@@ -117,16 +117,6 @@ namespace Game.Component.Network {
 
                 this.comparisonMap.Remove(msg.playFrame);
             }
-        }
-
-        private bool CheckCanNext() {
-            for (int i = 0; i < this.connList.Count; i++) {
-                if (!this.reportMap.ContainsKey(this.connList[i].connectionId)) {
-                    return false;
-                }
-            }
-
-            return true;
         }
     }
 }

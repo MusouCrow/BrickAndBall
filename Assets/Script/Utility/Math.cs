@@ -16,9 +16,11 @@ namespace Game.Utility {
         }
 
         public static float ToFixed(this float value) {
-            int direction = value >= 0 ? 1 : -1;
+            return Mathf.Floor(Mathf.Abs(value * 1000)) * 0.001f * value.ToDirection();
+        }
 
-            return Mathf.Floor(Mathf.Abs(value * 1000)) * 0.001f * direction;
+        public static int ToDirection(this float value) {
+            return value >= 0 ? 1 : -1;
         }
 
         public static Vector3 ToFixed(this Vector3 value) {

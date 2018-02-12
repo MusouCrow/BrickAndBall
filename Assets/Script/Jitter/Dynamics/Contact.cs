@@ -240,7 +240,7 @@ namespace Jitter.Dynamics
             impulse.Y = normal.Y * normalImpulse + tangent.Y * tangentImpulse;
             impulse.Z = normal.Z * normalImpulse + tangent.Z * tangentImpulse;
             
-            if (!treatBody1AsStatic)
+            if (!treatBody1AsStatic && !body1.isParticle)
             {
                 body1.linearVelocity.X -= (impulse.X * body1.inverseMass);
                 body1.linearVelocity.Y -= (impulse.Y * body1.inverseMass);
@@ -272,7 +272,7 @@ namespace Jitter.Dynamics
                 }
             }
 
-            if (!treatBody2AsStatic)
+            if (!treatBody2AsStatic && !body2.isParticle)
             {
                 body2.linearVelocity.X += (impulse.X * body2.inverseMass);
                 body2.linearVelocity.Y += (impulse.Y * body2.inverseMass);
@@ -700,7 +700,7 @@ namespace Jitter.Dynamics
             impulse.Y = normal.Y * accumulatedNormalImpulse + tangent.Y * accumulatedTangentImpulse;
             impulse.Z = normal.Z * accumulatedNormalImpulse + tangent.Z * accumulatedTangentImpulse;
             //UnityEngine.Debug.Log(2);
-            if (!treatBody1AsStatic)
+            if (!treatBody1AsStatic && !body1.isParticle)
             {
                 body1.linearVelocity.X -= (impulse.X * body1.inverseMass);
                 body1.linearVelocity.Y -= (impulse.Y * body1.inverseMass);
@@ -733,7 +733,7 @@ namespace Jitter.Dynamics
                 }
             }
 
-            if (!treatBody2AsStatic)
+            if (!treatBody2AsStatic && !body2.isParticle)
             {
 
                 body2.linearVelocity.X += (impulse.X * body2.inverseMass);

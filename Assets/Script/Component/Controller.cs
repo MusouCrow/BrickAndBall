@@ -77,7 +77,6 @@ namespace Game.Component {
 				this.AITickEvent(Judge.BallPosition);
 			}
 
-			//Debug.LogError(Client.PlayFrame + "," + this.AIInterval);
 			this.timer.Enter(this.AIInterval, this.TickAI);
 		}
 	}

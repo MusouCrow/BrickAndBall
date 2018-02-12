@@ -61,6 +61,10 @@ namespace Game.Component {
 			}
 		}
 
+		private const float HORI_BORDER = 3.6f;
+		private const float VERT_BORDER = 8;
+		public delegate bool Delegate(int type, float pos, float point, float velocity);
+
 		[SerializeField]
 		private AudioClip clip;
 		[SerializeField]
@@ -94,7 +98,11 @@ namespace Game.Component {
 
 		public Vector3 Velocity {
 			get {
-				return this.velocity;
+				if (this.collider == null) {
+					return Vector3.zero;
+				}
+
+				return this.collider.Velocity;
 			}
 			set {
 				this.collider.Velocity = value;
@@ -114,31 +122,31 @@ namespace Game.Component {
 				return;
 			}
 			
-			if (this.collider.Position.y < 0 || Mathf.Abs(this.collider.Position.x) > 8) {
-				Judge.Gain(this.collider.Position);
+			var pos = this.collider.Position;
+
+			if (Mathf.Abs(pos.x) > VERT_BORDER) {
+				Judge.Gain(pos);
 				this.gameObject.SetActive(false);
 				return;
 			}
+			else if (Mathf.Abs(pos.z) > HORI_BORDER) {
+				if (pos.z > 0) {
+					pos.z = HORI_BORDER;
+				}
+				else {
+					pos.z = -HORI_BORDER;
+				}
+				this.collider.Position = pos;
+			}
 			
-			if (this.latePosition == this.collider.Position) {
-				var pos = this.collider.Position;
-				var direction = this.collider.Position.x < 0 ? 1 : -1;
-				pos.x += 0.5f * direction;
+			if (this.latePosition == pos) {
+				pos.x += 0.5f * this.collider.Position.x.ToDirection();
 				this.collider.Position = pos;
 			}
 
-			this.latePosition = this.collider.Position;
+			this.latePosition = pos;
 			this.stretch.Update(ref this.velocity);
 			this.velocity = this.collider.Velocity;
-			var speed = (this.speed * this.rate).ToFixed();
-
-			if (this.velocity.x <= 0 && this.velocity.x > -speed) {
-				this.velocity.x = -speed;
-				this.collider.Velocity = this.velocity;
-			} else if (this.velocity.x > 0 && this.velocity.x < speed) {
-				this.velocity.x = speed;
-				this.collider.Velocity = this.velocity;
-			}
 		}
 
 		protected void OnEnable() {
@@ -151,7 +159,7 @@ namespace Game.Component {
 			this.transform.localScale = Vector3.one;
 		}
 
-		private void OnCollide(Collider collider) {
+		private void OnCollide(Collider collider, Vector3 point) {
 			Sound.Play(this.clip);
 			var obj = this.NewEffect(this.transform.parent);
 			var psr = obj.GetComponent<ParticleSystemRenderer>();
@@ -161,9 +169,6 @@ namespace Game.Component {
 				psr.material.color = mr.material.color;
 			}
 
-			ViceCamera.Shake(this.collider.Velocity * this.shakingRate, this.shakingTime);
-			this.stretch.OnCollide();
-
 			if (!this.hasDown) {
 				this.collider.IsParticle = true;
 				var pos = this.collider.Position;
@@ -171,6 +176,9 @@ namespace Game.Component {
 				this.collider.Position = pos;
 				this.hasDown = true;
 			}
+
+			ViceCamera.Shake(this.collider.Velocity * this.shakingRate, this.shakingTime);
+			this.stretch.OnCollide();
 		}
 
 		private GameObject NewEffect(Transform parent) {
@@ -179,6 +187,23 @@ namespace Game.Component {
 
 		public void Move(float x, float y, float z) {
 			this.collider.Velocity += new Vector3 (x, y, z);
+		}
+
+		public void Rebound(Vector3 point, Delegate CheckedFunc) {
+			var pos = this.collider.Position;
+			var velocity = this.collider.Velocity;
+			var hasChanged = false;
+			
+			for (int i = 0; i < 3; i = i + 2) {
+				if (CheckedFunc(i, pos[i], point[i], velocity[i])) {
+					velocity[i] = -velocity[i];
+					hasChanged = true;
+				}
+			}
+
+			if (hasChanged) {
+				this.collider.Velocity = velocity;
+			}
 		}
 	}
 }

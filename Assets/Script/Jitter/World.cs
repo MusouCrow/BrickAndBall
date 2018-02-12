@@ -817,20 +817,22 @@ namespace Jitter
         private void IntegrateCallback(object obj)
         {
             RigidBody body = obj as RigidBody;
-
-            //if (!body.isParticle) {
-                JVector temp;
+            JVector temp;
+            
+            if (!body.isParticle) {
                 body.linearVelocity = GMath.ToFixed(body.linearVelocity);
-                if (body.isParticle) {
-                    body.linearVelocity.Y = 0;
-                }
-                JVector.Multiply(ref body.linearVelocity, timestep, out temp);
-                JVector.Add(ref temp, ref body.position, out body.position);
-            //}
+            }
+            
+            JVector.Multiply(ref body.linearVelocity, timestep, out temp);
+            
+            if (body.isParticle) {
+                body.linearVelocity.Y = 0;
+            }
+
+            JVector.Add(ref temp, ref body.position, out body.position);
 
             if (!(body.isParticle))
             {
-
                 //exponential map
                 JVector axis;
                 float angle = body.angularVelocity.Length();

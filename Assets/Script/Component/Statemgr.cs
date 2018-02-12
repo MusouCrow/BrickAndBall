@@ -79,7 +79,7 @@ namespace Game.Component {
 			return this.nowState == state;
 		}
 
-		private void OnCollide(Collider collider) {
+		private void OnCollide(Collider collider, Vector3 point) {
 			if (this.nowState != null) {
 				this.nowState.OnCollide(collider);
 			}

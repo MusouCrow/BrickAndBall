@@ -30,6 +30,8 @@ using Jitter.Dynamics.Constraints;
 using Jitter.DataStructures;
 #endregion
 
+using GMath = Game.Utility.Math;
+
 namespace Jitter.Dynamics
 {
 
@@ -346,7 +348,7 @@ namespace Jitter.Dynamics
         {
             this.inertia = Shape.inertia;
             JMatrix.Inverse(ref inertia, out invInertia);
-            this.inverseMass = 1.0f / Shape.mass;
+            this.inverseMass = GMath.ToFixed(1.0f / Shape.mass);
             useShapeMassProperties = true;
         }
 

@@ -42,8 +42,9 @@ namespace Game.Component {
 
 		public delegate void Delegate(Vector3 pos);
 		private const float RANGE_Z = 2.3f;
-		private static Vector2 POWER = new Vector2(5, 10);
-		private static Vector2 AI_MOTION_TIME = new Vector2(0.3f, 0.7f);
+		private static Vector2 POWER_X = new Vector2(6, 9);
+		private static Vector2 POWER_Z = new Vector2(-5, 5);
+		private static Vector2 AI_MOTION_TIME = new Vector2(0.4f, 0.7f);
 		private static Vector4 SHAKING_VALUE = new Vector4(0.1f, 0, 0, 0.2f);
 
 		private static void HandleValueWithRange(ref float value) {
@@ -102,15 +103,24 @@ namespace Game.Component {
 			this.AdjustPosition();
 		}
 
-		private void OnCollide(Collider collider) {
+		private bool CheckedFunc(int type, float pos, float point, float velocity) {
+			return true;
+		}
+
+		private void OnCollide(Collider collider, Vector3 point) {
 			var ball = collider.GetComponent<Ball>();
-
+			
 			if (ball != null) {
-				float valueX = Math.Lerp(POWER.x, POWER.y, Math.Random());
-				float valueZ = Math.Lerp(POWER.x, POWER.y, Math.Random());
+				ball.Rebound(point, this.CheckedFunc);
+				
+				float valueX = Math.Lerp(POWER_X.x, POWER_X.y, Math.Random());
+				float valueZ = Math.Lerp(POWER_Z.x, POWER_Z.y, Math.Random());
 
-				valueZ = Math.Random() < 0.5f ? valueZ : -valueZ;
-				ball.Move(valueX * this.direction * ball.Rate, 0, valueZ * ball.Rate);
+				var velocity = ball.Velocity;
+				velocity.x = Mathf.Abs(velocity.x) < 15 ? 0 : velocity.x - 15 * direction;
+				velocity.x += valueX * this.direction * ball.Rate;
+				velocity.z = valueZ * ball.Rate;
+				ball.Velocity = velocity;
 			}
 			
 			if (this.tweener == null || !this.tweener.IsPlaying()) {
