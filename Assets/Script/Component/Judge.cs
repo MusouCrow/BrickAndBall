@@ -112,7 +112,7 @@ namespace Game.Component {
 
 		public static void SetInput(int type, InputData inputData) {
 			var team = type == 0 ? INSTANCE.teamA : INSTANCE.teamB;
-			team.brick.dragging.Drag(inputData.mousePos, inputData.isDown);
+			team.brick.dragging.Drag(inputData.mousePos.ToVector3(), inputData.isDown);
 		}
 
 		public static string GetMD5() {

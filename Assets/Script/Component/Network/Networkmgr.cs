@@ -1,81 +1,81 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.Networking.Types;
-using UnityEngine.Networking.Match;
+using ExitGames.Client.Photon;
+using ExitGames.Client.Photon.LoadBalancing;
 
 namespace Game.Component.Network {
-    public class Networkmgr : NetworkManager {
-        public delegate void Delegate(NetworkConnection conn);
-        public delegate void VoidDelegate();
-        public static event Delegate OnClientConnectEvent;
-        public static event Delegate OnServerDisconnectEvent;
-        public static event VoidDelegate OnStopClientEvent;
+    using Utility;
+
+    public class Networkmgr : MonoBehaviour {
+        public const int PLAYER_COUNT = 2;
         private static Networkmgr INSTANCE;
 
-        public static void StartMatch() {
-			INSTANCE.StartMatchMaker();
-			INSTANCE.ListMatches();
-		}
+        public static void Connect() {
+            INSTANCE.connection.ConnectToRegionMaster("cn");
+        }
 
-		public static void ExitMatch() {
-			INSTANCE.StopMatchMaker();
-			INSTANCE.StopHost();
-		}
+        public static void Disconnect() {
+            INSTANCE.connection.Disconnect();
+        }
 
-		public static void Disconnect() {
-			INSTANCE.StopHost();
-		}
+        [SerializeField]
+        private string appId;
+        [SerializeField]
+        private string version;
+        [SerializeField]
+        private Slot startGameSlot;
 
-        public override void OnClientConnect(NetworkConnection conn) {
-            base.OnClientConnect(conn);
+        private Connection connection;
+        private Client client;
+        private Server server;
 
-            if (OnClientConnectEvent != null) {
-                OnClientConnectEvent(conn);
+        protected void Awake() {
+            INSTANCE = this;
+
+            this.connection = new Connection();
+            this.connection.AppId = this.appId;
+            this.connection.AppVersion = this.version;
+            this.connection.NameServerHost = "ns-cn.exitgames.com";
+            this.connection.OnOpResponseAction += this.OnOperationResponse;
+            this.connection.OnStateChangeAction += this.OnStatusChanged;
+
+            this.client = new Client(this.connection, this.startGameSlot);
+            this.server = new Server(this.connection);
+        }
+
+        protected void Update() {
+            this.connection.Service();
+            this.client.Update();
+        }
+
+        protected void OnGUI() {
+            GUILayout.Label(this.connection.State.ToString() + "," + this.connection.Server.ToString());
+            this.client.OnGUI();
+        }
+
+        private void OnOperationResponse(OperationResponse operationResponse) {
+            if (operationResponse.OperationCode == OperationCode.Authenticate) {
+                if (this.connection.Server == ServerConnection.MasterServer) {
+                    this.connection.OpJoinRandomRoom(null, PLAYER_COUNT);
+                }
+            }
+            else if (operationResponse.OperationCode == OperationCode.JoinRandomGame) {
+                if (operationResponse.ReturnCode == ErrorCode.NoRandomMatchFound) {
+                    this.connection.CreateRoom();
+                }
+            }
+            else if (operationResponse.OperationCode == OperationCode.GetRegions) {
+                /*
+                for (int i = 0; i < this.connection.AvailableRegions.Length; i++) {
+                    Debug.Log(this.connection.AvailableRegions[i] + ", " + this.connection.AvailableRegionsServers[i]);
+                }
+                */
             }
         }
 
-        public override void OnServerDisconnect(NetworkConnection conn) {
-            base.OnServerDisconnect(conn);
-
-            if (OnServerDisconnectEvent != null) {
-                OnServerDisconnectEvent(conn);
+        private void OnStatusChanged(ClientState state) {
+            if (state == ClientState.ConnectedToNameServer) {
+                this.connection.OpGetRegions();
             }
         }
-
-        public override void OnStopClient() {
-            base.OnStopClient();
-
-            if (OnStopClientEvent != null) {
-                OnStopClientEvent();
-            }
-        }
-
-		public override void OnMatchList(bool success, string extendedInfo, List<MatchInfoSnapshot> matches) {
-			base.OnMatchList(success, extendedInfo, matches);
-
-			if (success && matches.Count > 0) {
-				this.JoinMatch(matches [0].networkId);
-			} else {
-				this.CreateMatch();
-			}
-		}
-
-		protected void Start() {
-			INSTANCE = this;
-		}
-
-		private void ListMatches() {
-			this.matchMaker.ListMatches(0, 10, "", true, 0, 0, this.OnMatchList);
-		}
-
-		private void JoinMatch(NetworkID netId) {
-			this.matchMaker.JoinMatch(netId, "", "", "", 0, 0, this.OnMatchJoined);
-		}
-
-		private void CreateMatch() {
-			this.matchMaker.CreateMatch(Time.time.ToString (), 2, true, "", "", "", 0, 0, this.OnMatchCreate);
-		}
     }
 }

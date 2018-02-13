@@ -1,12 +1,14 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 using DG.Tweening;
+using ExitGames.Client.Photon;
+using ExitGames.Client.Photon.LoadBalancing;
+
+using PEventCode = ExitGames.Client.Photon.LoadBalancing.EventCode;
 
 namespace Game.Component.Network {
     using Utility;
 
-    public class Client : MonoBehaviour {
+    public class Client {
         public const float STDDT = 0.017f; 
         public delegate void Delegate();
         public static event Delegate UpdateEvent;
@@ -36,34 +38,34 @@ namespace Game.Component.Network {
             }
         }
 
-        [SerializeField]
-        private Slot startGameSlot;
-
+        private Connection connection;
         private int updateTimer;
         private int frame;
         private int playFrame;
         private PlayData playData;
-        private NetworkConnection connection;
         private bool online;
+        private Slot startGameSlot;
 
-        protected void Awake() {
+        public Client(Connection connection, Slot startGameSlot) {
             INSTANCE = this;
+            this.connection = connection;
+            this.connection.AutoJoinLobby = false;
+            this.startGameSlot = startGameSlot;
+            this.connection.OnStateChangeAction += this.OnStatusChanged;
+            this.connection.OnEventCall += this.OnEventCall;
 
-            Networkmgr.OnClientConnectEvent += this.OnStart;
-            Networkmgr.OnStopClientEvent += this.OnStop;
-            
             DOTween.defaultUpdateType = UpdateType.Manual;
             DOTween.Init();
             Client.LateUpdateEvent += () => DOTween.ManualUpdate(STDDT, STDDT);
         }
-        
-        protected void OnGUI() {
+
+        public void OnGUI() {
             if (this.online) {
-                GUILayout.TextField(this.playFrame.ToString());
+                GUILayout.Label(this.playFrame.ToString());
             }
         }
 
-        protected void Update() {
+        public void Update() {
             this.updateTimer += Mathf.CeilToInt(Time.deltaTime * 1000);
 
             while (this.updateTimer >= DT) {
@@ -92,22 +94,21 @@ namespace Game.Component.Network {
 
                     this.playFrame++;
                     this.frame = 0;
-                    
-                    var msg = new Message.Report() {
-                        inputData = new InputData() {
-                            mousePos = Client.MousePosition,
-                            isDown = Input.GetMouseButton(0)
-                        }
+
+                    var sendMsg = new InputData() {
+                        mousePos = new SVector3(Client.MousePosition),
+                        isDown = Input.GetMouseButton(0)
                     };
 
-                    this.connection.Send(CustomMsgType.Report, msg);
+                    this.connection.Send(EventCode.Report, null, true);
+                    
                     /*
-                    var msg2 = new Message.Comparison() {
+                    var sendMsg2 = new Message.Comparison() {
                         playFrame = this.playFrame,
                         content = Judge.GetMD5()
                     };
 
-                    this.connection.Send(CustomMsgType.Comparison, msg2);
+                    this.connection.Send(EventCode.Comparison, sendMsg2);
                     */
                 }
             }
@@ -116,47 +117,40 @@ namespace Game.Component.Network {
             Client.LateUpdateEvent();
         }
 
-        private void OnStart(NetworkConnection conn) {
-            this.connection = conn;
-            this.connection.RegisterHandler(CustomMsgType.Init, this.Init);
-            this.connection.RegisterHandler(CustomMsgType.PlayData, this.ReceivePlayData);
-            this.connection.RegisterHandler(CustomMsgType.DelConnection, this.Disconnect);
-            this.connection.Send(CustomMsgType.AddConnection, new Message.Empty());
-        }
+        private void OnStatusChanged(ClientState state) {
+            if (state == ClientState.Joined) {
+                this.connection.Send(EventCode.Connect, null, true);
+            }
+            else if (state == ClientState.Disconnected) {
+                this.online = false;
 
-        private void OnStop() {
-            this.online = false;
-            this.connection = null;
-
-            if (Judge.GameType == GameType.PVP) {
-                Judge.GameType = GameType.PVE;
+                if (Judge.GameType == GameType.PVP) {
+                    Judge.GameType = GameType.PVE;
+                }
             }
         }
 
-        private void Init(NetworkMessage netMsg) {
-            var msg = netMsg.ReadMessage<Message.Init>();
-
-            Random.InitState(msg.seed);
-            Judge.PlayerType = this.connection.connectionId == msg.connIds[0] ? PlayerType.A : PlayerType.B;
-            this.startGameSlot.Run(this.gameObject);
-
-            this.online = true;
-            this.updateTimer = 0;
-            this.frame = 0;
-            this.playFrame = 0;
-            this.playData = new PlayData();
-        }
-
-        private void ReceivePlayData(NetworkMessage netMsg) {
-            var msg = netMsg.ReadMessage<Message.PlayData>();
-            this.playData = msg.playData;
-        }
-
-        private void Disconnect(NetworkMessage netMsg) {
-            Networkmgr.ExitMatch();
-
-            if (Judge.GameType == GameType.NONE) {
-                Networkmgr.StartMatch();
+        private void OnEventCall(byte eventCode, object content, int senderId) {
+            if (eventCode == EventCode.Init) {
+                var msg = this.connection.Receive<Message.Init>(content);
+                
+                Random.InitState(msg.seed);
+                Judge.PlayerType = this.connection.LocalPlayer.ID == msg.connIds[0] ? PlayerType.A : PlayerType.B;
+                this.startGameSlot.Run(null);
+                this.online = true;
+                this.updateTimer = 0;
+                this.frame = 0;
+                this.playFrame = 0;
+                this.playData = new PlayData();
+            }
+            else if (eventCode == EventCode.PlayData) {
+                var msg = this.connection.Receive<PlayData>(content);
+                this.playData = msg;
+            }
+            else if (eventCode == PEventCode.Leave) {
+                if (Judge.GameType != GameType.NONE) {
+                    this.connection.Disconnect();
+                }
             }
         }
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace Game.Slot {
 	using Component;
@@ -22,23 +21,11 @@ namespace Game.Slot {
 		}
 
 		private void OnComplete() {
-			/*
 			if (this.isStart) {
-				Networkmgr.StartMatch();
-			} else {
-				Networkmgr.ExitMatch();
+				Networkmgr.Connect();
 			}
-			*/
-			
-			if (this.isStart) {
-				if (Application.isEditor) {
-					NetworkManager.singleton.StartHost();
-				}
-				else {
-					NetworkManager.singleton.StartClient();
-				}
-			} else {
-				NetworkManager.singleton.StopHost();
+			else {
+				Networkmgr.Disconnect();
 			}
 			
 			Interface.Instantiate(this.next);

@@ -1,51 +1,56 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace Game.Component.Network {
-    using _PlayData = PlayData;
+    [Serializable]
+    public struct SVector3 {
+        public float x;
+        public float y;
+        public float z;
 
+        public SVector3(Vector3 vector) {
+            this.x = vector.x;
+            this.y = vector.y;
+            this.z = vector.z;
+        }
+
+        public Vector3 ToVector3() {
+            return new Vector3(x, y, z);
+        }
+    }
+
+    [Serializable]
+    public struct InputData {
+        public SVector3 mousePos;
+        public bool isDown;
+    }
+
+    [Serializable]
     public class PlayData {
         public int[] connIds;
         public InputData[] inputDatas;
     }
 
-    public struct InputData {
-        public Vector3 mousePos;
-        public bool isDown;
-    }
-
-    public static class CustomMsgType {
-        public static short Init = MsgType.Highest + 1;
-        public static short PlayData = MsgType.Highest + 2;
-        public static short AddConnection = MsgType.Highest + 3;
-        public static short Report = MsgType.Highest + 4;
-        public static short DelConnection = MsgType.Highest + 5;
-        public static short Comparison = MsgType.Highest + 6;
-        public static short Sync = MsgType.Highest + 7;
+    public static class EventCode {
+        public static byte Init = 1;
+        public static byte PlayData = 2;
+        public static byte Connect = 3;
+        public static byte Report = 4;
+        public static byte Comparison = 6;
     }
 
     namespace Message {
-        public class Empty : MessageBase {}
-
-        public class Init : MessageBase {
+        [Serializable]
+        public class Init {
             public int seed;
             public int[] connIds;
         }
 
-        public class PlayData : MessageBase {
-            public _PlayData playData;
-        }
-
-        public class Report : MessageBase {
-            public InputData inputData;
-        }
-
-        public class Comparison : MessageBase {
+        [Serializable]
+        public struct Comparison {
             public int playFrame;
             public string content;
         }
     }
 }
-
-
