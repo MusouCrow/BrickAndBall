@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using ExitGames.Client.Photon;
@@ -15,7 +16,7 @@ namespace Game.Component.Network {
         public static event Delegate LateUpdateEvent;
         private static Client INSTANCE;
         private const int DT = 17;
-        private const int WAITTING_INTERVAL = 4;
+        private const int WAITTING_INTERVAL = 7;
 
         public static bool Online {
             get {
@@ -45,6 +46,7 @@ namespace Game.Component.Network {
         private PlayData playData;
         private bool online;
         private Slot startGameSlot;
+        private bool first;
 
         public Client(Connection connection, Slot startGameSlot) {
             INSTANCE = this;
@@ -94,13 +96,13 @@ namespace Game.Component.Network {
 
                     this.playFrame++;
                     this.frame = 0;
-
+                    
                     var sendMsg = new InputData() {
                         mousePos = new SVector3(Client.MousePosition),
                         isDown = Input.GetMouseButton(0)
                     };
 
-                    this.connection.Send(EventCode.Report, null, true);
+                    this.connection.Send(EventCode.Report, sendMsg, true);
                     
                     /*
                     var sendMsg2 = new Message.Comparison() {

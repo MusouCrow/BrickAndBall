@@ -45,8 +45,6 @@ namespace Game.Component.Network {
                 }
             }
             else if (eventCode == EventCode.Report) {
-                Debug.Log(1);
-                /*
                 var msg = this.connection.Receive<InputData>(content);
                 this.inputMap.Add(senderId, msg);
 
@@ -61,6 +59,15 @@ namespace Game.Component.Network {
                         i++;
                     }
 
+                    /*
+                    var connIds = new int[Networkmgr.PLAYER_COUNT];
+                    int i = 0;
+
+                    foreach (var index in this.connection.CurrentRoom.Players) {
+                        connIds[i] = index.Key;
+                        i++;
+                    } */
+
                     var sendMsg = new PlayData() {
                         connIds = connIds,
                         inputDatas = inputDatas
@@ -68,7 +75,7 @@ namespace Game.Component.Network {
 
                     this.connection.Send(EventCode.PlayData, sendMsg);
                     this.inputMap.Clear();
-                } */
+                }
             }
             else if (eventCode == EventCode.Comparison) {
                 var msg = this.connection.Receive<Message.Comparison>(content);

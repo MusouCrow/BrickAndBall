@@ -19,7 +19,7 @@ namespace Game.Component.Network {
         };
 
         public bool CreateRoom() {
-            return this.OpCreateRoom(null, new RoomOptions {MaxPlayers = 2}, null);
+            return this.OpCreateRoom(null, new RoomOptions {MaxPlayers = Networkmgr.PLAYER_COUNT}, null);
         }
 
         public void Send(byte code, object content, bool toServer=false) {
@@ -28,23 +28,25 @@ namespace Game.Component.Network {
             //var op = toServer ? this.serverOptions : this.allOptions; 
 
             if (content == null) {
-                this.OpRaiseEvent(code, content, true, op);
+                this.OpRaiseEvent(code, null, true, op);
                 return;
             }
 
-            this.stream.Position = 0;
-            this.stream.SetLength(0);
-            this.formatter.Serialize(this.stream, content);
-            this.OpRaiseEvent(code, this.stream.ToArray(), true, op);
+            var stream = new MemoryStream();
+            //this.stream.Position = 0;
+            //this.stream.SetLength(0);
+            this.formatter.Serialize(stream, content);
+            this.OpRaiseEvent(code, stream.ToArray(), true, op);
         }
 
         public T Receive<T>(object content) {
             var bytes = (byte[])content;
+            /*
             this.stream.SetLength(bytes.Length);
             this.stream.Write(bytes, 0, bytes.Length);
-            this.stream.Position = 0;
-
-            return (T)this.formatter.Deserialize(this.stream);
+            this.stream.Position = 0; */
+            var stream = new MemoryStream(bytes);
+            return (T)this.formatter.Deserialize(stream);
         }
 
         public override void OnEvent(EventData photonEvent) {

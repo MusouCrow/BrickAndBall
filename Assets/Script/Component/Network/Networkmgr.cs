@@ -11,6 +11,7 @@ namespace Game.Component.Network {
 
         public static void Connect() {
             INSTANCE.connection.ConnectToRegionMaster("cn");
+            //INSTANCE.connection.Connect("192.168.31.140:5055", null, null, null, null);
         }
 
         public static void Disconnect() {
@@ -35,6 +36,7 @@ namespace Game.Component.Network {
             this.connection.AppId = this.appId;
             this.connection.AppVersion = this.version;
             this.connection.NameServerHost = "ns-cn.exitgames.com";
+            this.connection.AutoJoinLobby = false;
             this.connection.OnOpResponseAction += this.OnOperationResponse;
             this.connection.OnStateChangeAction += this.OnStatusChanged;
 
@@ -64,11 +66,9 @@ namespace Game.Component.Network {
                 }
             }
             else if (operationResponse.OperationCode == OperationCode.GetRegions) {
-                /*
                 for (int i = 0; i < this.connection.AvailableRegions.Length; i++) {
                     Debug.Log(this.connection.AvailableRegions[i] + ", " + this.connection.AvailableRegionsServers[i]);
                 }
-                */
             }
         }
 
