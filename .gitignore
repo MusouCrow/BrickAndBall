@@ -25,3 +25,5 @@ sysinfo.txt
 
 # Custom
 .vscode
+.idea
+_.*

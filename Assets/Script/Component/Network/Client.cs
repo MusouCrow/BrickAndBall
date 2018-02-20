@@ -16,7 +16,7 @@ namespace Game.Component.Network {
         public static event Delegate LateUpdateEvent;
         private static Client INSTANCE;
         private const int DT = 17;
-        private const int WAITTING_INTERVAL = 7;
+        private const int WAITTING_INTERVAL = 5;
 
         public static bool Online {
             get {

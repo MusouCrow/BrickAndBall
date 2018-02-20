@@ -54,7 +54,7 @@ namespace Game.Component {
 
 		protected override void LockUpdate() {
 			// || Judge.GameType != GameType.PVE || this.isPlayer
-			if (!this.isRunning) {
+			if (!this.isRunning || Judge.GameType != GameType.PVE || this.isPlayer) {
 				return;
 			}
 			

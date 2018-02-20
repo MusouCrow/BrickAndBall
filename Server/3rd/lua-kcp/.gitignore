@@ -1,0 +1,16 @@
+*~
+*.so
+*.o
+*.lo
+*.bak
+*.swp
+*.tmp
+*.out
+*.md5
+*.tar.gz
+*.pid
+*.a
+bin/
+build/
+include/
+lualib/
