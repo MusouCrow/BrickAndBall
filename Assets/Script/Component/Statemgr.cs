@@ -5,9 +5,9 @@ using UnityEngine;
 
 using Object = System.Object;
 
-namespace Game.Component {
-	using Utility;
+namespace Game.Component { 
 	using Network;
+	using Utility;
 
 	public class Statemgr : LockBehaviour {
 		[SerializeField]
@@ -42,10 +42,10 @@ namespace Game.Component {
 		}
 
 		protected void Start() {
-			var brick = this.GetComponent<Brick>();
+			var coms = this.GetComponents<IDrag>();
 
-			if (brick != null) {
-				brick.dragging.OnDragEvent += this.OnDrag;
+			for (int i = 0; i < coms.Length; i++) {
+				coms[i].OnDragEvent += this.OnDrag;
 			}
 		}
 

@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 65112053216068184}
   - component: {fileID: 23574638928607706}
   - component: {fileID: 114002158289451882}
-  - component: {fileID: 114467319013393604}
+  - component: {fileID: 114762165096578730}
   - component: {fileID: 114868950200349630}
   m_Layer: 0
   m_Name: Brick
@@ -111,7 +111,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   orderType: 1
   isStatic: 1
---- !u!114 &114467319013393604
+--- !u!114 &114762165096578730
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -119,13 +119,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1196681888188112}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9245a8636fd94d038a733c0ec3a42cf, type: 3}
+  m_Script: {fileID: 11500000, guid: 37884c95441bf4f0eb0aeb37d828f848, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   orderType: 0
   targetColor: {r: 0, g: 0, b: 0, a: 0}
   direction: 0
-  AIIntervalRange: {x: 0.2, y: 0.4}
+  AIIntervalRange: {x: 0.3, y: 0.6}
 --- !u!114 &114868950200349630
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -142,5 +142,5 @@ MonoBehaviour:
   - Normal
   - Elast
   values:
-  - {fileID: 11400000, guid: 9030fb19dde324b2db75e7ec75312996, type: 2}
-  - {fileID: 11400000, guid: 9d72eaa761ede4d90ba7859f7eaa5d42, type: 2}
+  - {fileID: 11400000, guid: d4a64f257d57741cf873a0c8902af7fb, type: 2}
+  - {fileID: 11400000, guid: 845e105a9e1cf49a68a12d12eed9abb2, type: 2}

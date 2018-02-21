@@ -33,7 +33,7 @@ namespace Game.Component {
         }
 
         protected override void LockUpdate() {
-            this.world.Step(Client.STDDT, false);
+            this.world.Step(Networkmgr.STDDT, false);
         }
 
         private void CollisionDetected(JRigidbody body1, JRigidbody body2, JVector point1, JVector point2, JVector normal, float penetration) {

@@ -7,7 +7,8 @@ using UnityEngine;
 namespace Game.Component {
 	using Utility;
 	using Network;
-	using Component.UI;
+	using Brick_;
+	using UI;
 
 	public enum GameType {
 		NONE,
@@ -112,7 +113,7 @@ namespace Game.Component {
 
 		public static void SetInput(int type, InputData inputData) {
 			var team = type == 0 ? INSTANCE.teamA : INSTANCE.teamB;
-			team.brick.dragging.Drag(inputData.mousePos.ToVector3(), inputData.isDown);
+			team.brick.Drag(inputData.mousePos.ToVector3(), inputData.isDown);
 		}
 
 		public static string GetMD5() {

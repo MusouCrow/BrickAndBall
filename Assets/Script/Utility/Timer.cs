@@ -4,8 +4,6 @@ namespace Game.Utility {
 	using Component.Network;
 
 	public class Timer {
-		public delegate void Delegate();
-
 		public bool IsRunning {
 			get {
 				return this.isRunning;
@@ -15,7 +13,7 @@ namespace Game.Utility {
 		public float value;
 		public float max;
 		private bool isRunning;
-		private Delegate OnComplete;
+		private Action OnComplete;
 
 		public Timer() {
 			this.value = 0;
@@ -23,7 +21,7 @@ namespace Game.Utility {
 			this.isRunning = false;
 		}
 
-		public void Update(float dt=Client.STDDT) {
+		public void Update(float dt=Networkmgr.STDDT) {
 			if (!this.isRunning) {
 				return;
 			}
@@ -37,7 +35,7 @@ namespace Game.Utility {
 			}
 		}
 
-		public void Enter(float time=0, Delegate OnComplete=null) {
+		public void Enter(float time=0, Action OnComplete=null) {
 			this.value = 0;
 			this.isRunning = true;
 			this.max = time == 0 ? this.max : time.ToFixed();
