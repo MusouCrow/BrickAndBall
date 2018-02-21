@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Game.Utility {
-	using Component.Network;
+	using Network;
 
 	public class Timer {
 		public bool IsRunning {

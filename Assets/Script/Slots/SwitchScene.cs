@@ -2,9 +2,9 @@
 using UnityEngine;
 
 namespace Game.Slots {
-	using Component;
-	using Component.UI;
-	using TargetType = Component.ViceCamera.TargetType;
+	using Field;
+	using UI;
+	using TargetType = ViceCamera.TargetType;
 
 	[CreateAssetMenuAttribute(menuName="Game/Slot/SwitchScene")]
 	public class SwitchScene : Utility.Slot {

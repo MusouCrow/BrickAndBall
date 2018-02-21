@@ -3,8 +3,6 @@ using UnityEngine;
 using DG.Tweening;
 
 namespace Game.Slots {
-	using Component;
-
 	[CreateAssetMenuAttribute(menuName="Game/Slot/Shake")]
 	public class Shake : Utility.Slot {
 		[SerializeField]

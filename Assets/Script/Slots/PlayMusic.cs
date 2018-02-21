@@ -2,7 +2,6 @@
 using UnityEngine;
 
 namespace Game.Slots {
-	using Component;
 	using Utility;
 
 	[CreateAssetMenuAttribute(menuName="Game/Slot/PlayMusic")]

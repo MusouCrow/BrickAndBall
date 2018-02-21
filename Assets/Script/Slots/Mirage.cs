@@ -5,8 +5,8 @@ using UnityEngine.UI;
 using DG.Tweening;
 
 namespace Game.Slots {
-	using Component.UI;
-	using MirageCP = Game.Component.UI.Mirage;
+	using UI;
+	using MirageCP = UI.Mirage;
 
 	[CreateAssetMenuAttribute(menuName="Game/Slot/Mirage")]
 	public class Mirage : Utility.Slot {

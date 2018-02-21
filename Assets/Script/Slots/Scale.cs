@@ -3,8 +3,6 @@ using UnityEngine;
 using DG.Tweening;
 
 namespace Game.Slots {
-	using Component;
-
 	[CreateAssetMenuAttribute(menuName="Game/Slot/Scale")]
 	public class Scale : Utility.Slot {
 		[SerializeField]

@@ -3,9 +3,8 @@ using System.Collections;
 using UnityEngine;
 
 namespace Game.Slots {
-	using Component;
-	using Component.UI;
-	using Component.Network;
+	using UI;
+	using Network;
 
 	[CreateAssetMenuAttribute(menuName="Game/Slot/Match")]
 	public class Match : Utility.Slot {

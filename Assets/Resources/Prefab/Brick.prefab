@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 23574638928607706}
   - component: {fileID: 114002158289451882}
   - component: {fileID: 114762165096578730}
-  - component: {fileID: 114868950200349630}
+  - component: {fileID: 114621481962240024}
   m_Layer: 0
   m_Name: Brick
   m_TagString: Untagged
@@ -111,6 +111,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   orderType: 1
   isStatic: 1
+--- !u!114 &114621481962240024
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1196681888188112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba7e06be606bc46818ff47950ec29366, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orderType: 0
+  keys:
+  - Normal
+  - Elast
+  values:
+  - {fileID: 11400000, guid: d4a64f257d57741cf873a0c8902af7fb, type: 2}
+  - {fileID: 11400000, guid: 845e105a9e1cf49a68a12d12eed9abb2, type: 2}
 --- !u!114 &114762165096578730
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -126,21 +144,3 @@ MonoBehaviour:
   targetColor: {r: 0, g: 0, b: 0, a: 0}
   direction: 0
   AIIntervalRange: {x: 0.3, y: 0.6}
---- !u!114 &114868950200349630
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1196681888188112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 808aabb8688a243c484118c00899163f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  orderType: 0
-  keys:
-  - Normal
-  - Elast
-  values:
-  - {fileID: 11400000, guid: d4a64f257d57741cf873a0c8902af7fb, type: 2}
-  - {fileID: 11400000, guid: 845e105a9e1cf49a68a12d12eed9abb2, type: 2}

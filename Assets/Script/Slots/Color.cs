@@ -4,7 +4,6 @@ using UnityEngine.UI;
 using DG.Tweening;
 
 namespace Game.Slots {
-	using Component;
 	using UColor = UnityEngine.Color;
 
 	[CreateAssetMenuAttribute(menuName="Game/Slot/Color")]

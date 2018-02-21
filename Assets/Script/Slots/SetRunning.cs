@@ -2,8 +2,7 @@
 using UnityEngine;
 
 namespace Game.Slots {
-	using Component;
-	using Component.Network;
+	using Field;
 
 	[CreateAssetMenuAttribute(menuName="Game/Slot/SetRunning")]
 	public class SetRunning : Utility.Slot {
