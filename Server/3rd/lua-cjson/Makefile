@@ -10,9 +10,9 @@ SHARED = -fPIC --shared
 CFLAGS = -g -O2 -Wall
 endif
 
-INCLUDE = -I../../skynet/3rd/lua -Ikcp
-OBJS = src/lkcp.o kcp/ikcp.o
-TARGET = $(OUTPUT_DIR)/lkcp.so
+INCLUDE = -I../../skynet/3rd/lua
+OBJS = lua_cjson.o strbuf.o fpconv.o
+TARGET = $(OUTPUT_DIR)/cjson.so
 
 .PHONY: all clean
 
@@ -29,4 +29,4 @@ else
 endif
 
 clean:
-	rm -f src/*.o
+	rm -f *.o

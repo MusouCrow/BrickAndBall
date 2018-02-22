@@ -1,22 +1,33 @@
 basepath=$(cd `dirname $0`; cd ..; pwd)
+platform=$(uname)
 
 function build() {
     echo "====================="
     echo "start build skyent..."
     cd $basepath/skynet
-    make linux
+
+    if [[ "$platform" == "Darwin" ]]; then
+        make macosx
+    else
+        make linux
+    fi
 
     echo "====================="
     echo "start build lua-kcp..."
     cd $basepath/3rd/lua-kcp
     make
-    mv lualib/lkcp.so $basepath/lib/lkcp.so
-    mv lualib/lutil.so $basepath/lib/lutil.so
+
+    echo "====================="
+    echo "start build lua-cjson..."
+    cd $basepath/3rd/lua-cjson
+    make
 
     echo "====================="
     echo "clean..."
     cd $basepath
     find . -name "*.o"  | xargs rm -f
+
+    echo "finish"
 }
 
 function clean() {
@@ -31,10 +42,18 @@ function clean() {
 	make clean
 
 	echo "====================="
+	echo "start clean lua-cjson..."
+	cd $basepath/3rd/lua-cjson
+	make clean
+
+	echo "====================="
 	echo "start clean lualib..."
     cd $basepath
     rm -f lib/*.so
+    find . -name "*.dSYM"  | xargs rm -f -r
     find . -name "*.o"  | xargs rm -f
+
+    echo "finish"
 }
 
 if [[ "$1" == "" ]]; then

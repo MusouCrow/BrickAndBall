@@ -21,27 +21,30 @@ namespace Game.Network {
             }
         }
 
-        public static void Connect() {
-            INSTANCE.client.Connect();
+        public static bool Connect() {
+            return INSTANCE.client.Connect();
         }
 
-        public static void Disconnect() {
-            INSTANCE.client.Disconnect();
+        public static bool Disconnect() {
+            return INSTANCE.client.Disconnect();
         }
 
         [SerializeField]
         private Slot startGameSlot;
+        [SerializeField]
+        private Slot exitMatchSlot;
         private int updateTimer;
         private int frame;
         private int playFrame;
         private PlayData playData;
         private Client client;
-        private bool online;
 
         protected void Awake() {
             INSTANCE = this;
 
             this.client = new Client("127.0.0.1", 8888);
+            this.client.OnConnect += this.OnConnect;
+            this.client.OnDisconnect += this.OnDisconnect;
 
             //Networkmgr.OnClientConnectEvent += this.OnStart;
             //Networkmgr.OnStopClientEvent += this.OnStop;
@@ -52,7 +55,7 @@ namespace Game.Network {
         }
 
         protected void OnGUI() {
-            if (this.online) {
+            if (this.client.Connected) {
                 GUILayout.TextField(this.playFrame.ToString());
             }
         }
@@ -68,11 +71,11 @@ namespace Game.Network {
         }
 
         private void LockUpdate() {
-            if (this.online && this.frame + 1 == WAITTING_INTERVAL && this.playData == null) {
+            if (this.client.Connected && this.frame + 1 == WAITTING_INTERVAL && this.playData == null) {
                 return;
             }
 
-            if (this.online) {
+            if (this.client.Connected) {
                 this.frame++;
 
                 if (this.frame == WAITTING_INTERVAL) {
@@ -111,7 +114,7 @@ namespace Game.Network {
             Networkmgr.LateUpdateEvent();
         }
 
-        private void OnStart() {
+        private void OnConnect() {
             /*
             this.connection = conn;
             this.connection.RegisterHandler(CustomMsgType.Init, this.Init);
@@ -121,15 +124,15 @@ namespace Game.Network {
             */
         }
 
-        private void OnStop() {
-            this.online = false;
-            //this.connection = null;
-
+        private void OnDisconnect() {
             if (Judge.GameType == GameType.PVP) {
                 Judge.GameType = GameType.PVE;
             }
+            else {
+                this.exitMatchSlot.Run(this.gameObject);
+            }
         }
-        
+
         /*
         private void Init(NetworkMessage netMsg) {
             var msg = netMsg.ReadMessage<Message.Init>();

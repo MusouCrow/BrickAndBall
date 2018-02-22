@@ -16,15 +16,96 @@ namespace Game.Network {
         private const float UPDATE_INTERVAL = 0.02f;
         private const float HEARTBEAT_INTERVAL = 3;
 
+        public event Action OnConnect;
+        public event Action OnDisconnect;
+
         private UdpClient udp;
         private KCP kcp;
         private Timer updateTimer;
         private Timer heartbeatTimer;
         private bool heartbeat = true;
+        private bool willDisconnect;
 
         public bool Connected {
             get;
             private set;
+        }
+
+        public Client(string addr, int port) {
+            this.udp = new UdpClient(addr, port);
+            this.updateTimer = new Timer();
+            this.heartbeatTimer = new Timer();
+        }
+
+        public void Update() {
+            if (!this.Connected) {
+                return;
+            }
+
+            if (this.willDisconnect) {
+                this.Disconnect();
+                this.willDisconnect = false;
+
+                return;
+            }
+
+            this.updateTimer.Update();
+            this.heartbeatTimer.Update();
+
+            for (var size = this.kcp.PeekSize(); size > 0; size = this.kcp.PeekSize()) {
+                var buffer = new byte[size];
+
+                if (this.kcp.Recv(buffer) > 0) {
+                    string data = Encoding.ASCII.GetString(buffer);
+
+                    if (data == "welcome") {
+                        this.heartbeatTimer.Enter(HEARTBEAT_INTERVAL, this.HeartbeatTick);
+                    }
+
+                    Debug.Log(data);
+                }
+            }
+        }
+
+        public bool Connect() {
+            if (this.Connected) {
+                return false;
+            }
+
+            this.kcp = new KCP(1, this.SendWrap);
+            //this.kcp.NoDelay(1, 10, 2, 1);
+            //this.kcp.WndSize(128, 128);
+            this.Send("connect");
+            this.Receive();
+
+            this.updateTimer.Enter(UPDATE_INTERVAL, this.UpdateTick);
+            this.Connected = true;
+            
+            if (this.OnConnect != null) {
+                this.OnConnect();
+            }
+
+            Debug.Log("connect");
+
+            return true;
+        }
+
+        public bool Disconnect() {
+            if (!this.Connected) {
+                return false;
+            }
+
+            this.updateTimer.Exit();
+            this.heartbeatTimer.Exit();
+            this.Connected = false;
+
+            if (this.OnDisconnect != null) {
+                this.OnDisconnect();
+            }
+
+            Debug.Log("disconnect");
+
+            return true;
         }
 
         private void Receive() {
@@ -47,7 +128,7 @@ namespace Game.Network {
                 this.Receive();
             }
             catch (SocketException) {
-                this.Disconnect();
+                this.willDisconnect = true;
             }
         }
 
@@ -56,7 +137,12 @@ namespace Game.Network {
         }
 
         private void SendWrap(byte[] data, int size) {
-            this.udp.BeginSend(data, size, this.SendCallback, null);
+            try {
+                this.udp.BeginSend(data, size, this.SendCallback, null);
+            }
+            catch (SocketException) {
+                this.Disconnect();
+            }
         }
 
         private void UpdateTick() {
@@ -73,54 +159,6 @@ namespace Game.Network {
                 this.heartbeat = false;
                 this.heartbeatTimer.Enter(HEARTBEAT_INTERVAL, this.HeartbeatTick);
             }
-        }
-
-        public Client(string addr, int port) {
-            this.udp = new UdpClient(addr, port);
-            this.updateTimer = new Timer();
-            this.heartbeatTimer = new Timer();
-        }
-
-        public void Update() {
-            if (!this.Connected) {
-                return;
-            }
-
-            this.updateTimer.Update();
-            this.heartbeatTimer.Update();
-
-            for (var size = this.kcp.PeekSize(); size > 0; size = this.kcp.PeekSize()) {
-                var buffer = new byte[size];
-
-                if (this.kcp.Recv(buffer) > 0) {
-                    string data = Encoding.ASCII.GetString(buffer);
-
-                    if (data == "welcome") {
-                        this.heartbeatTimer.Enter(HEARTBEAT_INTERVAL, this.HeartbeatTick);
-                    }
-
-                    Debug.Log(data);
-                }
-            }
-        }
-
-        public void Connect() {
-            this.kcp = new KCP(1, this.SendWrap);
-            //this.kcp.NoDelay(1, 10, 2, 1);
-            //this.kcp.WndSize(128, 128);
-            this.Send("connect");
-            this.Receive();
-
-            this.updateTimer.Enter(UPDATE_INTERVAL, this.UpdateTick);
-            this.Connected = true;
-            Debug.Log("connect");
-        }
-
-        public void Disconnect() {
-            this.updateTimer.Exit();
-            this.heartbeatTimer.Exit();
-            this.Connected = false;
-            Debug.Log("disconnect");
         }
     }
 }
