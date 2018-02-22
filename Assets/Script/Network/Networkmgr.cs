@@ -22,11 +22,11 @@ namespace Game.Network {
         }
 
         public static void Connect() {
-
+            INSTANCE.client.Connect();
         }
 
         public static void Disconnect() {
-
+            INSTANCE.client.Disconnect();
         }
 
         [SerializeField]
@@ -40,6 +40,8 @@ namespace Game.Network {
 
         protected void Awake() {
             INSTANCE = this;
+
+            this.client = new Client("127.0.0.1", 8888);
 
             //Networkmgr.OnClientConnectEvent += this.OnStart;
             //Networkmgr.OnStopClientEvent += this.OnStop;
@@ -59,6 +61,7 @@ namespace Game.Network {
             this.updateTimer += Mathf.CeilToInt(Time.deltaTime * 1000);
 
             while (this.updateTimer >= DT) {
+                this.client.Update();
                 this.LockUpdate();
                 this.updateTimer -= DT;
             }
