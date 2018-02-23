@@ -28,4 +28,14 @@ function _SKYNET.DispatchCommand(CMD)
     _SKYNET.Dispatch(MsgEvent)
 end
 
+function _SKYNET.Getenv(key, isNum)
+    local v = _ORIGIN_SKYNET.getenv(key)
+
+    if (isNum) then
+        v = tonumber(v)
+    end
+
+    return v
+end
+
 return _SKYNET

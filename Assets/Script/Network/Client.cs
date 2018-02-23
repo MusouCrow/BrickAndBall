@@ -12,12 +12,14 @@ namespace Game.Network {
     using Utility;
 
     public class Client {
+        private struct Packet {
+            public byte id;
+            public string data;
+        }
+
         private static IPEndPoint EP;
         private const float UPDATE_INTERVAL = 0.02f;
         private const float HEARTBEAT_INTERVAL = 3;
-
-        public event Action OnConnect;
-        public event Action OnDisconnect;
 
         private UdpClient udp;
         private KCP kcp;
@@ -25,6 +27,7 @@ namespace Game.Network {
         private Timer heartbeatTimer;
         private bool heartbeat = true;
         private bool willDisconnect;
+        private Dictionary<byte, List<Action<byte, string>>> eventHandler;
 
         public bool Connected {
             get;
@@ -35,6 +38,7 @@ namespace Game.Network {
             this.udp = new UdpClient(addr, port);
             this.updateTimer = new Timer();
             this.heartbeatTimer = new Timer();
+            this.eventHandler = new Dictionary<byte, List<Action<byte, string>>>();
         }
 
         public void Update() {
@@ -56,15 +60,32 @@ namespace Game.Network {
                 var buffer = new byte[size];
 
                 if (this.kcp.Recv(buffer) > 0) {
-                    byte id = this.Recv(buffer);
+                    var packet = this.Recv(buffer);
 
-                    if (id == EventCode.Connect) {
+                    if (packet.id == EventCode.Connect) {
                         this.heartbeatTimer.Enter(HEARTBEAT_INTERVAL, this.HeartbeatTick);
                     }
 
-                    Debug.Log(id);
+                    this.SendEvent(packet.id, packet.data);
+                    Debug.Log(packet.id);
                 }
             }
+        }
+
+        public void Send(byte id, object obj=null) {
+            byte[] buffer;
+
+            if (obj != null) {
+                var data = JsonUtility.ToJson(obj);
+                buffer = new byte[Encoding.UTF8.GetByteCount(data) + 1];
+                buffer[0] = id;
+                Encoding.UTF8.GetBytes(data, 0, data.Length, buffer, 1);
+            }
+            else {
+                buffer = new byte[] {id};
+            }
+            
+            this.kcp.Send(buffer);
         }
 
         public bool Connect() {
@@ -77,15 +98,8 @@ namespace Game.Network {
             //this.kcp.WndSize(128, 128);
             this.Send(EventCode.Connect);
             this.Receive();
-
             this.updateTimer.Enter(UPDATE_INTERVAL, this.UpdateTick);
             this.Connected = true;
-            
-            if (this.OnConnect != null) {
-                this.OnConnect();
-            }
-
-            Debug.Log("connect");
 
             return true;
         }
@@ -98,31 +112,38 @@ namespace Game.Network {
             this.updateTimer.Exit();
             this.heartbeatTimer.Exit();
             this.Connected = false;
-
-            if (this.OnDisconnect != null) {
-                this.OnDisconnect();
-            }
-
-            Debug.Log("disconnect");
+            this.SendEvent(EventCode.Disconnect, null);
 
             return true;
+        }
+
+        public void RegisterEvent(byte id, Action<byte, string> Callback) {
+            if (!this.eventHandler.ContainsKey(id)) {
+                this.eventHandler.Add(id, new List<Action<byte, string>>());
+            }
+
+            this.eventHandler[id].Add(Callback);
+        }
+
+        private void SendEvent(byte id, string data) {
+            if (this.eventHandler.ContainsKey(id)) {
+                for (int i = 0; i < this.eventHandler[id].Count; i++) {
+                    this.eventHandler[id][i](id, data);
+                }
+            }
         }
 
         private void Receive() {
             this.udp.BeginReceive(this.ReceiveCallback, null);
         }
 
-        private void Send(byte id, string data=null) {
-            var buffer = new byte[Encoding.UTF8.GetByteCount(data) + 1];
-            buffer[0] = id;
-            Encoding.UTF8.GetBytes(data, 0, data.Length, buffer, 1);
-            this.kcp.Send(buffer);
-        }
+        private Packet Recv(byte[] buffer) {
+            var packet = new Packet() {
+                id = buffer[0],
+                data = Encoding.UTF8.GetString(buffer, 1, buffer.Length - 1)
+            };
 
-        private byte Recv(byte[] buffer) {
-            //data = Encoding.UTF8.GetString(buffer, 1, buffer.Length - 1);
-
-            return buffer[0];
+            return packet;
         }
 
         private void ReceiveCallback(IAsyncResult ar) {

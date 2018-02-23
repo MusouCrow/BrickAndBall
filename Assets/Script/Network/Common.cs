@@ -32,16 +32,29 @@ namespace Game.Network {
         public InputData[] inputDatas;
     }
 
-    public static class EventCode {
-        public const byte Connect = 0;
-        public const byte Heartbeat = 1;
+    [Serializable]
+    public struct TestData {
+        public int x;
     }
 
-    namespace Message {
+    public static class EventCode {
+        public const byte Disconnect = 0;
+        public const byte Connect = 1;
+        public const byte Heartbeat = 2;
+        public const byte Start = 3;
+    }
+
+    namespace Datas {
         [Serializable]
-        public class Init {
+        public struct Connect {
+            public string fd;
+        }
+
+        [Serializable]
+        public struct Start {
             public int seed;
-            public int[] connIds;
+            public string leftFd;
+            public string rightFd;
         }
 
         [Serializable]

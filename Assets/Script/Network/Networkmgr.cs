@@ -39,16 +39,15 @@ namespace Game.Network {
         private PlayData playData;
         private Client client;
         private bool online;
+        private string fd;
 
         protected void Awake() {
             INSTANCE = this;
 
             this.client = new Client("127.0.0.1", 8888);
-            this.client.OnConnect += this.OnConnect;
-            this.client.OnDisconnect += this.OnDisconnect;
-
-            //Networkmgr.OnClientConnectEvent += this.OnStart;
-            //Networkmgr.OnStopClientEvent += this.OnStop;
+            this.client.RegisterEvent(EventCode.Connect, this.OnConnect);
+            this.client.RegisterEvent(EventCode.Disconnect, this.OnDisconnect);
+            this.client.RegisterEvent(EventCode.Start, this.OnStart);
             
             DOTween.defaultUpdateType = UpdateType.Manual;
             DOTween.Init();
@@ -115,23 +114,31 @@ namespace Game.Network {
             Networkmgr.LateUpdateEvent();
         }
 
-        private void OnConnect() {
-            /*
-            this.connection = conn;
-            this.connection.RegisterHandler(CustomMsgType.Init, this.Init);
-            this.connection.RegisterHandler(CustomMsgType.PlayData, this.ReceivePlayData);
-            this.connection.RegisterHandler(CustomMsgType.DelConnection, this.Disconnect);
-            this.connection.Send(CustomMsgType.AddConnection, new Message.Empty());
-            */
+        private void OnConnect(byte id, string data) {
+            var obj = JsonUtility.FromJson<Datas.Connect>(data);
+            this.fd = obj.fd;
+            print("Connected");
         }
 
-        private void OnDisconnect() {
+        private void OnDisconnect(byte id, string data) {
+            this.fd = null;
+            this.online = false;
+            
             if (Judge.GameType == GameType.PVP) {
                 Judge.GameType = GameType.PVE;
             }
             else {
                 this.exitMatchSlot.Run(this.gameObject);
             }
+
+            print("Disconnected");
+        }
+
+        private void OnStart(byte id, string data) {
+            var obj = JsonUtility.FromJson<Datas.Start>(data);
+            print(obj.seed);
+            print(obj.leftFd == this.fd);
+            print(obj.rightFd == this.fd);
         }
 
         /*
@@ -152,14 +159,6 @@ namespace Game.Network {
         private void ReceivePlayData(NetworkMessage netMsg) {
             var msg = netMsg.ReadMessage<Message.PlayData>();
             this.playData = msg.playData;
-        }
-
-        private void Disconnect(NetworkMessage netMsg) {
-            Networkmgr.ExitMatch();
-
-            if (Judge.GameType == GameType.NONE) {
-                Networkmgr.StartMatch();
-            }
         }
         */
     }
