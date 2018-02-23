@@ -1,25 +1,27 @@
 local _SKYNET = require("src.skynet")
 local _SOCKET = require("skynet.socket")
+local _ID = require("src.id")
 
 local _Agent = require("src.agent")
 
 local _udp
 local _agentMap = {}
 local _timer = 0
+local _maxClient = _SKYNET.getenv("max_client")
+local _clientCount = 0
 local _updateInterval = _SKYNET.getenv("update_interval")
 local _heartbeatInterval = _SKYNET.getenv("heartbeat_interval")
 
 local function _OnReceive(data, from)
-    if (not _agentMap[from] and string.find(data, "connect")) then
+    if (_clientCount < _maxClient and not _agentMap[from] and string.unpack ("b", data, #data) == _ID.connect) then
         print("connect", _SOCKET.udp_address(from))
         _agentMap[from] = _Agent.New(1, from, function (_data)
             _SOCKET.sendto(_udp, from, _data)
         end)
 
-        _agentMap[from]:Send("welcome")
-    end
-
-    if (_agentMap[from]) then
+        _clientCount = _clientCount + 1
+        _agentMap[from]:Send(_ID.connect)
+    elseif (_agentMap[from]) then
         _agentMap[from]:Input(data)
     end
 end
@@ -38,10 +40,10 @@ end
 local function _Recv()
     while true do
         for k, v in pairs(_agentMap) do
-            local len, data = v:Recv()
+            local id = v:Recv()
 
-            if (data == "h") then
-                v:Send("h")
+            if (id == _ID.heartbeat) then
+                v:Send(_ID.heartbeat)
             end
         end
 
@@ -54,6 +56,7 @@ local function _Heartbeat()
         for k, v in pairs(_agentMap) do
             if (not v.heartbeat) then
                 _agentMap[k] = nil
+                _clientCount = _clientCount - 1
                 print("disconnect", _SOCKET.udp_address(k))
             else
                 v.heartbeat = false

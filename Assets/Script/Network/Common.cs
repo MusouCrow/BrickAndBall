@@ -33,11 +33,8 @@ namespace Game.Network {
     }
 
     public static class EventCode {
-        public static byte Init = 1;
-        public static byte PlayData = 2;
-        public static byte Connect = 3;
-        public static byte Report = 4;
-        public static byte Comparison = 6;
+        public const byte Connect = 0;
+        public const byte Heartbeat = 1;
     }
 
     namespace Message {

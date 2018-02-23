@@ -17,12 +17,17 @@ function _Agent:Input(data)
     self.heartbeat = true
 end
 
-function _Agent:Send(data)
+function _Agent:Send(id)
+    local data = string.pack("b", id)
     self._kcp:lkcp_send(data)
 end
 
 function _Agent:Recv()
-    return self._kcp:lkcp_recv()
+    local len, data = self._kcp:lkcp_recv()
+
+    if (len > 0) then
+        return string.unpack("b", data), string.sub(data, 2)
+    end
 end
 
 function _Agent:GetTag()

@@ -56,13 +56,13 @@ namespace Game.Network {
                 var buffer = new byte[size];
 
                 if (this.kcp.Recv(buffer) > 0) {
-                    string data = Encoding.ASCII.GetString(buffer);
+                    byte id = this.Recv(buffer);
 
-                    if (data == "welcome") {
+                    if (id == EventCode.Connect) {
                         this.heartbeatTimer.Enter(HEARTBEAT_INTERVAL, this.HeartbeatTick);
                     }
 
-                    Debug.Log(data);
+                    Debug.Log(id);
                 }
             }
         }
@@ -75,7 +75,7 @@ namespace Game.Network {
             this.kcp = new KCP(1, this.SendWrap);
             //this.kcp.NoDelay(1, 10, 2, 1);
             //this.kcp.WndSize(128, 128);
-            this.Send("connect");
+            this.Send(EventCode.Connect);
             this.Receive();
 
             this.updateTimer.Enter(UPDATE_INTERVAL, this.UpdateTick);
@@ -112,8 +112,17 @@ namespace Game.Network {
             this.udp.BeginReceive(this.ReceiveCallback, null);
         }
 
-        private void Send(string data) {
-            this.kcp.Send(Encoding.ASCII.GetBytes(data));
+        private void Send(byte id, string data=null) {
+            var buffer = new byte[Encoding.UTF8.GetByteCount(data) + 1];
+            buffer[0] = id;
+            Encoding.UTF8.GetBytes(data, 0, data.Length, buffer, 1);
+            this.kcp.Send(buffer);
+        }
+
+        private byte Recv(byte[] buffer) {
+            //data = Encoding.UTF8.GetString(buffer, 1, buffer.Length - 1);
+
+            return buffer[0];
         }
 
         private void ReceiveCallback(IAsyncResult ar) {
@@ -155,7 +164,7 @@ namespace Game.Network {
                 this.Disconnect();
             }
             else {
-                this.Send("h");
+                this.Send(EventCode.Heartbeat);
                 this.heartbeat = false;
                 this.heartbeatTimer.Enter(HEARTBEAT_INTERVAL, this.HeartbeatTick);
             }

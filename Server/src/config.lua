@@ -13,3 +13,4 @@ udp_address = "127.0.0.1"
 udp_port = 8888
 update_interval = 10
 heartbeat_interval = 300
+max_client = 64

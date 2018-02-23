@@ -38,6 +38,7 @@ namespace Game.Network {
         private int playFrame;
         private PlayData playData;
         private Client client;
+        private bool online;
 
         protected void Awake() {
             INSTANCE = this;
@@ -55,7 +56,7 @@ namespace Game.Network {
         }
 
         protected void OnGUI() {
-            if (this.client.Connected) {
+            if (this.online) {
                 GUILayout.TextField(this.playFrame.ToString());
             }
         }
@@ -71,11 +72,11 @@ namespace Game.Network {
         }
 
         private void LockUpdate() {
-            if (this.client.Connected && this.frame + 1 == WAITTING_INTERVAL && this.playData == null) {
+            if (this.online && this.frame + 1 == WAITTING_INTERVAL && this.playData == null) {
                 return;
             }
 
-            if (this.client.Connected) {
+            if (this.online) {
                 this.frame++;
 
                 if (this.frame == WAITTING_INTERVAL) {
