@@ -1488,7 +1488,7 @@ MonoBehaviour:
   volume: 0.5
   acceleration: 0.00005
   shootingTime: 2.5
-  scoreMax: 1
+  scoreMax: 5
 --- !u!114 &1808828746
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1750,7 +1750,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fc7c7b3804c34349a75593e1ec1246e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  address: 192.168.31.5
+  address: 193.112.102.21
   port: 8888
   startGameSlot: {fileID: 11400000, guid: 4db61ddf4f1e24dc098e4cddd6227f19, type: 2}
   exitMatchSlot: {fileID: 11400000, guid: 8821d6b88a1554f53915cda018be2bc6, type: 2}

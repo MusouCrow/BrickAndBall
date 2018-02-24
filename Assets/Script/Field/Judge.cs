@@ -104,20 +104,15 @@ namespace Game.Field {
 				sb.Append(INSTANCE.ball.Velocity.x + ",");
 				sb.Append(INSTANCE.ball.Velocity.y + ",");
 				sb.Append(INSTANCE.ball.Velocity.z + ",");
-				
-				/*
 				sb.Append(INSTANCE.teamA.brick.transform.localScale.x + ",");
 				sb.Append(INSTANCE.teamA.brick.transform.position.x + ",");
 				sb.Append(INSTANCE.teamB.brick.transform.localScale.x + ",");
 				sb.Append(INSTANCE.teamB.brick.transform.position.x + ",");
-				*/
-				/*
 				sb.Append(INSTANCE.teamA.wall.scale.x + ",");
 				sb.Append(INSTANCE.teamB.wall.scale.x + ",");
 				sb.Append(INSTANCE.teamA.wall.transform.position.z + ",");
 				sb.Append(INSTANCE.teamB.wall.transform.position.z + ",");
-				*/
-				/*
+				
 				var md5 = MD5.Create();
 				var bytes = md5.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()));
 				sb = new StringBuilder();
@@ -125,7 +120,6 @@ namespace Game.Field {
 				for (int i = 0; i < bytes.Length; i++) {
 					sb.Append(bytes[i].ToString("x2"));
 				}
-				*/
 
 				return sb.ToString();
 			}

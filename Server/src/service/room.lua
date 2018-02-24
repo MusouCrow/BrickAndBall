@@ -15,7 +15,6 @@ function _FUNC.Send(id, obj)
 end
 
 function _CMD.Exit()
-    print("exit room")
     _SKYNET.exit()
 end
 
@@ -59,7 +58,6 @@ function _CMD.ReceiveComparison(fd, obj)
 end
 
 local function _Start()
-    print("start room")
     _gate = _SKYNET.queryservice("gate")
     _SKYNET.DispatchCommand(_CMD)
 end

@@ -110,7 +110,8 @@ namespace Game.Network {
                         content = Judge.Comparison
                     };
 
-                    this.client.Send(EventCode.Comparison, comparison); */
+                    this.client.Send(EventCode.Comparison, comparison);
+                    */
                 }
             }
 
@@ -140,7 +141,6 @@ namespace Game.Network {
 
         private void OnStart(byte id, string data) {
             var obj = JsonUtility.FromJson<Datas.Start>(data);
-            print(obj.seed);
             Random.InitState(obj.seed);
             Judge.PlayerType = this.fd == obj.leftFd ? PlayerType.A : PlayerType.B;
             Judge.SetFd(obj.leftFd, obj.rightFd);

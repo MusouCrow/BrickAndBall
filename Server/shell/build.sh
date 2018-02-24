@@ -9,7 +9,7 @@ function build() {
     if [[ "$platform" == "Darwin" ]]; then
         make macosx
     else
-        make linux
+        make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC
     fi
 
     echo "====================="
