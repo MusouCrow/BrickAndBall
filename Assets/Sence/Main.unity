@@ -1488,7 +1488,7 @@ MonoBehaviour:
   volume: 0.5
   acceleration: 0.00005
   shootingTime: 2.5
-  scoreMax: 5
+  scoreMax: 1
 --- !u!114 &1808828746
 MonoBehaviour:
   m_ObjectHideFlags: 0

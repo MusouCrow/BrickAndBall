@@ -21,6 +21,8 @@ namespace Game.Network {
         private const float UPDATE_INTERVAL = 0.01f;
         private const float HEARTBEAT_INTERVAL = 3;
 
+        private string addr;
+        private int port;
         private UdpClient udp;
         private KCP kcp;
         private Timer updateTimer;
@@ -35,7 +37,8 @@ namespace Game.Network {
         }
 
         public Client(string addr, int port) {
-            this.udp = new UdpClient(addr, port);
+            this.addr = addr;
+            this.port = port;
             this.updateTimer = new Timer();
             this.heartbeatTimer = new Timer();
             this.eventHandler = new Dictionary<byte, List<Action<byte, string>>>();
@@ -93,8 +96,8 @@ namespace Game.Network {
                 return false;
             }
 
+            this.udp = new UdpClient(this.addr, this.port);
             this.kcp = new KCP(1, this.SendWrap);
-            //this.kcp.NoDelay(0, 40, 0, 0);
             this.kcp.NoDelay(1, 10, 2, 1);
             this.kcp.WndSize(128, 128);
             this.Send(EventCode.Connect);
@@ -113,6 +116,7 @@ namespace Game.Network {
             this.updateTimer.Exit();
             this.heartbeatTimer.Exit();
             this.Connected = false;
+            this.udp.Close();
             this.SendEvent(EventCode.Disconnect, null);
 
             return true;
