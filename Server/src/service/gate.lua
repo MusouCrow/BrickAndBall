@@ -1,5 +1,6 @@
 local _SKYNET = require("src.skynet")
 local _SOCKET = require("skynet.socket")
+local _JSON = require("cjson")
 local _ID = require("src.id")
 
 local _Agent = require("src.agent")
@@ -12,7 +13,80 @@ local _maxClient = _SKYNET.Getenv("max_client", true)
 local _clientCount = 0
 local _updateInterval = _SKYNET.Getenv("update_interval", true)
 local _heartbeatInterval = _SKYNET.Getenv("heartbeat_interval", true)
+local _FUNC = {}
 local _CMD = {}
+
+function _FUNC.SendEvent(id, fd, obj)
+    if (_eventHandler[id]) then
+        for n=1, #_eventHandler[id] do
+            _SKYNET.Send(_eventHandler[id][n].service, _eventHandler[id][n].name, id, fd, obj)
+        end
+    end
+end
+
+function _FUNC.OnReceive(data, from)
+    if (_clientCount < _maxClient and not _agentMap[from] and string.unpack("b", data, #data) == _ID.connect) then
+        print("connect", _SOCKET.udp_address(from))
+        _agentMap[from] = _Agent.New(1, from, function (_data)
+            _SOCKET.sendto(_udp, from, _data)
+        end)
+
+        _clientCount = _clientCount + 1
+        _agentMap[from]:Send(_ID.connect, {fd = from})
+    elseif (_agentMap[from]) then
+        _agentMap[from]:Input(data)
+    end
+end
+
+function _FUNC.Update()
+    while true do
+        for k, v in pairs(_agentMap) do
+            v:Update(_timer)
+        end
+
+        _timer = _timer + _updateInterval * 10
+        _SKYNET.sleep(_updateInterval)
+    end
+end
+
+function _FUNC.Recv()
+    while true do
+        for k, v in pairs(_agentMap) do
+            local id, obj = v:Recv()
+
+            if (id) then
+                _FUNC.SendEvent(id, k, obj)
+            end
+        end
+
+        _SKYNET.yield()
+    end
+end
+
+function _FUNC.Kick(fd)
+    if (not _agentMap[fd]) then
+        return
+    end
+
+    _agentMap[fd] = nil
+    _clientCount = _clientCount - 1
+    _FUNC.SendEvent(_ID.disconnect, fd)
+    print("disconnect", _SOCKET.udp_address(fd))
+end
+
+function _FUNC.Heartbeat()
+    while true do
+        for k, v in pairs(_agentMap) do
+            if (not v.heartbeat) then
+                _FUNC.Kick(k)
+            else
+                v.heartbeat = false
+            end
+        end
+
+        _SKYNET.sleep(_heartbeatInterval)
+    end
+end
 
 function _CMD.Register(id, service, name)
     if (not _eventHandler[id]) then
@@ -42,9 +116,15 @@ end
 
 function _CMD.Send(fd, id, obj)
     if (type(fd) == "table") then
+        local data
+
+        if (obj) then
+            data = _JSON.encode(obj)
+        end
+
         for n=1, #fd do
             if (_agentMap[fd[n]]) then
-                _agentMap[fd[n]]:Send(id, obj)
+                _agentMap[fd[n]]:Send(id, data)
             else
                 print("no existed", fd[n])
             end
@@ -58,75 +138,21 @@ function _CMD.Send(fd, id, obj)
     end
 end
 
-local function _SendEvent(id, fd, obj)
-    if (_eventHandler[id]) then
-        for n=1, #_eventHandler[id] do
-            _SKYNET.Send(_eventHandler[id][n].service, _eventHandler[id][n].name, id, fd, obj)
+function _CMD.Kick(fd)
+    if (type(fd) == "table") then
+        for n=1, #fd do
+            _FUNC.Kick(fd[n])
         end
-    end
-end
-
-local function _OnReceive(data, from)
-    if (_clientCount < _maxClient and not _agentMap[from] and string.unpack("b", data, #data) == _ID.connect) then
-        print("connect", _SOCKET.udp_address(from))
-        _agentMap[from] = _Agent.New(1, from, function (_data)
-            _SOCKET.sendto(_udp, from, _data)
-        end)
-
-        _clientCount = _clientCount + 1
-        _agentMap[from]:Send(_ID.connect, {fd = from})
-    elseif (_agentMap[from]) then
-        _agentMap[from]:Input(data)
-    end
-end
-
-local function _Update()
-    while true do
-        for k, v in pairs(_agentMap) do
-            v:Update(_timer)
-        end
-
-        _timer = _timer + _updateInterval * 10
-        _SKYNET.sleep(_updateInterval)
-    end
-end
-
-local function _Recv()
-    while true do
-        for k, v in pairs(_agentMap) do
-            local id, obj = v:Recv()
-
-            if (id) then
-                _SendEvent(id, k, obj)
-            end
-        end
-
-        _SKYNET.yield()
-    end
-end
-
-local function _Heartbeat()
-    while true do
-        for k, v in pairs(_agentMap) do
-            if (not v.heartbeat) then
-                _agentMap[k] = nil
-                _clientCount = _clientCount - 1
-                _SendEvent(_ID.disconnect, k)
-                print("disconnect", _SOCKET.udp_address(k))
-            else
-                v.heartbeat = false
-            end
-        end
-
-        _SKYNET.sleep(_heartbeatInterval)
+    else
+        _FUNC.Kick(fd)
     end
 end
 
 local function _Start()
-    _udp = _SOCKET.udp(_OnReceive, _SKYNET.Getenv("udp_address"), _SKYNET.Getenv("udp_port", true))
-    _SKYNET.fork(_Update)
-    _SKYNET.fork(_Recv)
-    _SKYNET.fork(_Heartbeat)
+    _udp = _SOCKET.udp(_FUNC.OnReceive, _SKYNET.Getenv("udp_address"), _SKYNET.Getenv("udp_port", true))
+    _SKYNET.fork(_FUNC.Update)
+    _SKYNET.fork(_FUNC.Recv)
+    _SKYNET.fork(_FUNC.Heartbeat)
     _SKYNET.DispatchCommand(_CMD)
     _SKYNET.Send(_SKYNET.self(), "Register", _ID.heartbeat, _SKYNET.self(), "Heartbeat")
 end

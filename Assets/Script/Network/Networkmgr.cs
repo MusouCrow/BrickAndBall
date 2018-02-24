@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
+using Random = UnityEngine.Random;
+
 namespace Game.Network {
     using Utility;
     using Field;
@@ -13,7 +15,7 @@ namespace Game.Network {
         public static event Action LateUpdateEvent;
         private static Networkmgr INSTANCE;
         private const int DT = 17;
-        private const int WAITTING_INTERVAL = 4;
+        private const int WAITTING_INTERVAL = 5;
 
         public static Vector3 MousePosition {
             get {
@@ -30,6 +32,10 @@ namespace Game.Network {
         }
 
         [SerializeField]
+        private string address;
+        [SerializeField]
+        private int port;
+        [SerializeField]
         private Slot startGameSlot;
         [SerializeField]
         private Slot exitMatchSlot;
@@ -44,10 +50,11 @@ namespace Game.Network {
         protected void Awake() {
             INSTANCE = this;
 
-            this.client = new Client("127.0.0.1", 8888);
+            this.client = new Client(this.address, this.port);
             this.client.RegisterEvent(EventCode.Connect, this.OnConnect);
             this.client.RegisterEvent(EventCode.Disconnect, this.OnDisconnect);
             this.client.RegisterEvent(EventCode.Start, this.OnStart);
+            this.client.RegisterEvent(EventCode.Input, this.OnReceivePlayData);
             
             DOTween.defaultUpdateType = UpdateType.Manual;
             DOTween.Init();
@@ -82,31 +89,28 @@ namespace Game.Network {
                     var data = this.playData;
                     this.playData = null;
                     
-                    if (data.connIds != null) {
-                        for (int i = 0; i < data.connIds.Length; i++) {
-                            Judge.SetInput(data.connIds[i], data.inputDatas[i]);
+                    if (data.fds != null) {
+                        for (int i = 0; i < data.fds.Length; i++) {
+                            Judge.SetInput(data.fds[i], data.inputDatas[i]);
                         }
                     }
 
                     this.playFrame++;
                     this.frame = 0;
+
+                    var inputData = new InputData() {
+                        mousePos = new SVector(Networkmgr.MousePosition),
+                        isDown = Input.GetMouseButton(0)
+                    };
+
+                    this.client.Send(EventCode.Input, inputData);
                     /*
-                    var msg = new Message.Report() {
-                        inputData = new InputData() {
-                            mousePos = Client.MousePosition,
-                            isDown = Input.GetMouseButton(0)
-                        }
-                    };
-
-                    this.connection.Send(CustomMsgType.Report, msg);
-                    
-                    var msg2 = new Message.Comparison() {
+                    var comparison = new Datas.Comparison() {
                         playFrame = this.playFrame,
-                        content = Judge.GetMD5()
+                        content = Judge.Comparison
                     };
 
-                    this.connection.Send(CustomMsgType.Comparison, msg2);
-                    */
+                    this.client.Send(EventCode.Comparison, comparison); */
                 }
             }
 
@@ -136,19 +140,11 @@ namespace Game.Network {
 
         private void OnStart(byte id, string data) {
             var obj = JsonUtility.FromJson<Datas.Start>(data);
-            print(obj.seed);
-            print(obj.leftFd == this.fd);
-            print(obj.rightFd == this.fd);
-        }
-
-        /*
-        private void Init(NetworkMessage netMsg) {
-            var msg = netMsg.ReadMessage<Message.Init>();
-
-            Random.InitState(msg.seed);
-            Judge.PlayerType = this.connection.connectionId == msg.connIds[0] ? PlayerType.A : PlayerType.B;
+            
+            Random.InitState(obj.seed);
+            Judge.PlayerType = this.fd == obj.leftFd ? PlayerType.A : PlayerType.B;
+            Judge.SetFd(obj.leftFd, obj.rightFd);
             this.startGameSlot.Run(this.gameObject);
-
             this.online = true;
             this.updateTimer = 0;
             this.frame = 0;
@@ -156,10 +152,8 @@ namespace Game.Network {
             this.playData = new PlayData();
         }
 
-        private void ReceivePlayData(NetworkMessage netMsg) {
-            var msg = netMsg.ReadMessage<Message.PlayData>();
-            this.playData = msg.playData;
+        private void OnReceivePlayData(byte id, string data) {
+            this.playData = JsonUtility.FromJson<PlayData>(data);
         }
-        */
     }
 }

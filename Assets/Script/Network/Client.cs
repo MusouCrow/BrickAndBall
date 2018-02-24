@@ -18,7 +18,7 @@ namespace Game.Network {
         }
 
         private static IPEndPoint EP;
-        private const float UPDATE_INTERVAL = 0.02f;
+        private const float UPDATE_INTERVAL = 0.01f;
         private const float HEARTBEAT_INTERVAL = 3;
 
         private UdpClient udp;
@@ -67,7 +67,7 @@ namespace Game.Network {
                     }
 
                     this.SendEvent(packet.id, packet.data);
-                    Debug.Log(packet.id);
+                    //Debug.Log(packet.id);
                 }
             }
         }
@@ -94,8 +94,9 @@ namespace Game.Network {
             }
 
             this.kcp = new KCP(1, this.SendWrap);
-            //this.kcp.NoDelay(1, 10, 2, 1);
-            //this.kcp.WndSize(128, 128);
+            //this.kcp.NoDelay(0, 40, 0, 0);
+            this.kcp.NoDelay(1, 10, 2, 1);
+            this.kcp.WndSize(128, 128);
             this.Send(EventCode.Connect);
             this.Receive();
             this.updateTimer.Enter(UPDATE_INTERVAL, this.UpdateTick);

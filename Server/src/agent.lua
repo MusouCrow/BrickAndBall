@@ -5,6 +5,10 @@ local _Agent = require("src.class")()
 
 function _Agent:Ctor(conv, fd, SendWrap)
     self._kcp = _KCP.lkcp_create(conv, SendWrap)
+    self._kcp:lkcp_nodelay(1, 10, 2, 1)
+    --self._kcp:lkcp_nodelay(0, 40, 0, 0)
+    self._kcp:lkcp_wndsize(128, 128)
+
     self._fd = fd
     self.heartbeat = true
 end
@@ -22,7 +26,15 @@ function _Agent:Send(id, obj)
     local buffer = string.pack("b", id)
 
     if (obj) then
-        buffer = buffer .. _JSON.encode(obj)
+        local data
+
+        if (type(obj) == "table") then
+            data = _JSON.encode(obj)
+        else
+            data = obj
+        end
+
+        buffer = buffer .. data
     end
 
     self._kcp:lkcp_send(buffer)

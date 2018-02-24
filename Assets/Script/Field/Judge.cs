@@ -30,6 +30,8 @@ namespace Game.Field {
 			public Brick brick;
 			[System.NonSerialized]
 			public int score;
+			[System.NonSerialized]
+			public string fd;
 
 			public void AddScore() {
 				this.score += 1;
@@ -64,6 +66,7 @@ namespace Game.Field {
 					Sound.PlayMusic(INSTANCE.music);
 				} else {
 					Sound.PlayMusic();
+					Networkmgr.Disconnect();
 				}
 				
 				INSTANCE.teamA.brick.isRunning = value;
@@ -92,6 +95,47 @@ namespace Game.Field {
 			}
 		}
 
+		public static string Comparison {
+			get {
+				var sb = new StringBuilder();
+				sb.Append(Judge.BallPosition.x + ",");
+				sb.Append(Judge.BallPosition.y + ",");
+				sb.Append(Judge.BallPosition.z + ",");
+				sb.Append(INSTANCE.ball.Velocity.x + ",");
+				sb.Append(INSTANCE.ball.Velocity.y + ",");
+				sb.Append(INSTANCE.ball.Velocity.z + ",");
+				
+				/*
+				sb.Append(INSTANCE.teamA.brick.transform.localScale.x + ",");
+				sb.Append(INSTANCE.teamA.brick.transform.position.x + ",");
+				sb.Append(INSTANCE.teamB.brick.transform.localScale.x + ",");
+				sb.Append(INSTANCE.teamB.brick.transform.position.x + ",");
+				*/
+				/*
+				sb.Append(INSTANCE.teamA.wall.scale.x + ",");
+				sb.Append(INSTANCE.teamB.wall.scale.x + ",");
+				sb.Append(INSTANCE.teamA.wall.transform.position.z + ",");
+				sb.Append(INSTANCE.teamB.wall.transform.position.z + ",");
+				*/
+				/*
+				var md5 = MD5.Create();
+				var bytes = md5.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()));
+				sb = new StringBuilder();
+
+				for (int i = 0; i < bytes.Length; i++) {
+					sb.Append(bytes[i].ToString("x2"));
+				}
+				*/
+
+				return sb.ToString();
+			}
+		}
+
+		public static void SetFd(string a, string b) {
+			INSTANCE.teamA.fd = a;
+			INSTANCE.teamB.fd = b;
+		}
+
 		public static void Gain(Vector3 position) {
 			if (position.x < 0) {
 				INSTANCE.teamA.AddScore();
@@ -111,43 +155,9 @@ namespace Game.Field {
 			}
 		}
 
-		public static void SetInput(int type, InputData inputData) {
-			var team = type == 0 ? INSTANCE.teamA : INSTANCE.teamB;
+		public static void SetInput(string fd, InputData inputData) {
+			var team = INSTANCE.teamA.fd == fd ? INSTANCE.teamA : INSTANCE.teamB;
 			team.brick.dragging.Drag(inputData.mousePos.ToVector3(), inputData.isDown);
-		}
-
-		public static string GetMD5() {
-			var sb = new StringBuilder();
-			sb.Append(Judge.BallPosition.x + ",");
-			sb.Append(Judge.BallPosition.y + ",");
-			sb.Append(Judge.BallPosition.z + ",");
-			sb.Append(INSTANCE.ball.Velocity.x + ",");
-			sb.Append(INSTANCE.ball.Velocity.y + ",");
-			sb.Append(INSTANCE.ball.Velocity.z + ",");
-			
-			/*
-			sb.Append(INSTANCE.teamA.brick.transform.localScale.x + ",");
-			sb.Append(INSTANCE.teamA.brick.transform.position.x + ",");
-			sb.Append(INSTANCE.teamB.brick.transform.localScale.x + ",");
-			sb.Append(INSTANCE.teamB.brick.transform.position.x + ",");
- 			*/
-			/*
-			sb.Append(INSTANCE.teamA.wall.scale.x + ",");
-			sb.Append(INSTANCE.teamB.wall.scale.x + ",");
-			sb.Append(INSTANCE.teamA.wall.transform.position.z + ",");
-			sb.Append(INSTANCE.teamB.wall.transform.position.z + ",");
-			*/
-			/*
-			var md5 = MD5.Create();
-			var bytes = md5.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()));
-			sb = new StringBuilder();
-
-			for (int i = 0; i < bytes.Length; i++) {
-				sb.Append(bytes[i].ToString("x2"));
-			}
-			*/
-
-			return sb.ToString();
 		}
 
 		[SerializeField]

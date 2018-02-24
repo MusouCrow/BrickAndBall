@@ -4,37 +4,32 @@ using UnityEngine;
 
 namespace Game.Network {
     [Serializable]
-    public struct SVector3 {
+    public struct SVector {
         public float x;
         public float y;
         public float z;
 
-        public SVector3(Vector3 vector) {
+        public SVector(Vector3 vector) {
             this.x = vector.x;
             this.y = vector.y;
             this.z = vector.z;
         }
 
         public Vector3 ToVector3() {
-            return new Vector3(x, y, z);
+            return new Vector3(this.x, this.y, this.z);
         }
     }
 
     [Serializable]
     public struct InputData {
-        public SVector3 mousePos;
+        public SVector mousePos;
         public bool isDown;
     }
 
     [Serializable]
     public class PlayData {
-        public int[] connIds;
+        public string[] fds;
         public InputData[] inputDatas;
-    }
-
-    [Serializable]
-    public struct TestData {
-        public int x;
     }
 
     public static class EventCode {
@@ -42,6 +37,8 @@ namespace Game.Network {
         public const byte Connect = 1;
         public const byte Heartbeat = 2;
         public const byte Start = 3;
+        public const byte Input = 4;
+        public const byte Comparison = 5;
     }
 
     namespace Datas {
