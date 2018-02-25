@@ -7,6 +7,7 @@ local _gate
 local _fds = {}
 local _inputMap = {}
 local _comparsionHandler = {}
+local _inputSender = {addrs = {}, inputs = {}}
 local _FUNC = {}
 local _CMD = {}
 local _playerCount = 2
@@ -29,15 +30,15 @@ function _CMD.ReceiveInput(fd, obj)
     local count = _TABLE.Count(_inputMap)
 
     if (count == _playerCount) then
-        local addrs = {}
-        local inputs = {}
+        _TABLE.Clear(_inputSender.addrs)
+        _TABLE.Clear(_inputSender.inputs)
 
         for k, v in pairs(_inputMap) do
-            table.insert(addrs, _SOCKET.ToAddress(k))
-            table.insert(inputs, v)
+            table.insert(_inputSender.addrs, _SOCKET.ToAddress(k))
+            table.insert(_inputSender.inputs, v)
         end
 
-        _FUNC.Send(_ID.input, {addrs = addrs, inputDatas = inputs})
+        _FUNC.Send(_ID.input, _inputSender)
         _TABLE.Clear(_inputMap)
     end
 end

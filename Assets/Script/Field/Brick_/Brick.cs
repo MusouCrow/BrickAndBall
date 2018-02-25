@@ -122,9 +122,15 @@ namespace Game.Field.Brick_ {
 		}
 
 		private void OnDrag(Vector3 oldPos, Vector3 newPos) {
-			this.position.z += newPos.z - oldPos.z;
-			Brick.HandleValueWithRange(ref this.position.z);
-			this.AdjustPosition();
+			if (Judge.GameType == GameType.PVE) {
+				this.position.z += newPos.z - oldPos.z;
+				Brick.HandleValueWithRange(ref this.position.z);
+				this.AdjustPosition();
+			}
+			else {
+				Brick.HandleValueWithRange(ref newPos.z);
+				this.MovePosition(2, newPos.z, 0.085f);
+			}
 		}
 
 		private bool CheckedFunc(int type, float pos, float point, float velocity) {

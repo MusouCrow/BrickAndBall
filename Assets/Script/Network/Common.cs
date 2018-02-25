@@ -29,7 +29,7 @@ namespace Game.Network {
     [Serializable]
     public class PlayData {
         public string[] addrs;
-        public InputData[] inputDatas;
+        public InputData[] inputs;
     }
 
     public static class EventCode {

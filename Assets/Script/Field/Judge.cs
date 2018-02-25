@@ -72,6 +72,9 @@ namespace Game.Field {
 				INSTANCE.teamA.brick.isRunning = value;
 				INSTANCE.teamB.brick.isRunning = value;
 			}
+			get {
+				return INSTANCE.isRunning;
+			}
 		}
 
 		public static PlayerType PlayerType {

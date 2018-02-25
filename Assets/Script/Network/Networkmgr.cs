@@ -90,9 +90,9 @@ namespace Game.Network {
                     var data = this.playData;
                     this.playData = null;
                     
-                    if (data.addrs != null) {
+                    if (Judge.IsRunning && data.addrs != null) {
                         for (int i = 0; i < data.addrs.Length; i++) {
-                            Judge.SetInput(data.addrs[i], data.inputDatas[i]);
+                            Judge.SetInput(data.addrs[i], data.inputs[i]);
                         }
                     }
 
