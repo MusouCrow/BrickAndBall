@@ -19,7 +19,7 @@ namespace Game.Network {
 
         private static IPEndPoint EP;
         private const float UPDATE_INTERVAL = 0.01f;
-        private const float HEARTBEAT_INTERVAL = 3;
+        private const float HEARTBEAT_INTERVAL = 1;
 
         private string addr;
         private int port;

@@ -45,7 +45,7 @@ namespace Game.Network {
         private PlayData playData;
         private Client client;
         private bool online;
-        private string fd;
+        private string addr;
 
         protected void Awake() {
             INSTANCE = this;
@@ -60,12 +60,13 @@ namespace Game.Network {
             DOTween.Init();
             Networkmgr.LateUpdateEvent += () => DOTween.ManualUpdate(STDDT, STDDT);
         }
-
+        /*
         protected void OnGUI() {
             if (this.online) {
-                GUILayout.TextField(this.playFrame.ToString());
+                //GUILayout.TextField(this.playFrame.ToString());
+                GUILayout.Label(Networkmgr.MousePosition.ToString());
             }
-        }
+        } */
 
         protected void Update() {
             this.updateTimer += Mathf.CeilToInt(Time.deltaTime * 1000);
@@ -89,9 +90,9 @@ namespace Game.Network {
                     var data = this.playData;
                     this.playData = null;
                     
-                    if (data.fds != null) {
-                        for (int i = 0; i < data.fds.Length; i++) {
-                            Judge.SetInput(data.fds[i], data.inputDatas[i]);
+                    if (data.addrs != null) {
+                        for (int i = 0; i < data.addrs.Length; i++) {
+                            Judge.SetInput(data.addrs[i], data.inputDatas[i]);
                         }
                     }
 
@@ -121,12 +122,12 @@ namespace Game.Network {
 
         private void OnConnect(byte id, string data) {
             var obj = JsonUtility.FromJson<Datas.Connect>(data);
-            this.fd = obj.fd;
+            this.addr = obj.addr;
             print("Connected");
         }
 
         private void OnDisconnect(byte id, string data) {
-            this.fd = null;
+            this.addr = null;
             this.online = false;
             
             if (Judge.GameType == GameType.PVP) {
@@ -142,8 +143,8 @@ namespace Game.Network {
         private void OnStart(byte id, string data) {
             var obj = JsonUtility.FromJson<Datas.Start>(data);
             Random.InitState(obj.seed);
-            Judge.PlayerType = this.fd == obj.leftFd ? PlayerType.A : PlayerType.B;
-            Judge.SetFd(obj.leftFd, obj.rightFd);
+            Judge.PlayerType = this.addr == obj.leftAddr ? PlayerType.A : PlayerType.B;
+            Judge.SetAddr(obj.leftAddr, obj.rightAddr);
             this.startGameSlot.Run(this.gameObject);
             this.online = true;
             this.updateTimer = 0;

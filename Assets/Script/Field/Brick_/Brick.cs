@@ -85,8 +85,7 @@ namespace Game.Field.Brick_ {
 		}
 
 		protected override void LockUpdate() {
-			// && Judge.GameType == GameType.PVE && !this.isPlayer
-			if (this.isRunning) {
+			if (this.isRunning && Judge.GameType == GameType.PVE && !this.isPlayer) {
 				this.timer.Update();
 			}
 

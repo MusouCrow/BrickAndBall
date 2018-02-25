@@ -31,7 +31,7 @@ namespace Game.Field {
 			[System.NonSerialized]
 			public int score;
 			[System.NonSerialized]
-			public string fd;
+			public string addr;
 
 			public void AddScore() {
 				this.score += 1;
@@ -125,9 +125,9 @@ namespace Game.Field {
 			}
 		}
 
-		public static void SetFd(string a, string b) {
-			INSTANCE.teamA.fd = a;
-			INSTANCE.teamB.fd = b;
+		public static void SetAddr(string a, string b) {
+			INSTANCE.teamA.addr = a;
+			INSTANCE.teamB.addr = b;
 		}
 
 		public static void Gain(Vector3 position) {
@@ -149,8 +149,8 @@ namespace Game.Field {
 			}
 		}
 
-		public static void SetInput(string fd, InputData inputData) {
-			var team = INSTANCE.teamA.fd == fd ? INSTANCE.teamA : INSTANCE.teamB;
+		public static void SetInput(string addr, InputData inputData) {
+			var team = INSTANCE.teamA.addr == addr ? INSTANCE.teamA : INSTANCE.teamB;
 			team.brick.dragging.Drag(inputData.mousePos.ToVector3(), inputData.isDown);
 		}
 

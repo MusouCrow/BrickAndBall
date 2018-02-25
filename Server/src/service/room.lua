@@ -1,4 +1,5 @@
 local _SKYNET = require("src.skynet")
+local _SOCKET = require("src.socket")
 local _ID = require("src.id")
 local _TABLE = require("src.table")
 
@@ -20,7 +21,7 @@ end
 
 function _CMD.Start(leftFd, rightFd)
     _fds = {leftFd, rightFd}
-    _FUNC.Send(_ID.start, {seed = os.time(), leftFd = leftFd, rightFd = rightFd})
+    _FUNC.Send(_ID.start, {seed = os.time(), leftAddr = _SOCKET.ToAddress(leftFd), rightAddr = _SOCKET.ToAddress(rightFd)})
 end
 
 function _CMD.ReceiveInput(fd, obj)
@@ -28,8 +29,15 @@ function _CMD.ReceiveInput(fd, obj)
     local count = _TABLE.Count(_inputMap)
 
     if (count == _playerCount) then
-        local fds, inputs = _TABLE.Resolve(_inputMap)
-        _FUNC.Send(_ID.input, {fds = fds, inputDatas = inputs})
+        local addrs = {}
+        local inputs = {}
+
+        for k, v in pairs(_inputMap) do
+            table.insert(addrs, _SOCKET.ToAddress(k))
+            table.insert(inputs, v)
+        end
+
+        _FUNC.Send(_ID.input, {addrs = addrs, inputDatas = inputs})
         _TABLE.Clear(_inputMap)
     end
 end

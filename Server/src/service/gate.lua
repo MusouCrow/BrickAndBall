@@ -1,5 +1,5 @@
 local _SKYNET = require("src.skynet")
-local _SOCKET = require("skynet.socket")
+local _SOCKET = require("src.socket")
 local _JSON = require("cjson")
 local _ID = require("src.id")
 
@@ -26,13 +26,14 @@ end
 
 function _FUNC.OnReceive(data, from)
     if (_clientCount < _maxClient and not _agentMap[from] and string.unpack("b", data, #data) == _ID.connect) then
-        print("connect", _SOCKET.udp_address(from))
+        local addr = _SOCKET.ToAddress(from)
+        print("connect", addr)
         _agentMap[from] = _Agent.New(1, from, function (_data)
             _SOCKET.sendto(_udp, from, _data)
         end)
 
         _clientCount = _clientCount + 1
-        _agentMap[from]:Send(_ID.connect, {fd = from})
+        _agentMap[from]:Send(_ID.connect, {addr = addr})
     elseif (_agentMap[from]) then
         _agentMap[from]:Input(data)
     end
@@ -71,7 +72,7 @@ function _FUNC.Kick(fd)
     _agentMap[fd] = nil
     _clientCount = _clientCount - 1
     _FUNC.SendEvent(_ID.disconnect, fd)
-    print("disconnect", _SOCKET.udp_address(fd))
+    print("disconnect", _SOCKET.ToAddress(fd))
 end
 
 function _FUNC.Heartbeat()

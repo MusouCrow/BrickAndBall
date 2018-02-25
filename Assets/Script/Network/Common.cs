@@ -28,7 +28,7 @@ namespace Game.Network {
 
     [Serializable]
     public class PlayData {
-        public string[] fds;
+        public string[] addrs;
         public InputData[] inputDatas;
     }
 
@@ -44,14 +44,14 @@ namespace Game.Network {
     namespace Datas {
         [Serializable]
         public struct Connect {
-            public string fd;
+            public string addr;
         }
 
         [Serializable]
         public struct Start {
             public int seed;
-            public string leftFd;
-            public string rightFd;
+            public string leftAddr;
+            public string rightAddr;
         }
 
         [Serializable]
