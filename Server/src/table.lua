@@ -1,4 +1,6 @@
-local _TABLE = {}
+local _TABLE = {
+    empty = {}
+}
 
 function _TABLE.Clear(tab)
     for k in pairs (tab) do

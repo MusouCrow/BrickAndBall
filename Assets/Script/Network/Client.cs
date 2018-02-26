@@ -25,7 +25,7 @@ namespace Game.Network {
         private int port;
         private UdpClient udp;
         private KCP kcp;
-        private Timer updateTimer;
+        private float updateTime;
         private Timer heartbeatTimer;
         private bool heartbeat = true;
         private bool willDisconnect;
@@ -39,12 +39,11 @@ namespace Game.Network {
         public Client(string addr, int port) {
             this.addr = addr;
             this.port = port;
-            this.updateTimer = new Timer();
             this.heartbeatTimer = new Timer();
             this.eventHandler = new Dictionary<byte, List<Action<byte, string>>>();
         }
 
-        public void Update() {
+        public void Update(float dt) {
             if (!this.Connected) {
                 return;
             }
@@ -56,7 +55,8 @@ namespace Game.Network {
                 return;
             }
 
-            this.updateTimer.Update();
+            this.updateTime += dt;
+            this.kcp.Update((uint)Mathf.FloorToInt(this.updateTime * 1000));
             this.heartbeatTimer.Update();
 
             for (var size = this.kcp.PeekSize(); size > 0; size = this.kcp.PeekSize()) {
@@ -102,7 +102,7 @@ namespace Game.Network {
             this.kcp.WndSize(128, 128);
             this.Send(EventCode.Connect);
             this.Receive();
-            this.updateTimer.Enter(UPDATE_INTERVAL, this.UpdateTick);
+            this.updateTime = 0;
             this.Connected = true;
 
             return true;
@@ -113,7 +113,6 @@ namespace Game.Network {
                 return false;
             }
 
-            this.updateTimer.Exit();
             this.heartbeatTimer.Exit();
             this.Connected = false;
             this.udp.Close();
@@ -178,11 +177,6 @@ namespace Game.Network {
             catch (SocketException) {
                 this.Disconnect();
             }
-        }
-
-        private void UpdateTick() {
-            this.kcp.Update((uint)Mathf.FloorToInt(Time.time * 1000));
-            this.updateTimer.Enter(UPDATE_INTERVAL, this.UpdateTick);
         }
 
         private void HeartbeatTick() {

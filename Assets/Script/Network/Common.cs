@@ -55,6 +55,12 @@ namespace Game.Network {
         }
 
         [Serializable]
+        public struct Input {
+            public int frame;
+            public InputData data;
+        }
+
+        [Serializable]
         public struct Comparison {
             public int playFrame;
             public string content;

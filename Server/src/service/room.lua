@@ -7,13 +7,35 @@ local _gate
 local _fds = {}
 local _inputMap = {}
 local _comparsionHandler = {}
-local _inputSender = {addrs = {}, inputs = {}}
+local _playSender = {addrs = {}, inputs = {}}
 local _FUNC = {}
 local _CMD = {}
 local _playerCount = 2
+local _playInterval = 5
+local _playFrame = 1
+local _readyPlay = false
 
 function _FUNC.Send(id, obj)
     _SKYNET.Send(_gate, "Send", _fds, id, obj)
+end
+
+function _FUNC.Play()
+    if (not _readyPlay) then
+        return
+    end
+
+    _TABLE.Clear(_playSender.addrs)
+    _TABLE.Clear(_playSender.inputs)
+
+    for k, v in pairs(_inputMap) do
+        table.insert(_playSender.addrs, _SOCKET.ToAddress(k))
+        table.insert(_playSender.inputs, v)
+    end
+
+    _FUNC.Send(_ID.input, _playSender)
+    _TABLE.Clear(_inputMap)
+    _readyPlay = false
+    _playFrame = _playFrame + 1
 end
 
 function _CMD.Exit()
@@ -26,20 +48,15 @@ function _CMD.Start(leftFd, rightFd)
 end
 
 function _CMD.ReceiveInput(fd, obj)
-    _inputMap[fd] = obj
-    local count = _TABLE.Count(_inputMap)
+    _inputMap[fd] = obj.data
 
-    if (count == _playerCount) then
-        _TABLE.Clear(_inputSender.addrs)
-        _TABLE.Clear(_inputSender.inputs)
-
-        for k, v in pairs(_inputMap) do
-            table.insert(_inputSender.addrs, _SOCKET.ToAddress(k))
-            table.insert(_inputSender.inputs, v)
+    if (obj.frame == _playFrame) then
+        if (not _readyPlay) then
+            _readyPlay = true
+            _SKYNET.timeout(_playInterval, _FUNC.Play)
+        else
+            _FUNC.Play()
         end
-
-        _FUNC.Send(_ID.input, _inputSender)
-        _TABLE.Clear(_inputMap)
     end
 end
 

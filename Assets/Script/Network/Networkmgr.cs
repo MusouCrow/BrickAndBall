@@ -32,9 +32,9 @@ namespace Game.Network {
         }
 
         [SerializeField]
-        private string address;
+        private string serverAddress;
         [SerializeField]
-        private int port;
+        private int serverPort;
         [SerializeField]
         private Slot startGameSlot;
         [SerializeField]
@@ -42,7 +42,7 @@ namespace Game.Network {
         private int updateTimer;
         private int frame;
         private int playFrame;
-        private PlayData playData;
+        private List<PlayData> playDataList;
         private Client client;
         private bool online;
         private string addr;
@@ -50,7 +50,9 @@ namespace Game.Network {
         protected void Awake() {
             INSTANCE = this;
 
-            this.client = new Client(this.address, this.port);
+            this.playDataList = new List<PlayData>();
+
+            this.client = new Client(this.serverAddress, this.serverPort);
             this.client.RegisterEvent(EventCode.Connect, this.OnConnect);
             this.client.RegisterEvent(EventCode.Disconnect, this.OnDisconnect);
             this.client.RegisterEvent(EventCode.Start, this.OnStart);
@@ -60,26 +62,35 @@ namespace Game.Network {
             DOTween.Init();
             Networkmgr.LateUpdateEvent += () => DOTween.ManualUpdate(STDDT, STDDT);
         }
-        /*
+        
         protected void OnGUI() {
             if (this.online) {
-                //GUILayout.TextField(this.playFrame.ToString());
-                GUILayout.Label(Networkmgr.MousePosition.ToString());
+                GUILayout.TextField(this.playFrame.ToString());
             }
-        } */
+        }
 
         protected void Update() {
             this.updateTimer += Mathf.CeilToInt(Time.deltaTime * 1000);
 
             while (this.updateTimer >= DT) {
-                this.client.Update();
-                this.LockUpdate();
+                if (this.playDataList.Count > 1) {
+                    var lateFrame = this.frame;
+                    do {
+                        this.LockUpdate();
+                    } while(this.playDataList.Count == 0 && this.frame == lateFrame);
+                }
+                else {
+                    this.LockUpdate();
+                }
+                
                 this.updateTimer -= DT;
             }
         }
 
         private void LockUpdate() {
-            if (this.online && this.frame + 1 == WAITTING_INTERVAL && this.playData == null) {
+            this.client.Update(STDDT);
+
+            if (this.online && this.frame + 1 == WAITTING_INTERVAL && this.playDataList.Count == 0) {
                 return;
             }
 
@@ -87,8 +98,8 @@ namespace Game.Network {
                 this.frame++;
 
                 if (this.frame == WAITTING_INTERVAL) {
-                    var data = this.playData;
-                    this.playData = null;
+                    var data = this.playDataList[0];
+                    this.playDataList.RemoveAt(0);
                     
                     if (Judge.IsRunning && data.addrs != null) {
                         for (int i = 0; i < data.addrs.Length; i++) {
@@ -99,20 +110,22 @@ namespace Game.Network {
                     this.playFrame++;
                     this.frame = 0;
 
-                    var inputData = new InputData() {
-                        mousePos = new SVector(Networkmgr.MousePosition),
-                        isDown = Input.GetMouseButton(0)
+                    var input = new Datas.Input() {
+                        data = new InputData() {
+                            mousePos = new SVector(Networkmgr.MousePosition),
+                            isDown = Input.GetMouseButton(0)
+                        },
+                        frame = this.playFrame
                     };
 
-                    this.client.Send(EventCode.Input, inputData);
-                    /*
+                    this.client.Send(EventCode.Input, input);
+
                     var comparison = new Datas.Comparison() {
                         playFrame = this.playFrame,
                         content = Judge.Comparison
                     };
 
                     this.client.Send(EventCode.Comparison, comparison);
-                    */
                 }
             }
 
@@ -127,9 +140,13 @@ namespace Game.Network {
         }
 
         private void OnDisconnect(byte id, string data) {
+            while (this.playDataList.Count > 0) {
+                this.LockUpdate();
+            }
+            
             this.addr = null;
             this.online = false;
-            
+
             if (Judge.GameType == GameType.PVP) {
                 Judge.GameType = GameType.PVE;
             }
@@ -150,11 +167,12 @@ namespace Game.Network {
             this.updateTimer = 0;
             this.frame = 0;
             this.playFrame = 0;
-            this.playData = new PlayData();
+            this.playDataList.Clear();
+            this.playDataList.Add(new PlayData());
         }
 
         private void OnReceivePlayData(byte id, string data) {
-            this.playData = JsonUtility.FromJson<PlayData>(data);
+            this.playDataList.Add(JsonUtility.FromJson<PlayData>(data));
         }
     }
 }
