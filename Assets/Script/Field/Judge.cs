@@ -69,6 +69,7 @@ namespace Game.Field {
 					Networkmgr.Disconnect();
 				}
 				
+				Handheld.Vibrate();
 				INSTANCE.teamA.brick.isRunning = value;
 				INSTANCE.teamB.brick.isRunning = value;
 			}
@@ -146,7 +147,7 @@ namespace Game.Field {
 
 			if (INSTANCE.teamA.score == INSTANCE.scoreMax || INSTANCE.teamB.score == INSTANCE.scoreMax) {
 				Judge.IsRunning = false;
-				UI.Interface.Result(INSTANCE.playerTeam.score == INSTANCE.scoreMax, 0.5f);
+				UI.Interface.Result(INSTANCE.playerTeam.score >= INSTANCE.scoreMax, 0.5f);
 			} else {
 				INSTANCE.Shoot(INSTANCE.shootingTime);
 			}

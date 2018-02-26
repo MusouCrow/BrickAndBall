@@ -13,9 +13,9 @@ namespace Game.Network {
         public const float STDDT = 0.017f;
         public static event Action UpdateEvent;
         public static event Action LateUpdateEvent;
+        public const int WAITTING_INTERVAL = 5;
         private static Networkmgr INSTANCE;
         private const int DT = 17;
-        private const int WAITTING_INTERVAL = 5;
 
         public static Vector3 MousePosition {
             get {
@@ -46,6 +46,7 @@ namespace Game.Network {
         private Client client;
         private bool online;
         private string addr;
+        private bool disconnectTick;
 
         protected void Awake() {
             INSTANCE = this;
@@ -73,23 +74,37 @@ namespace Game.Network {
             this.updateTimer += Mathf.CeilToInt(Time.deltaTime * 1000);
 
             while (this.updateTimer >= DT) {
+                this.client.Update();
+
                 if (this.playDataList.Count > 1) {
                     var lateFrame = this.frame;
                     do {
+                        this.client.Update();
                         this.LockUpdate();
-                    } while(this.playDataList.Count == 0 && this.frame == lateFrame);
+                    } while(this.playDataList.Count == 1 && this.frame == lateFrame);
+                }
+
+                this.LockUpdate();
+                this.updateTimer -= DT;
+            }
+
+            if (this.disconnectTick) {
+                this.addr = null;
+                this.online = false;
+
+                if (Judge.GameType == GameType.PVP) {
+                    Judge.GameType = GameType.PVE;
                 }
                 else {
-                    this.LockUpdate();
+                    this.exitMatchSlot.Run(this.gameObject);
                 }
-                
-                this.updateTimer -= DT;
+
+                print("Disconnected");
+                this.disconnectTick = false;
             }
         }
 
         private void LockUpdate() {
-            this.client.Update(STDDT);
-
             if (this.online && this.frame + 1 == WAITTING_INTERVAL && this.playDataList.Count == 0) {
                 return;
             }
@@ -140,21 +155,7 @@ namespace Game.Network {
         }
 
         private void OnDisconnect(byte id, string data) {
-            while (this.playDataList.Count > 0) {
-                this.LockUpdate();
-            }
-            
-            this.addr = null;
-            this.online = false;
-
-            if (Judge.GameType == GameType.PVP) {
-                Judge.GameType = GameType.PVE;
-            }
-            else {
-                this.exitMatchSlot.Run(this.gameObject);
-            }
-
-            print("Disconnected");
+            this.disconnectTick = true;
         }
 
         private void OnStart(byte id, string data) {
@@ -167,6 +168,7 @@ namespace Game.Network {
             this.updateTimer = 0;
             this.frame = 0;
             this.playFrame = 0;
+            this.disconnectTick = false;
             this.playDataList.Clear();
             this.playDataList.Add(new PlayData());
         }

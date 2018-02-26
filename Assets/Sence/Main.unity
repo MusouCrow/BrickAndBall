@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1794604517}
-  m_IndirectSpecularColor: {r: 0.9778314, g: 0.8534681, b: 0.7183011, a: 1}
+  m_IndirectSpecularColor: {r: 0.98309094, g: 0.8538601, b: 0.7151676, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -1631,7 +1631,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gradualTime: 0.5
-  volume: 0.5
+  volume: 0.7
 --- !u!1 &1910051466
 GameObject:
   m_ObjectHideFlags: 0

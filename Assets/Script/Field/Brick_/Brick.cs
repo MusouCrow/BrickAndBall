@@ -15,6 +15,7 @@ namespace Game.Field.Brick_ {
 		private static Vector2 POWER_X = new Vector2(6, 9);
 		private static Vector2 POWER_Z = new Vector2(-5, 5);
 		private static Vector2 AI_MOTION_TIME = new Vector2(0.4f, 0.7f);
+		private static float NET_MOTION_TIME = (Networkmgr.WAITTING_INTERVAL - 1) * Networkmgr.STDDT;
 
 		private static void HandleValueWithRange(ref float value) {
 			if (value > RANGE_Z) {
@@ -129,7 +130,7 @@ namespace Game.Field.Brick_ {
 			}
 			else {
 				Brick.HandleValueWithRange(ref newPos.z);
-				this.MovePosition(2, newPos.z, 0.085f);
+				this.MovePosition(2, newPos.z, NET_MOTION_TIME);
 			}
 		}
 
@@ -151,6 +152,7 @@ namespace Game.Field.Brick_ {
 				velocity.x += valueX * this.direction * ball.Rate;
 				velocity.z = valueZ * ball.Rate;
 				ball.Velocity = velocity;
+				this.shaking.Collide();
 			}
 		}
 

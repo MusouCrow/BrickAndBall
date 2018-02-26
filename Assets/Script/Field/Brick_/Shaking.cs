@@ -6,7 +6,7 @@ namespace Game.Field.Brick_ {
 	using Utility;
 
     public class Shaking {
-        private static Vector4 POWER = new Vector4(0.1f, 0, 0, 0.2f);
+        private static Vector4 POWER = new Vector4(0.15f, 0, 0, 0.3f);
         
         public Vector3 position;
         private Vector3 power;

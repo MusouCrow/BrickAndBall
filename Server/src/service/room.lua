@@ -11,7 +11,7 @@ local _playSender = {addrs = {}, inputs = {}}
 local _FUNC = {}
 local _CMD = {}
 local _playerCount = 2
-local _playInterval = 5
+local _playInterval = _SKYNET.Getenv("_play_interval", true)
 local _playFrame = 1
 local _readyPlay = false
 

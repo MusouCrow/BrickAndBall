@@ -18,8 +18,7 @@ namespace Game.Network {
         }
 
         private static IPEndPoint EP;
-        private const float UPDATE_INTERVAL = 0.01f;
-        private const float HEARTBEAT_INTERVAL = 1;
+        private const float HEARTBEAT_INTERVAL = 3;
 
         private string addr;
         private int port;
@@ -43,7 +42,7 @@ namespace Game.Network {
             this.eventHandler = new Dictionary<byte, List<Action<byte, string>>>();
         }
 
-        public void Update(float dt) {
+        public void Update() {
             if (!this.Connected) {
                 return;
             }
@@ -55,7 +54,7 @@ namespace Game.Network {
                 return;
             }
 
-            this.updateTime += dt;
+            this.updateTime += Networkmgr.STDDT;
             this.kcp.Update((uint)Mathf.FloorToInt(this.updateTime * 1000));
             this.heartbeatTimer.Update();
 

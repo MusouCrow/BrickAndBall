@@ -12,5 +12,6 @@ bootstrap = "snlua bootstrap"
 udp_address = "10.104.96.202"
 udp_port = 8888
 update_interval = 1
-heartbeat_interval = 200
+heartbeat_interval = 300
 max_client = 64
+_play_interval = 4
