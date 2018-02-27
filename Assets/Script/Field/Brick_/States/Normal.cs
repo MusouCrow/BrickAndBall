@@ -5,6 +5,7 @@ using DG.Tweening;
 
 namespace Game.Field.Brick_.States {
 	using Utility;
+	using Network;
 
 	[CreateAssetMenuAttribute(menuName="Game/State/Normal")]
 	public class Normal : State.Data {
@@ -23,7 +24,7 @@ namespace Game.Field.Brick_.States {
 	}
 
 	public class NormalState : State {
-		private const float DRAG_DELTA = 0.4f;
+		private const float DRAG_DELTA = 0.5f;
 
 		private Normal data;
 		private Brick brick;
@@ -123,7 +124,12 @@ namespace Game.Field.Brick_.States {
 			float delta = newPos.x - oldPos.x;
 
 			if ((this.brick.direction > 0 && delta > DRAG_DELTA) || (this.brick.direction < 0 && delta < -DRAG_DELTA)) {
-				this.statemgr.Play("Elast");
+				if (Judge.GameType == GameType.PVE) {
+					this.statemgr.Play("Elast");
+				}
+				else {
+					Networkmgr.WillElaste = true;
+				}
 			}
 		}
 

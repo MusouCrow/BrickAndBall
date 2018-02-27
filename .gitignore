@@ -27,3 +27,4 @@ sysinfo.txt
 .vscode
 .idea
 _.*
+Server/shell/upload.sh

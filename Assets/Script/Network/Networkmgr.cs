@@ -17,18 +17,22 @@ namespace Game.Network {
         private static Networkmgr INSTANCE;
         private const int DT = 17;
 
-        public static Vector3 MousePosition {
-            get {
-                return ViceCamera.ScreenToWorldPoint(Input.mousePosition, 0.3f).ToFixed();
-            }
-        }
-
         public static bool Connect() {
             return INSTANCE.client.Connect();
         }
 
         public static bool Disconnect() {
             return INSTANCE.client.Disconnect();
+        }
+
+        public static bool WillElaste {
+            get;
+            set;
+        }
+
+        public static float MovingValue {
+            get;
+            set;
         }
 
         [SerializeField]
@@ -47,6 +51,7 @@ namespace Game.Network {
         private bool online;
         private string addr;
         private bool disconnectTick;
+        private bool sendInLoop;
 
         protected void Awake() {
             INSTANCE = this;
@@ -63,10 +68,11 @@ namespace Game.Network {
             DOTween.Init();
             Networkmgr.LateUpdateEvent += () => DOTween.ManualUpdate(STDDT, STDDT);
         }
-        
+
         protected void OnGUI() {
             if (this.online) {
                 GUILayout.TextField(this.playFrame.ToString());
+                //GUILayout.TextField(ViceCamera.MousePosition.z.ToString());
             }
         }
 
@@ -78,9 +84,11 @@ namespace Game.Network {
 
                 if (this.playDataList.Count > 1) {
                     var lateFrame = this.frame;
+                    this.sendInLoop = true;
+
                     do {
                         this.client.Update();
-                        this.LockUpdate();
+                        this.LockUpdate(true);
                     } while(this.playDataList.Count == 1 && this.frame == lateFrame);
                 }
 
@@ -104,7 +112,7 @@ namespace Game.Network {
             }
         }
 
-        private void LockUpdate() {
+        private void LockUpdate(bool inLoop=false) {
             if (this.online && this.frame + 1 == WAITTING_INTERVAL && this.playDataList.Count == 0) {
                 return;
             }
@@ -118,29 +126,33 @@ namespace Game.Network {
                     
                     if (Judge.IsRunning && data.addrs != null) {
                         for (int i = 0; i < data.addrs.Length; i++) {
-                            Judge.SetInput(data.addrs[i], data.inputs[i]);
+                            Judge.Input(data.addrs[i], data.inputs[i]);
                         }
                     }
 
                     this.playFrame++;
                     this.frame = 0;
 
-                    var input = new Datas.Input() {
-                        data = new InputData() {
-                            mousePos = new SVector(Networkmgr.MousePosition),
-                            isDown = Input.GetMouseButton(0)
-                        },
-                        frame = this.playFrame
-                    };
+                    if (!inLoop || (inLoop && this.sendInLoop)) {
+                        var input = new Datas.Input() {
+                            data = new InputData() {
+                                movingValue = Networkmgr.MovingValue,
+                                willElaste = Networkmgr.WillElaste
+                            },
+                            frame = this.playFrame
+                        };
 
-                    this.client.Send(EventCode.Input, input);
+                        this.sendInLoop = false;
+                        Networkmgr.WillElaste = false;
+                        this.client.Send(EventCode.Input, input);
 
-                    var comparison = new Datas.Comparison() {
-                        playFrame = this.playFrame,
-                        content = Judge.Comparison
-                    };
+                        var comparison = new Datas.Comparison() {
+                            playFrame = this.playFrame,
+                            content = Judge.Comparison
+                        };
 
-                    this.client.Send(EventCode.Comparison, comparison);
+                        this.client.Send(EventCode.Comparison, comparison);
+                    }
                 }
             }
 
@@ -169,8 +181,11 @@ namespace Game.Network {
             this.frame = 0;
             this.playFrame = 0;
             this.disconnectTick = false;
+            this.sendInLoop = false;
             this.playDataList.Clear();
             this.playDataList.Add(new PlayData());
+            Networkmgr.MovingValue = 0;
+            Networkmgr.WillElaste = false;
         }
 
         private void OnReceivePlayData(byte id, string data) {

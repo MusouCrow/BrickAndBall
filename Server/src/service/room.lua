@@ -13,6 +13,7 @@ local _CMD = {}
 local _playerCount = 2
 local _playInterval = _SKYNET.Getenv("_play_interval", true)
 local _playFrame = 1
+local _timer = 0
 local _readyPlay = false
 
 function _FUNC.Send(id, obj)
@@ -35,6 +36,7 @@ function _FUNC.Play()
     _FUNC.Send(_ID.input, _playSender)
     _TABLE.Clear(_inputMap)
     _readyPlay = false
+    _timer = _SKYNET.now()
     _playFrame = _playFrame + 1
 end
 
@@ -53,7 +55,9 @@ function _CMD.ReceiveInput(fd, obj)
     if (obj.frame == _playFrame) then
         if (not _readyPlay) then
             _readyPlay = true
-            _SKYNET.timeout(_playInterval, _FUNC.Play)
+            local time = _playInterval - (_SKYNET.now() - _timer)
+            time = time < 0 and 0 or time
+            _SKYNET.timeout(time, _FUNC.Play)
         else
             _FUNC.Play()
         end

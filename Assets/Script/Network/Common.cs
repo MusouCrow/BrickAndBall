@@ -4,26 +4,9 @@ using UnityEngine;
 
 namespace Game.Network {
     [Serializable]
-    public struct SVector {
-        public float x;
-        public float y;
-        public float z;
-
-        public SVector(Vector3 vector) {
-            this.x = vector.x;
-            this.y = vector.y;
-            this.z = vector.z;
-        }
-
-        public Vector3 ToVector3() {
-            return new Vector3(this.x, this.y, this.z);
-        }
-    }
-
-    [Serializable]
     public struct InputData {
-        public SVector mousePos;
-        public bool isDown;
+        public float movingValue;
+        public bool willElaste;
     }
 
     [Serializable]

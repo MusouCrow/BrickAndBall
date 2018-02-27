@@ -14,4 +14,4 @@ udp_port = 8888
 update_interval = 1
 heartbeat_interval = 300
 max_client = 64
-_play_interval = 4
+_play_interval = 9

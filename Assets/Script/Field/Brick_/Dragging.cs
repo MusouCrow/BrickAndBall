@@ -19,13 +19,13 @@ namespace Game.Field.Brick_ {
             if (!isDown) {
                 this.hasDraged = false;
             }
-            else if (!this.hasDraged && this.collider.Pointcast(position)) {
+            else if (!this.hasDraged) {
                 this.hasDraged = true;
             }
             else if (this.hasDraged && this.OnDragEvent != null){
                 this.OnDragEvent(this.position, position);
             }
-
+            // && this.collider.Pointcast(position)
             if (this.hasDraged) {
                 this.position = position;
             }

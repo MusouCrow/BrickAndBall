@@ -69,7 +69,10 @@ namespace Game.Field {
 					Networkmgr.Disconnect();
 				}
 				
-				Handheld.Vibrate();
+				# if UNITY_ANDROID
+					Handheld.Vibrate();
+				# endif
+
 				INSTANCE.teamA.brick.isRunning = value;
 				INSTANCE.teamB.brick.isRunning = value;
 			}
@@ -102,6 +105,7 @@ namespace Game.Field {
 		public static string Comparison {
 			get {
 				var sb = new StringBuilder();
+				
 				sb.Append(Judge.BallPosition.x + ",");
 				sb.Append(Judge.BallPosition.y + ",");
 				sb.Append(Judge.BallPosition.z + ",");
@@ -112,6 +116,8 @@ namespace Game.Field {
 				sb.Append(INSTANCE.teamA.brick.transform.position.x + ",");
 				sb.Append(INSTANCE.teamB.brick.transform.localScale.x + ",");
 				sb.Append(INSTANCE.teamB.brick.transform.position.x + ",");
+				sb.Append(INSTANCE.teamA.brick.transform.position.z + ",");
+				sb.Append(INSTANCE.teamB.brick.transform.position.z + ",");
 				sb.Append(INSTANCE.teamA.wall.scale.x + ",");
 				sb.Append(INSTANCE.teamB.wall.scale.x + ",");
 				sb.Append(INSTANCE.teamA.wall.transform.position.z + ",");
@@ -153,9 +159,9 @@ namespace Game.Field {
 			}
 		}
 
-		public static void SetInput(string addr, InputData inputData) {
+		public static void Input(string addr, InputData inputData) {
 			var team = INSTANCE.teamA.addr == addr ? INSTANCE.teamA : INSTANCE.teamB;
-			team.brick.dragging.Drag(inputData.mousePos.ToVector3(), inputData.isDown);
+			team.brick.Input(inputData);
 		}
 
 		[SerializeField]

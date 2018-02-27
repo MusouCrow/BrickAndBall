@@ -5,6 +5,7 @@ using UnityEngine;
 using DG.Tweening;
 
 using Random = UnityEngine.Random;
+using UInput = UnityEngine.Input;
 
 namespace Game.Field.Brick_ {
 	using Utility;
@@ -15,7 +16,8 @@ namespace Game.Field.Brick_ {
 		private static Vector2 POWER_X = new Vector2(6, 9);
 		private static Vector2 POWER_Z = new Vector2(-5, 5);
 		private static Vector2 AI_MOTION_TIME = new Vector2(0.4f, 0.7f);
-		private static float NET_MOTION_TIME = (Networkmgr.WAITTING_INTERVAL - 1) * Networkmgr.STDDT;
+		private const float NET_MOTION_TIME = 0.1f;
+		private const float REBOUND_POWER = 12;
 
 		private static void HandleValueWithRange(ref float value) {
 			if (value > RANGE_Z) {
@@ -86,18 +88,30 @@ namespace Game.Field.Brick_ {
 		}
 
 		protected override void LockUpdate() {
-			if (this.isRunning && Judge.GameType == GameType.PVE && !this.isPlayer) {
+			if (!this.isRunning) {
+				return;
+			}
+
+			if (Judge.GameType == GameType.PVE && !this.isPlayer) {
 				this.timer.Update();
 			}
 
-			if (Judge.GameType == GameType.PVE && this.isPlayer) {
-				this.dragging.Drag(Networkmgr.MousePosition, Input.GetMouseButton(0));
+			if (this.isPlayer) {
+				this.dragging.Drag(ViceCamera.MousePosition, UInput.GetMouseButton(0));
 			}
 		}
 
 		public void Reset() {
 			if (this.ResetEvent != null) {
 				this.ResetEvent();
+			}
+		}
+
+		public void Input(InputData inputData) {
+			this.MovePosition(2, inputData.movingValue, NET_MOTION_TIME).SetEase(Ease.OutExpo);
+
+			if (inputData.willElaste) {
+				this.statemgr.Play("Elast");
 			}
 		}
 
@@ -129,8 +143,10 @@ namespace Game.Field.Brick_ {
 				this.AdjustPosition();
 			}
 			else {
-				Brick.HandleValueWithRange(ref newPos.z);
-				this.MovePosition(2, newPos.z, NET_MOTION_TIME);
+				var value = Networkmgr.MovingValue;
+				value += newPos.z - oldPos.z;
+				Brick.HandleValueWithRange(ref value);
+				Networkmgr.MovingValue = value;
 			}
 		}
 
@@ -148,7 +164,7 @@ namespace Game.Field.Brick_ {
 				float valueZ = Math.Lerp(POWER_Z.x, POWER_Z.y, Math.Random());
 
 				var velocity = ball.Velocity;
-				velocity.x = Mathf.Abs(velocity.x) < 15 ? 0 : velocity.x - 15 * direction;
+				velocity.x = Mathf.Abs(velocity.x) < REBOUND_POWER ? 0 : velocity.x - REBOUND_POWER * direction;
 				velocity.x += valueX * this.direction * ball.Rate;
 				velocity.z = valueZ * ball.Rate;
 				ball.Velocity = velocity;

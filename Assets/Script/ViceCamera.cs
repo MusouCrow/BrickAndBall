@@ -65,6 +65,12 @@ namespace Game {
 			return INSTANCE.camera.ScreenPointToRay(pos);
 		}
 
+        public static Vector3 MousePosition {
+            get {
+                return ViceCamera.ScreenToWorldPoint(Input.mousePosition, 0.3f).ToFixed();
+            }
+        }
+
 		[SerializeField]
 		private Vector3 gamePosition = new Vector3(0, 10, 0);
 		[SerializeField]
