@@ -63,7 +63,31 @@ namespace Game.Field {
 
 		private const float HORI_BORDER = 3.6f;
 		private const float VERT_BORDER = 8;
+		private static Ball INSTANCE;
 		public delegate bool Delegate(int type, float pos, float point, float velocity);
+
+		public static Vector3 Position {
+			get {
+				if (INSTANCE == null) {
+					return Vector3.zero;
+				}
+
+				return INSTANCE.transform.localPosition;
+			}
+		}
+
+		public static Vector3 Velocity {
+			get {
+				if (INSTANCE.collider == null) {
+					return Vector3.zero;
+				}
+
+				return INSTANCE.collider.Velocity;
+			}
+			set {
+				INSTANCE.collider.Velocity = value;
+			}
+		}
 
 		[SerializeField]
 		private AudioClip clip;
@@ -81,36 +105,14 @@ namespace Game.Field {
 		private float stretchTime = 0.075f;
 
 		private Vector3 velocity;
-		private float rate = 1;
 		private new Collider collider;
 		private Stretch stretch;
 		private bool hasDown;
 		private Vector3 latePosition;
 
-		public float Rate {
-			get {
-				return this.rate;
-			}
-			set {
-				this.rate = value.ToFixed();
-			}
-		}
-
-		public Vector3 Velocity {
-			get {
-				if (this.collider == null) {
-					return Vector3.zero;
-				}
-
-				return this.collider.Velocity;
-			}
-			set {
-				this.collider.Velocity = value;
-			}
-		}
-
 		protected new void Awake() {
 			base.Awake();
+			INSTANCE = this;
 			
 			this.collider = this.GetComponent<Collider>();
 			this.collider.CollisionEnterEvent += this.OnCollide;

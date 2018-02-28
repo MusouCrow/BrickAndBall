@@ -15,7 +15,8 @@ namespace Game.Field.Brick_ {
 		private const float RANGE_Z = 2.3f;
 		private static Vector2 POWER_X = new Vector2(6, 9);
 		private static Vector2 POWER_Z = new Vector2(-5, 5);
-		private static Vector2 AI_MOTION_TIME = new Vector2(0.4f, 0.7f);
+		private static Vector2 AI_MOTION_TIME = new Vector2(0.3f, 0.5f);
+		private static Vector2 AI_INTERAL_RANGE = new Vector2(0.2f, 0.5f);
 		private const float NET_MOTION_TIME = 0.1f;
 		private const float REBOUND_POWER = 12;
 
@@ -29,8 +30,6 @@ namespace Game.Field.Brick_ {
 
 		public Color targetColor;
 		public int direction;
-		[SerializeField]
-		private Vector2 AIIntervalRange;
 
 		[NonSerialized]
 		public Color originColor;
@@ -59,7 +58,7 @@ namespace Game.Field.Brick_ {
 
 		public float AIInterval {
 			get {
-				return Math.Lerp(this.AIIntervalRange.x, this.AIIntervalRange.y, Math.Random());
+				return Math.Lerp(AI_INTERAL_RANGE.x, AI_INTERAL_RANGE.y, Math.Random());
 			}
 		}
 
@@ -130,7 +129,7 @@ namespace Game.Field.Brick_ {
 
 		private void TickAI() {
 			if (this.AITickEvent != null) {
-				this.AITickEvent(Judge.BallPosition);
+				this.AITickEvent(Ball.Position);
 			}
 
 			this.timer.Enter(this.AIInterval, this.TickAI);
@@ -163,12 +162,16 @@ namespace Game.Field.Brick_ {
 				float valueX = Math.Lerp(POWER_X.x, POWER_X.y, Math.Random());
 				float valueZ = Math.Lerp(POWER_Z.x, POWER_Z.y, Math.Random());
 
-				var velocity = ball.Velocity;
+				var velocity = Ball.Velocity;
 				velocity.x = Mathf.Abs(velocity.x) < REBOUND_POWER ? 0 : velocity.x - REBOUND_POWER * direction;
-				velocity.x += valueX * this.direction * ball.Rate;
-				velocity.z = valueZ * ball.Rate;
-				ball.Velocity = velocity;
+				velocity.x += valueX * this.direction * Judge.Rate;
+				velocity.z = valueZ * Judge.Rate;
+				Ball.Velocity = velocity;
 				this.shaking.Collide();
+
+				if (this.isPlayer) {
+					Vibrate.Do((int)(velocity.magnitude * 10));
+				}
 			}
 		}
 

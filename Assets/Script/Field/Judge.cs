@@ -47,16 +47,6 @@ namespace Game.Field {
 
 		private static Judge INSTANCE;
 
-		public static Vector3 BallPosition {
-			get {
-				if (INSTANCE.ball == null) {
-					return Vector3.zero;
-				}
-
-				return INSTANCE.ball.transform.localPosition;
-			}
-		}
-
 		public static bool IsRunning {
 			set {
 				INSTANCE.isRunning = value;
@@ -69,10 +59,6 @@ namespace Game.Field {
 					Networkmgr.Disconnect();
 				}
 				
-				# if UNITY_ANDROID
-					Handheld.Vibrate();
-				# endif
-
 				INSTANCE.teamA.brick.isRunning = value;
 				INSTANCE.teamB.brick.isRunning = value;
 			}
@@ -94,11 +80,13 @@ namespace Game.Field {
 		}
 
 		public static GameType GameType {
-			set {
-				INSTANCE.gameType = value;
-			}
+			get;
+			set;
+		}
+
+		public static float Rate {
 			get {
-				return INSTANCE.gameType;
+				return INSTANCE.rate.ToFixed();	
 			}
 		}
 
@@ -106,30 +94,42 @@ namespace Game.Field {
 			get {
 				var sb = new StringBuilder();
 				
-				sb.Append(Judge.BallPosition.x + ",");
-				sb.Append(Judge.BallPosition.y + ",");
-				sb.Append(Judge.BallPosition.z + ",");
-				sb.Append(INSTANCE.ball.Velocity.x + ",");
-				sb.Append(INSTANCE.ball.Velocity.y + ",");
-				sb.Append(INSTANCE.ball.Velocity.z + ",");
+				var pos = Ball.Position;
+				var vel = Ball.Velocity;
+
+				sb.Append(pos.x + ",");
+				sb.Append(pos.y + ",");
+				sb.Append(pos.z + ",");
+				sb.Append(vel.x + ",");
+				sb.Append(vel.y + ",");
+				sb.Append(vel.z + ",");
+				sb.Append(INSTANCE.teamA.brick.transform.position.z + ",");
+				sb.Append(INSTANCE.teamB.brick.transform.position.z + ",");
+				sb.Append(INSTANCE.teamA.wall.transform.position.z + ",");
+				sb.Append(INSTANCE.teamB.wall.transform.position.z + ",");
+
+				/*
 				sb.Append(INSTANCE.teamA.brick.transform.localScale.x + ",");
 				sb.Append(INSTANCE.teamA.brick.transform.position.x + ",");
 				sb.Append(INSTANCE.teamB.brick.transform.localScale.x + ",");
 				sb.Append(INSTANCE.teamB.brick.transform.position.x + ",");
 				sb.Append(INSTANCE.teamA.brick.transform.position.z + ",");
 				sb.Append(INSTANCE.teamB.brick.transform.position.z + ",");
-				sb.Append(INSTANCE.teamA.wall.scale.x + ",");
-				sb.Append(INSTANCE.teamB.wall.scale.x + ",");
+				*/
+				//sb.Append(INSTANCE.teamA.wall.scale.x + ",");
+				//sb.Append(INSTANCE.teamB.wall.scale.x + ",");
+				/*
 				sb.Append(INSTANCE.teamA.wall.transform.position.z + ",");
 				sb.Append(INSTANCE.teamB.wall.transform.position.z + ",");
-				
+				*/
+				/*
 				var md5 = MD5.Create();
 				var bytes = md5.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()));
 				sb = new StringBuilder();
 
 				for (int i = 0; i < bytes.Length; i++) {
 					sb.Append(bytes[i].ToString("x2"));
-				}
+				}*/
 
 				return sb.ToString();
 			}
@@ -169,8 +169,6 @@ namespace Game.Field {
 		[SerializeField]
 		private Team teamB;
 		[SerializeField]
-		private Ball ball;
-		[SerializeField]
 		private AudioClip[] sounds;
 		[SerializeField]
 		private AudioClip music;
@@ -184,12 +182,11 @@ namespace Game.Field {
 		private int scoreMax = 5;
 
 		private bool aShooted;
-		private float pitch = 1;
 		private bool isRunning;
-		private GameType gameType;
 		private Team playerTeam;
 		private Team opponentTeam;
 		private Timer timer;
+		private float rate = 1;
 
 		protected new void Awake() {
 			base.Awake();
@@ -205,9 +202,8 @@ namespace Game.Field {
 			}
 
 			this.timer.Update();
-			this.pitch += this.acceleration;
-			Sound.MusicPitch = this.pitch;
-			this.ball.Rate = this.pitch;
+			this.rate += this.acceleration;
+			Sound.MusicPitch = this.rate;
 		}
 
 		public void Shoot(float time) {
@@ -217,7 +213,7 @@ namespace Game.Field {
 		private void Reset(ViceCamera.TargetType type) {
 			if (type == ViceCamera.TargetType.Opening) {
 				this.aShooted = false;
-				this.pitch = 1;
+				this.rate = 1;
 				this.teamA.Reset ();
 				this.teamB.Reset ();
 			}
@@ -225,9 +221,9 @@ namespace Game.Field {
 
 		private void TickShoot() {
 			if (this.aShooted) {
-				this.teamA.shooter.Shoot(this.ball);
+				this.teamA.shooter.Shoot();
 			} else {
-				this.teamB.shooter.Shoot(this.ball);
+				this.teamB.shooter.Shoot();
 			}
 
 			this.aShooted = !this.aShooted;

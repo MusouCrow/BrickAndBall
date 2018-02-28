@@ -56,7 +56,8 @@ namespace Game.Field {
 
 			if (ball != null) {
 				ball.Rebound(point, this.CheckedFunc);
-				ball.Move(ball.Rate * ball.Velocity.x.ToDirection(), 0, ball.Rate * 2 * ball.Velocity.z.ToDirection());
+				var vel = Ball.Velocity;
+				ball.Move(Judge.Rate * vel.x.ToDirection(), 0, Judge.Rate * 2 * vel.z.ToDirection());
 			}
 		}
 	}

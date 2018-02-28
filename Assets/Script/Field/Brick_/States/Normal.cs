@@ -93,8 +93,8 @@ namespace Game.Field.Brick_.States {
 			if (!this.coolDown) {
 				return;
 			}
-
-			float coolDownTime = this.data.CoolDownTime;
+			
+			float coolDownTime = (this.data.CoolDownTime / Judge.Rate).ToFixed();
 
 			this.sequence = DOTween.Sequence();
 			Tweener t1 = this.brick.MoveColor(this.brick.originColor, coolDownTime * 0.9f);

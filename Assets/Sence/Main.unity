@@ -1229,6 +1229,11 @@ Prefab:
       propertyPath: m_LocalScale.x
       value: -60
       objectReference: {fileID: 0}
+    - target: {fileID: 114716635580030828, guid: db2346bc5f04e4fcf8490b9fa4647c5e,
+        type: 2}
+      propertyPath: ball
+      value: 
+      objectReference: {fileID: 11083400}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: db2346bc5f04e4fcf8490b9fa4647c5e, type: 2}
   m_IsPrefabParent: 0
@@ -1284,6 +1289,11 @@ Prefab:
       propertyPath: m_LocalScale.x
       value: 60
       objectReference: {fileID: 0}
+    - target: {fileID: 114716635580030828, guid: db2346bc5f04e4fcf8490b9fa4647c5e,
+        type: 2}
+      propertyPath: ball
+      value: 
+      objectReference: {fileID: 11083400}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: db2346bc5f04e4fcf8490b9fa4647c5e, type: 2}
   m_IsPrefabParent: 0
@@ -1480,7 +1490,6 @@ MonoBehaviour:
     wall: {fileID: 1764544986}
     shooter: {fileID: 783902391}
     brick: {fileID: 1275918501}
-  ball: {fileID: 11083400}
   sounds:
   - {fileID: 8300000, guid: 2768c4b4319a740f587c97ab3e1973c3, type: 3}
   - {fileID: 8300000, guid: ecf0acc5c82344bf9898bbc95c7bf6fc, type: 3}
