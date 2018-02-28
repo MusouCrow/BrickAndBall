@@ -164,6 +164,10 @@ namespace Game.Field {
 			team.brick.Input(inputData);
 		}
 
+		public static void Input(InputData inputData) {
+			INSTANCE.teamB.brick.Input(inputData);
+		}
+
 		[SerializeField]
 		private Team teamA;
 		[SerializeField]

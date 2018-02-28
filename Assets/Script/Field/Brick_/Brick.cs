@@ -17,7 +17,7 @@ namespace Game.Field.Brick_ {
 		private static Vector2 POWER_Z = new Vector2(-5, 5);
 		private static Vector2 AI_MOTION_TIME = new Vector2(0.3f, 0.5f);
 		private static Vector2 AI_INTERAL_RANGE = new Vector2(0.2f, 0.5f);
-		private const float NET_MOTION_TIME = 0.1f;
+		private const float NET_MOTION_TIME = 0.3f;
 		private const float REBOUND_POWER = 12;
 
 		private static void HandleValueWithRange(ref float value) {
@@ -49,6 +49,7 @@ namespace Game.Field.Brick_ {
 		private Shaking shaking;
 		private Vector3 position;
 		private Vector3 scale;
+		private Tweener movingTweener;
 
 		public bool CanConroll {
 			get {
@@ -107,7 +108,11 @@ namespace Game.Field.Brick_ {
 		}
 
 		public void Input(InputData inputData) {
-			this.MovePosition(2, inputData.movingValue, NET_MOTION_TIME).SetEase(Ease.OutExpo);
+			if (this.movingTweener != null) {
+				this.movingTweener.Kill();
+			}
+
+			this.movingTweener = this.MovePosition(2, inputData.movingValue, NET_MOTION_TIME);
 
 			if (inputData.willElaste) {
 				this.statemgr.Play("Elast");

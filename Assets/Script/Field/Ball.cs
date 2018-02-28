@@ -78,7 +78,10 @@ namespace Game.Field {
 
 		public static Vector3 Velocity {
 			get {
-				if (INSTANCE.collider == null) {
+				if (INSTANCE == null) {
+					return Vector3.zero;
+				}
+				else if (INSTANCE.collider == null) {
 					return Vector3.zero;
 				}
 

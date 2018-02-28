@@ -122,6 +122,16 @@ namespace Game.Network {
                 this.frame++;
 
                 if (this.frame == WAITTING_INTERVAL) {
+                    /*
+                    Judge.Input(new InputData() {
+                        movingValue = Networkmgr.MovingValue,
+                        willElaste = Networkmgr.WillElaste
+                    });
+
+                    Networkmgr.WillElaste = false;
+                    this.frame = 0;
+                    */
+                    
                     var data = this.playDataList[0];
                     this.playDataList.RemoveAt(0);
                     
