@@ -15,8 +15,8 @@ namespace Game.Field.Brick_ {
 		private const float RANGE_Z = 2.3f;
 		private static Vector2 POWER_X = new Vector2(6, 9);
 		private static Vector2 POWER_Z = new Vector2(-5, 5);
-		private static Vector2 AI_MOTION_TIME = new Vector2(0.3f, 0.5f);
-		private static Vector2 AI_INTERAL_RANGE = new Vector2(0.2f, 0.5f);
+		private static Vector2 AI_MOTION_TIME = new Vector2(0.3f, 0.6f);
+		private static Vector2 AI_INTERAL_RANGE = new Vector2(0.4f, 0.6f);
 		private const float NET_MOTION_TIME = 0.25f;
 		private const float REBOUND_POWER = 12;
 
