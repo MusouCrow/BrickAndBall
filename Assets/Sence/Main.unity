@@ -167,6 +167,11 @@ Prefab:
       propertyPath: orderType
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114030529008284130, guid: 5f7bcc01c491f4d37afc28121745116d,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5f7bcc01c491f4d37afc28121745116d, type: 2}
   m_IsPrefabParent: 0
@@ -884,7 +889,6 @@ GameObject:
   - component: {fileID: 1022633800}
   - component: {fileID: 1022633799}
   - component: {fileID: 1022633798}
-  - component: {fileID: 1022633797}
   m_Layer: 0
   m_Name: MainCamera (1)
   m_TagString: MainCamera
@@ -892,25 +896,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!114 &1022633797
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1022633796}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4e1ab60469a84a3eb4e08654017f286, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  orderType: 0
-  gamePosition: {x: 0, y: 10, z: 0}
-  gameRotation: {x: 90, y: 90, z: 0}
-  openingPosition: {x: -25, y: 10, z: 0}
-  openingRotation: {x: 10, y: 90, z: 0}
-  target: {fileID: 1808828744}
-  speed: 0.1
-  clip: {fileID: 8300000, guid: 9d352e48f9fa64d49beeac1056d970b0, type: 3}
 --- !u!124 &1022633798
 Behaviour:
   m_ObjectHideFlags: 0
@@ -926,8 +911,8 @@ Camera:
   m_GameObject: {fileID: 1022633796}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.49803922, g: 0.49803922, b: 0.49803922, a: 1}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
