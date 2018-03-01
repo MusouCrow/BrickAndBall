@@ -77,7 +77,7 @@ function _CMD.ReceiveComparison(fd, obj)
 
         for k, v in pairs(map) do
             if (late and v ~= late) then
-                print(v, "!=", late)
+                print(obj.playFrame, v, "!=", late)
             end
 
             late = v

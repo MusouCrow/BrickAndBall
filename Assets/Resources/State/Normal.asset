@@ -11,5 +11,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27ed6074aa79b44ad9f4f9640ede104b, type: 3}
   m_Name: Normal
   m_EditorClassIdentifier: 
-  coolDownTime: 3.5
+  coolDownTime: 4
   clip: {fileID: 8300000, guid: 9d3f253c3ec134c89919173d68602815, type: 3}

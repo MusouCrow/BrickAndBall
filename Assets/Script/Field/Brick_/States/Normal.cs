@@ -24,7 +24,7 @@ namespace Game.Field.Brick_.States {
 	}
 
 	public class NormalState : State {
-		private const float DRAG_DELTA = 0.5f;
+		private const float DRAG_DELTA = 0.4f;
 
 		private Normal data;
 		private Brick brick;

@@ -17,7 +17,7 @@ namespace Game.Field.Brick_ {
 		private static Vector2 POWER_Z = new Vector2(-5, 5);
 		private static Vector2 AI_MOTION_TIME = new Vector2(0.3f, 0.5f);
 		private static Vector2 AI_INTERAL_RANGE = new Vector2(0.2f, 0.5f);
-		private const float NET_MOTION_TIME = 0.3f;
+		private const float NET_MOTION_TIME = 0.25f;
 		private const float REBOUND_POWER = 12;
 
 		private static void HandleValueWithRange(ref float value) {
@@ -113,7 +113,7 @@ namespace Game.Field.Brick_ {
 			}
 
 			this.movingTweener = this.MovePosition(2, inputData.movingValue, NET_MOTION_TIME);
-
+			
 			if (inputData.willElaste) {
 				this.statemgr.Play("Elast");
 			}
@@ -168,7 +168,7 @@ namespace Game.Field.Brick_ {
 				float valueZ = Math.Lerp(POWER_Z.x, POWER_Z.y, Math.Random());
 
 				var velocity = Ball.Velocity;
-				velocity.x = Mathf.Abs(velocity.x) < REBOUND_POWER ? 0 : velocity.x - REBOUND_POWER * direction;
+				velocity.x = Mathf.Abs(velocity.x) < REBOUND_POWER ? 0 : velocity.x - REBOUND_POWER * this.direction;
 				velocity.x += valueX * this.direction * Judge.Rate;
 				velocity.z = valueZ * Judge.Rate;
 				Ball.Velocity = velocity;

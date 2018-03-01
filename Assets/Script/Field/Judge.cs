@@ -103,7 +103,11 @@ namespace Game.Field {
 				sb.Append(vel.x + ",");
 				sb.Append(vel.y + ",");
 				sb.Append(vel.z + ",");
+				sb.Append(INSTANCE.teamA.brick.transform.localScale.x + ",");
+				sb.Append(INSTANCE.teamA.brick.transform.position.x + ",");
 				sb.Append(INSTANCE.teamA.brick.transform.position.z + ",");
+				sb.Append(INSTANCE.teamB.brick.transform.localScale.x + ",");
+				sb.Append(INSTANCE.teamB.brick.transform.position.x + ",");
 				sb.Append(INSTANCE.teamB.brick.transform.position.z + ",");
 				sb.Append(INSTANCE.teamA.wall.transform.position.z + ",");
 				sb.Append(INSTANCE.teamB.wall.transform.position.z + ",");

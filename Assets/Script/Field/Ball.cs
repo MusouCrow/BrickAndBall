@@ -112,6 +112,7 @@ namespace Game.Field {
 		private Stretch stretch;
 		private bool hasDown;
 		private Vector3 latePosition;
+		private int collidingCount;
 
 		protected new void Awake() {
 			base.Awake();
@@ -156,6 +157,7 @@ namespace Game.Field {
 
 		protected void OnEnable() {
 			this.hasDown = false;
+			this.collidingCount = 0;
 			this.velocity = Vector3.zero;
 			this.NewEffect(this.transform);
 		}
@@ -164,11 +166,21 @@ namespace Game.Field {
 			this.transform.localScale = Vector3.one;
 		}
 
+		protected void OnGUI() {
+			GUILayout.TextArea(this.velocity.ToString());
+		}
+
 		private void OnCollide(Collider collider, Vector3 point) {
 			Sound.Play(this.clip);
 			var obj = this.NewEffect(this.transform.parent);
 			var psr = obj.GetComponent<ParticleSystemRenderer>();
 			var mr = collider.GetComponent<MeshRenderer>();
+
+			this.collidingCount++;
+			var velocity = this.collider.Velocity;
+			int direction = velocity.x > 0 ? 1 : -1;
+			velocity.x += this.collidingCount * 0.05f * direction;
+			this.collider.Velocity = velocity;
 
 			if (psr && mr) {
 				psr.material.color = mr.material.color;

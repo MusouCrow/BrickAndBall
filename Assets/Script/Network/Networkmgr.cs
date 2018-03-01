@@ -156,14 +156,14 @@ namespace Game.Network {
                         this.sendInLoop = false;
                         Networkmgr.WillElaste = false;
                         this.client.Send(EventCode.Input, input);
-
-                        var comparison = new Datas.Comparison() {
-                            playFrame = this.playFrame,
-                            content = Judge.Comparison
-                        };
-
-                        this.client.Send(EventCode.Comparison, comparison);
                     }
+
+                    var comparison = new Datas.Comparison() {
+                        playFrame = this.playFrame,
+                        content = Judge.Comparison
+                    };
+
+                    this.client.Send(EventCode.Comparison, comparison);
                 }
             }
 
