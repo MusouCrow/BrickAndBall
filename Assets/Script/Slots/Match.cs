@@ -7,27 +7,19 @@ namespace Game.Slots {
 	using Network;
 
 	[CreateAssetMenuAttribute(menuName="Game/Slot/Match")]
-	public class Match : Utility.Slot {
+	public class Match : SwtichUI {
 		[SerializeField]
 		private bool isStart;
-		[SerializeField]
-		private GameObject next;
-		[SerializeField]
-		private float wattingTime;
 
-		public override void Run(GameObject gameObject) {
-			Interface.Clear(this.wattingTime, this.OnComplete, true);
-		}
-
-		private void OnComplete() {
+		protected override void OnComplete() {
 			if (this.isStart) {
 				Networkmgr.Connect();
 			}
 			else {
 				Networkmgr.Disconnect();
 			}
-			
-			Interface.Instantiate(this.next);
+
+			base.OnComplete();
 		}
 	}
 }

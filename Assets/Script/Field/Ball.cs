@@ -166,10 +166,6 @@ namespace Game.Field {
 			this.transform.localScale = Vector3.one;
 		}
 
-		protected void OnGUI() {
-			GUILayout.TextArea(this.velocity.ToString());
-		}
-
 		private void OnCollide(Collider collider, Vector3 point) {
 			Sound.Play(this.clip);
 			var obj = this.NewEffect(this.transform.parent);
