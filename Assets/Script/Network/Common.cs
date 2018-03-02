@@ -22,12 +22,27 @@ namespace Game.Network {
         public const byte Start = 3;
         public const byte Input = 4;
         public const byte Comparison = 5;
+        public const byte Handshake = 6;
+    }
+
+    public static class ExitCode {
+        public const byte None = 0;
+        public const byte Normal = 1;
+        public const byte Full = 2;
+        public const byte Version = 3;
     }
 
     namespace Datas {
         [Serializable]
         public struct Connect {
             public string addr;
+            public int version;
+            public bool isFull;
+        }
+
+        [Serializable]
+        public struct Disconnect {
+            public byte exitCode;
         }
 
         [Serializable]

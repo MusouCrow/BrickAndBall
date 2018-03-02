@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 namespace Game.Network {
     using Utility;
     using Field;
+    using UI;
 
     public class Networkmgr : MonoBehaviour {
         public const float STDDT = 0.017f;
@@ -16,13 +17,15 @@ namespace Game.Network {
         public const int WAITTING_INTERVAL = 5;
         private static Networkmgr INSTANCE;
         private const int DT = 17;
+        private const string VERSION_CONTENT = "Version is old, please update.";
+        private const string FULL_CONTENT = "Quota is full, please retry.";
 
         public static bool Connect() {
             return INSTANCE.client.Connect();
         }
 
-        public static bool Disconnect() {
-            return INSTANCE.client.Disconnect();
+        public static bool Disconnect(byte exitCode=ExitCode.Normal) {
+            return INSTANCE.client.Disconnect(exitCode);
         }
 
         public static bool WillElaste {
@@ -40,6 +43,8 @@ namespace Game.Network {
         [SerializeField]
         private int serverPort;
         [SerializeField]
+        private int version;
+        [SerializeField]
         private Slot startGameSlot;
         [SerializeField]
         private Slot exitMatchSlot;
@@ -50,7 +55,7 @@ namespace Game.Network {
         private Client client;
         private bool online;
         private string addr;
-        private bool disconnectTick;
+        private byte exitCode;
         private bool sendInLoop;
 
         protected void Awake() {
@@ -97,7 +102,7 @@ namespace Game.Network {
                 this.updateTimer -= DT;
             }
 
-            if (this.disconnectTick) {
+            if (this.exitCode != ExitCode.None) {
                 this.addr = null;
                 this.online = false;
 
@@ -105,11 +110,19 @@ namespace Game.Network {
                     Judge.GameType = GameType.PVE;
                 }
                 else {
-                    this.exitMatchSlot.Run(this.gameObject);
+                    if (this.exitCode == ExitCode.Normal) {
+                        this.exitMatchSlot.Run(this.gameObject);
+                    }
+                    else if (this.exitCode == ExitCode.Version) {
+                        Interface.LabelContent = VERSION_CONTENT;
+                    }
+                    else if (this.exitCode == ExitCode.Full) {
+                        Interface.LabelContent = FULL_CONTENT;
+                    }
                 }
 
                 print("Disconnected");
-                this.disconnectTick = false;
+                this.exitCode = ExitCode.None;
             }
         }
 
@@ -163,12 +176,22 @@ namespace Game.Network {
 
         private void OnConnect(byte id, string data) {
             var obj = JsonUtility.FromJson<Datas.Connect>(data);
+
+            if (obj.version != this.version || obj.isFull) {
+                byte exitCode = obj.isFull ? ExitCode.Full : ExitCode.Version;
+                Networkmgr.Disconnect(exitCode);
+            }
+            else {
+                this.client.Send(EventCode.Handshake);
+            }
+
             this.addr = obj.addr;
             print("Connected");
         }
 
         private void OnDisconnect(byte id, string data) {
-            this.disconnectTick = true;
+            var obj = JsonUtility.FromJson<Datas.Disconnect>(data);
+            this.exitCode = obj.exitCode;
         }
 
         private void OnStart(byte id, string data) {
@@ -181,7 +204,7 @@ namespace Game.Network {
             this.updateTimer = 0;
             this.frame = 0;
             this.playFrame = 0;
-            this.disconnectTick = false;
+            this.exitCode = ExitCode.None;
             this.sendInLoop = false;
             this.playDataList.Clear();
             this.playDataList.Add(new PlayData());

@@ -107,7 +107,7 @@ namespace Game.Network {
             return true;
         }
 
-        public bool Disconnect() {
+        public bool Disconnect(byte exitCode=ExitCode.Normal) {
             if (!this.Connected) {
                 return false;
             }
@@ -115,7 +115,11 @@ namespace Game.Network {
             this.heartbeatTimer.Exit();
             this.Connected = false;
             this.udp.Close();
-            this.SendEvent(EventCode.Disconnect, null);
+
+            var obj = new Datas.Disconnect() {
+                exitCode = exitCode
+            };
+            this.SendEvent(EventCode.Disconnect, JsonUtility.ToJson(obj));
 
             return true;
         }

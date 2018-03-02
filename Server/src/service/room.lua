@@ -11,7 +11,7 @@ local _playSender = {addrs = {}, inputs = {}}
 local _FUNC = {}
 local _CMD = {}
 local _playerCount = 2
-local _playInterval = _SKYNET.Getenv("_play_interval", true)
+local _playInterval = _SKYNET.Getenv("play_interval", true)
 local _playFrame = 1
 local _timer = 0
 local _readyPlay = false
@@ -77,7 +77,7 @@ function _CMD.ReceiveComparison(fd, obj)
 
         for k, v in pairs(map) do
             if (late and v ~= late) then
-                print(obj.playFrame, v, "!=", late)
+                _SKYNET.Log(obj.playFrame, v, "!=", late)
             end
 
             late = v

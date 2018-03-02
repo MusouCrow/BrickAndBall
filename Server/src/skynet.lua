@@ -38,4 +38,9 @@ function _SKYNET.Getenv(key, isNum)
     return v
 end
 
+function _SKYNET.Log(...)
+    _ORIGIN_SKYNET.error(...)
+    print(...)
+end
+
 return _SKYNET

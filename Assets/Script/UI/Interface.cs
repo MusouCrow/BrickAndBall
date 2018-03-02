@@ -10,9 +10,9 @@ namespace Game.UI {
 
 	public class Interface : LockBehaviour {
 		private static Interface INSTANCE;
-		public delegate void Delegate();
+		private static Label LABEL;
 
-		public static void Clear(float time=0, Delegate OnComplete=null, bool exceptPoster=false) {
+		public static void Clear(float time=0, Action OnComplete=null, bool exceptPoster=false) {
 			INSTANCE.eventSystem.SetActive(false);
 			INSTANCE.timer.Enter(time, () => INSTANCE.TickClear(OnComplete, exceptPoster));
 		}
@@ -24,6 +24,16 @@ namespace Game.UI {
 
 		public static void Instantiate(GameObject gameObject) {
 			GameObject.Instantiate(gameObject, INSTANCE.transform);
+		}
+
+		public static string LabelContent {
+			set {
+				LABEL = LABEL == null ? GameObject.FindWithTag("Label").GetComponent<Label>() : LABEL;
+
+				if (LABEL != null) {
+					LABEL.Text = value;
+				}
+			}
 		}
 
 		[SerializeField]
@@ -59,7 +69,7 @@ namespace Game.UI {
 			this.timer.Update();
 		}
 
-		private void TickClear(Delegate OnComplete=null, bool exceptPoster=false) {
+		private void TickClear(Action OnComplete=null, bool exceptPoster=false) {
 			for (int i = 0; i < this.transform.childCount; i++) {
 				Transform child = this.transform.GetChild(i);
 

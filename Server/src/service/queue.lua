@@ -6,7 +6,7 @@ local _lobby
 local _readyFd
 local _CMD = {}
 
-function _CMD.OnConnect(id, fd)
+function _CMD.OnHandshake(id, fd)
     if (not _SKYNET.Call(_gate, "CheckAgent", fd)) then
         return
     end
@@ -30,7 +30,7 @@ local function _Start()
     _lobby = _SKYNET.queryservice("lobby")
 
     _SKYNET.DispatchCommand(_CMD)
-    _SKYNET.Send(_gate, "Register", _ID.connect, _SKYNET.self(), "OnConnect")
+    _SKYNET.Send(_gate, "Register", _ID.handshake, _SKYNET.self(), "OnHandshake")
     _SKYNET.Send(_gate, "Register", _ID.disconnect, _SKYNET.self(), "OnDisconnect")
 end
 

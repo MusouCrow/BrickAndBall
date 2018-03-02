@@ -1746,6 +1746,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverAddress: 193.112.102.21
   serverPort: 8888
+  version: 0
   startGameSlot: {fileID: 11400000, guid: 4db61ddf4f1e24dc098e4cddd6227f19, type: 2}
   exitMatchSlot: {fileID: 11400000, guid: 8821d6b88a1554f53915cda018be2bc6, type: 2}
 --- !u!4 &2100119504

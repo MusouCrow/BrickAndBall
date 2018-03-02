@@ -13,6 +13,7 @@ local _maxClient = _SKYNET.Getenv("max_client", true)
 local _clientCount = 0
 local _updateInterval = _SKYNET.Getenv("update_interval", true)
 local _heartbeatInterval = _SKYNET.Getenv("heartbeat_interval", true)
+local _version = _SKYNET.Getenv("version", true)
 local _FUNC = {}
 local _CMD = {}
 
@@ -25,15 +26,15 @@ function _FUNC.SendEvent(id, fd, obj)
 end
 
 function _FUNC.OnReceive(data, from)
-    if (_clientCount < _maxClient and not _agentMap[from] and string.unpack("b", data, #data) == _ID.connect) then
+    if (not _agentMap[from] and string.unpack("b", data, #data) == _ID.connect) then
         local addr = _SOCKET.ToAddress(from)
-        print("connect", addr)
+        _SKYNET.Log("connect", addr)
         _agentMap[from] = _Agent.New(1, from, function (_data)
             _SOCKET.sendto(_udp, from, _data)
         end)
 
         _clientCount = _clientCount + 1
-        _agentMap[from]:Send(_ID.connect, {addr = addr})
+        _agentMap[from]:Send(_ID.connect, {addr = addr, version = _version, isFull = _clientCount > _maxClient})
     elseif (_agentMap[from]) then
         _agentMap[from]:Input(data)
     end
@@ -72,7 +73,7 @@ function _FUNC.Kick(fd)
     _agentMap[fd] = nil
     _clientCount = _clientCount - 1
     _FUNC.SendEvent(_ID.disconnect, fd)
-    print("disconnect", _SOCKET.ToAddress(fd))
+    _SKYNET.Log("disconnect", _SOCKET.ToAddress(fd))
 end
 
 function _FUNC.Heartbeat()
@@ -127,14 +128,14 @@ function _CMD.Send(fd, id, obj)
             if (_agentMap[fd[n]]) then
                 _agentMap[fd[n]]:Send(id, data)
             else
-                print("no existed", fd[n])
+                _SKYNET.Log("no existed", fd[n])
             end
         end
     else
         if (_agentMap[fd]) then
             _agentMap[fd]:Send(id, obj)
         else
-            print("no existed", fd)
+            _SKYNET.Log("no existed", fd)
         end
     end
 end

@@ -18,7 +18,7 @@ namespace Game.Field.Brick_ {
 		private static Vector2 AI_MOTION_TIME = new Vector2(0.3f, 0.6f);
 		private static Vector2 AI_INTERAL_RANGE = new Vector2(0.4f, 0.6f);
 		private const float NET_MOTION_TIME = 0.25f;
-		private const float REBOUND_POWER = 12;
+		private const float ACCELERATION_RATE = 1.5f;
 
 		private static void HandleValueWithRange(ref float value) {
 			if (value > RANGE_Z) {
@@ -168,7 +168,7 @@ namespace Game.Field.Brick_ {
 				float valueZ = Math.Lerp(POWER_Z.x, POWER_Z.y, Math.Random());
 
 				var velocity = Ball.Velocity;
-				velocity.x = Mathf.Abs(velocity.x) < REBOUND_POWER ? 0 : velocity.x - REBOUND_POWER * this.direction;
+				velocity.x = velocity.x * (ACCELERATION_RATE / Mathf.Abs(velocity.x)).ToFixed();
 				velocity.x += valueX * this.direction * Judge.Rate;
 				velocity.z = valueZ * Judge.Rate;
 				Ball.Velocity = velocity;

@@ -21,15 +21,15 @@ GameObject:
   - component: {fileID: 224308173431370652}
   - component: {fileID: 222503140566589256}
   - component: {fileID: 114619372576949670}
-  - component: {fileID: 114043935604958390}
+  - component: {fileID: 114191918897251400}
   m_Layer: 5
-  m_Name: Matching
-  m_TagString: Untagged
+  m_Name: Label
+  m_TagString: Label
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &114043935604958390
+--- !u!114 &114191918897251400
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -37,7 +37,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1789377496108274}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c496532c3a130462cbd23e2fd66d6739, type: 3}
+  m_Script: {fileID: 11500000, guid: 1994b1c32e7aa41ffb88ee93072ad37e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   next: {fileID: 1754666231346956, guid: 04346d76f9150416c8f49eee30788b11, type: 2}
@@ -70,13 +70,13 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 3
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Matching
+  m_Text: 'Matching   '
 --- !u!222 &222503140566589256
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -98,6 +98,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 30, y: -200}
-  m_SizeDelta: {x: 250, y: 60}
+  m_AnchoredPosition: {x: 20, y: -200}
+  m_SizeDelta: {x: 600, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}

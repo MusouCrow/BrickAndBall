@@ -41,7 +41,7 @@ function _CMD.NewRoom(leftFd, rightFd)
     _roomMap[leftFd .. rightFd] = _SKYNET.newservice("room")
     _SKYNET.Send(_roomMap[leftFd .. rightFd], "Start", leftFd, rightFd)
 
-    print("start room", _SOCKET.ToAddress(leftFd), _SOCKET.ToAddress(rightFd))
+    _SKYNET.Log("start room", _SOCKET.ToAddress(leftFd), _SOCKET.ToAddress(rightFd))
 end
 
 function _CMD.OnDisconnect(id, fd)
@@ -54,7 +54,7 @@ function _CMD.OnDisconnect(id, fd)
         _roomMap[leftFd .. rightFd] = nil
         _SKYNET.Send(_gate, "Kick", {leftFd, rightFd})
 
-        print("exit room", _SOCKET.ToAddress(leftFd), _SOCKET.ToAddress(rightFd))
+        _SKYNET.Log("exit room", _SOCKET.ToAddress(leftFd), _SOCKET.ToAddress(rightFd))
     end
 end
 

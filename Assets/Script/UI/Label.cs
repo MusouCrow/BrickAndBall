@@ -7,7 +7,7 @@ using DG.Tweening;
 namespace Game.UI {
 	using Utility;
 
-	public class Matching : MonoBehaviour {
+	public class Label : MonoBehaviour {
 		[SerializeField]
 		private GameObject next;
 		[SerializeField]
@@ -18,11 +18,19 @@ namespace Game.UI {
 		private float loopInterval;
 
 		private Text text;
+		private Tweener tweener;
+
+		public string Text {
+			set {
+				this.tweener.Kill();
+				this.text.text = value;
+			}
+		}
 
 		protected void Awake() {
 			this.text = this.GetComponent<Text>();
 			this.text.DOColor(this.text.color, this.showingTime).OnComplete(this.NewNext);
-			this.text.DOText(this.targetString, this.loopInterval)
+			this.tweener = this.text.DOText(this.targetString, this.loopInterval)
 				.SetLoops(-1)
 				.SetEase(Ease.Linear);
 

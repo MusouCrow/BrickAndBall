@@ -1,3 +1,4 @@
 basepath=$(cd `dirname $0`; cd ..; pwd)
 cd $basepath
-./skynet/skynet src/config.lua
+echo logger = \"log/$(date +"%y-%m-%d-%H-%M-%S").log\" > src/logger
+./skynet/skynet src/config
