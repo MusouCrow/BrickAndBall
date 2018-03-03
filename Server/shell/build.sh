@@ -31,20 +31,12 @@ function build() {
 }
 
 function clean() {
+:<<!
 	echo "====================="
 	echo "start clean skyent..."
 	cd $basepath/skynet
 	make clean
-
-	echo "====================="
-	echo "start clean lua-kcp..."
-	cd $basepath/3rd/lua-kcp
-	make clean
-
-	echo "====================="
-	echo "start clean lua-cjson..."
-	cd $basepath/3rd/lua-cjson
-	make clean
+!
 
 	echo "====================="
 	echo "start clean lualib..."

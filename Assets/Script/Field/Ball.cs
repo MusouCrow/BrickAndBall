@@ -61,9 +61,10 @@ namespace Game.Field {
 			}
 		}
 
+		private static Ball INSTANCE;
 		private const float HORI_BORDER = 3.6f;
 		private const float VERT_BORDER = 8;
-		private static Ball INSTANCE;
+		private const float FLOOR_Y = 0.287f;
 		public delegate bool Delegate(int type, float pos, float point, float velocity);
 
 		public static Vector3 Position {
@@ -166,10 +167,6 @@ namespace Game.Field {
 			this.transform.localScale = Vector3.one;
 		}
 
-		protected void OnGUI() {
-			GUILayout.TextArea(this.velocity.ToString());
-		}
-
 		private void OnCollide(Collider collider, Vector3 point) {
 			Sound.Play(this.clip);
 			var obj = this.NewEffect(this.transform.parent);
@@ -189,7 +186,7 @@ namespace Game.Field {
 			if (!this.hasDown) {
 				this.collider.IsParticle = true;
 				var pos = this.collider.Position;
-				pos.y = 0.287f;
+				pos.y = FLOOR_Y;
 				this.collider.Position = pos;
 				this.hasDown = true;
 			}
