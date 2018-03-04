@@ -10,57 +10,6 @@ namespace Game.Field {
 	using Network;
 
 	public class Ball : LockBehaviour {
-		private class Stretch {
-			private static Vector3 SCALE = new Vector3(1, 1, 1);
-
-			private float rate;
-			private float time;
-			private bool hasCollded = false;
-			private Transform transform;
-			private Collider collider;
-			private Sequence sequence;
-
-			public Stretch(float rate, float time, Transform transform, Collider collider) {
-				this.rate = rate;
-				this.time = time;
-				this.transform = transform;
-				this.collider = collider;
-			}
-
-			public void Update(ref Vector3 velocity) {
-				if (this.hasCollded) {
-					float x = SCALE.x;
-					float z = SCALE.z;
-					var colliderVelocity = this.collider.Velocity;
-
-					if (colliderVelocity.x > 0 != velocity.x > 0) {
-						float value = colliderVelocity.x * this.rate;
-						x += value * 2;
-						z -= value;
-					}
-
-					if (colliderVelocity.z > 0 != velocity.z > 0) {
-						float value = colliderVelocity.z * this.rate;
-						x -= value;
-						z += value * 2;
-					}
-
-					this.sequence = DOTween.Sequence();
-					var t1 = this.transform.DOScale(new Vector3(x, SCALE.y, z), this.time);
-					var t2 = this.transform.DOScale(SCALE, this.time);
-					this.sequence.Append(t1);
-					this.sequence.Append(t2);
-					this.hasCollded = false;
-				}
-			}
-
-			public void OnCollide() {
-				if (this.sequence == null || !this.sequence.IsPlaying()) {
-					this.hasCollded = true;
-				}
-			}
-		}
-
 		private static Ball INSTANCE;
 		private const float HORI_BORDER = 3.6f;
 		private const float VERT_BORDER = 8;
@@ -108,12 +57,11 @@ namespace Game.Field {
 		[SerializeField]
 		private float stretchTime = 0.075f;
 
-		private Vector3 velocity;
 		private new Collider collider;
-		private Stretch stretch;
 		private bool hasDown;
 		private Vector3 latePosition;
 		private int collidingCount;
+		private Sequence stretchSequence;
 
 		protected new void Awake() {
 			base.Awake();
@@ -121,7 +69,6 @@ namespace Game.Field {
 			
 			this.collider = this.GetComponent<Collider>();
 			this.collider.CollisionEnterEvent += this.OnCollide;
-			this.stretch = new Stretch(this.stretchRate, this.stretchTime, this.transform, this.collider);
 		}
 
 		protected override void LockUpdate() {
@@ -152,18 +99,17 @@ namespace Game.Field {
 			}
 
 			this.latePosition = pos;
-			this.stretch.Update(ref this.velocity);
-			this.velocity = this.collider.Velocity;
 		}
 
 		protected void OnEnable() {
 			this.hasDown = false;
 			this.collidingCount = 0;
-			this.velocity = Vector3.zero;
 			this.NewEffect(this.transform);
 		}
 
 		protected void OnDisable() {
+			this.stretchSequence.Kill();
+			this.stretchSequence = null;
 			this.transform.localScale = Vector3.one;
 		}
 
@@ -192,7 +138,6 @@ namespace Game.Field {
 			}
 
 			ViceCamera.Shake(this.collider.Velocity * this.shakingRate, this.shakingTime);
-			this.stretch.OnCollide();
 		}
 
 		private GameObject NewEffect(Transform parent) {
@@ -207,12 +152,29 @@ namespace Game.Field {
 			var pos = this.collider.Position;
 			var velocity = this.collider.Velocity;
 			var hasChanged = false;
+			var scale = Vector3.one;
 			
 			for (int i = 0; i < 3; i = i + 2) {
 				if (CheckedFunc(i, pos[i], point[i], velocity[i])) {
 					velocity[i] = -velocity[i];
+					
+					if ((this.stretchSequence == null || !this.stretchSequence.IsPlaying()) && i != 1) {
+						var value = (velocity[i] * this.stretchRate).ToFixed();
+						var other = i == 0 ? 2 : 0;
+						scale[i] += value * 2;
+						scale[other] -= value;
+					}
+
 					hasChanged = true;
 				}
+			}
+
+			if (scale != Vector3.one) {
+				this.stretchSequence = DOTween.Sequence();
+				var t1 = this.transform.DOScale(scale, this.stretchTime);
+				var t2 = this.transform.DOScale(Vector3.one, this.stretchTime);
+				this.stretchSequence.Append(t1);
+				this.stretchSequence.Append(t2);
 			}
 
 			if (hasChanged) {
