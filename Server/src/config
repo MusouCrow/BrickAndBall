@@ -16,4 +16,4 @@ update_interval = 1
 heartbeat_interval = 300
 max_client = 64
 play_interval = 9
-version = 0
+version = 1

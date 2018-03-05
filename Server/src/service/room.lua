@@ -5,6 +5,7 @@ local _TABLE = require("src.table")
 
 local _gate
 local _fds = {}
+local _deviceMap = {}
 local _inputMap = {}
 local _comparsionHandler = {}
 local _playSender = {addrs = {}, inputs = {}}
@@ -44,8 +45,10 @@ function _CMD.Exit()
     _SKYNET.exit()
 end
 
-function _CMD.Start(leftFd, rightFd)
+function _CMD.Start(leftFd, rightFd, leftDevice, rightDevice)
     _fds = {leftFd, rightFd}
+    _deviceMap[leftFd] = leftDevice
+    _deviceMap[rightFd] = rightDevice
     _FUNC.Send(_ID.start, {seed = os.time(), leftAddr = _SOCKET.ToAddress(leftFd), rightAddr = _SOCKET.ToAddress(rightFd)})
 end
 
@@ -73,14 +76,15 @@ function _CMD.ReceiveComparison(fd, obj)
     map[fd] = obj.content
 
     if (_TABLE.Count(map) == _playerCount) then
-        local late
+        local lk, lv
 
         for k, v in pairs(map) do
-            if (late and v ~= late) then
-                _SKYNET.Log(obj.playFrame, v, "!=", late)
+            if (lv and v ~= lv) then
+                _SKYNET.Log(obj.playFrame, _deviceMap[k], v, "!=", _deviceMap[lk], lv)
             end
 
-            late = v
+            lk = k
+            lv = v
         end
 
         _comparsionHandler[obj.playFrame] = nil

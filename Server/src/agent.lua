@@ -9,6 +9,7 @@ function _Agent:Ctor(conv, fd, SendWrap)
     self._kcp:lkcp_wndsize(128, 128)
 
     self._fd = fd
+    --self.deviceModel
     self.heartbeat = true
 end
 
@@ -47,11 +48,12 @@ function _Agent:Recv()
         local data = string.sub(buffer, 2)
 
         if (#data > 0) then
-            local isDone, ret = pcall(_JSON.decode, data)
+            obj = _JSON.decode(data)
+            --[[local isDone, ret = pcall(_JSON.decode, data)
 
             if (isDone) then
                 obj = ret
-            end
+            end]]--
         end
 
         return string.unpack("b", buffer), obj

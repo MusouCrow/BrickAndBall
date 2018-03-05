@@ -32,14 +32,18 @@ function _FUNC.GetRoom(fd)
 end
 
 function _CMD.NewRoom(leftFd, rightFd)
-    if (not _SKYNET.Call(_gate, "CheckAgent", {leftFd, rightFd})) then
+    local fds = {leftFd, rightFd}
+
+    if (not _SKYNET.Call(_gate, "CheckAgent", fds)) then
         return
     end
+
+    local deviceModels = _SKYNET.Call(_gate, "GetAgentValue", fds, "deviceModel")
 
     _leftFdMap[leftFd] = rightFd
     _rightFdMap[rightFd] = leftFd
     _roomMap[leftFd .. rightFd] = _SKYNET.newservice("room")
-    _SKYNET.Send(_roomMap[leftFd .. rightFd], "Start", leftFd, rightFd)
+    _SKYNET.Send(_roomMap[leftFd .. rightFd], "Start", leftFd, rightFd, deviceModels[1], deviceModels[2])
 
     _SKYNET.Log("start room", _SOCKET.ToAddress(leftFd), _SOCKET.ToAddress(rightFd))
 end

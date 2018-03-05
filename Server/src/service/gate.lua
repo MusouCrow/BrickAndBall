@@ -41,27 +41,20 @@ function _FUNC.OnReceive(data, from)
 end
 
 function _FUNC.Update()
-    while true do
-        for k, v in pairs(_agentMap) do
-            v:Update(_timer)
-        end
-
-        _timer = _timer + _updateInterval * 10
-        _SKYNET.sleep(_updateInterval)
+    for k, v in pairs(_agentMap) do
+        v:Update(_timer)
     end
+
+    _timer = _timer + _updateInterval * 10
 end
 
 function _FUNC.Recv()
-    while true do
-        for k, v in pairs(_agentMap) do
-            local id, obj = v:Recv()
+    for k, v in pairs(_agentMap) do
+        local id, obj = v:Recv()
 
-            if (id) then
-                _FUNC.SendEvent(id, k, obj)
-            end
+        if (id) then
+            _FUNC.SendEvent(id, k, obj)
         end
-
-        _SKYNET.yield()
     end
 end
 
@@ -77,16 +70,12 @@ function _FUNC.Kick(fd)
 end
 
 function _FUNC.Heartbeat()
-    while true do
-        for k, v in pairs(_agentMap) do
-            if (not v.heartbeat) then
-                _FUNC.Kick(k)
-            else
-                v.heartbeat = false
-            end
+    for k, v in pairs(_agentMap) do
+        if (not v.heartbeat) then
+            _FUNC.Kick(k)
+        else
+            v.heartbeat = false
         end
-
-        _SKYNET.sleep(_heartbeatInterval)
     end
 end
 
@@ -102,6 +91,10 @@ function _CMD.Heartbeat(id, fd)
     _agentMap[fd]:Send(_ID.heartbeat)
 end
 
+function _CMD.OnHandshake(id, fd, obj)
+    _agentMap[fd].deviceModel = obj.deviceModel
+end
+
 function _CMD.CheckAgent(fd)
     if (type(fd) == "table") then
         for n=1, #fd do
@@ -113,6 +106,28 @@ function _CMD.CheckAgent(fd)
         return true
     else
         return _agentMap[fd] ~= nil
+    end
+end
+
+function _CMD.GetAgentValue(fd, name)
+    if (type(fd) == "table") then
+        local ret = {}
+
+        for n=1, #fd do
+            if (_agentMap[fd[n]]) then
+                ret[n] = _agentMap[fd[n]][name]
+            else
+                _SKYNET.Log("no existed", fd[n])
+            end
+        end
+
+        return ret
+    else
+        if (_agentMap[fd]) then
+            return _agentMap[fd][name]
+        else
+            _SKYNET.Log("no existed", fd)
+        end
     end
 end
 
@@ -152,11 +167,12 @@ end
 
 local function _Start()
     _udp = _SOCKET.udp(_FUNC.OnReceive, _SKYNET.Getenv("udp_address"), _SKYNET.Getenv("udp_port", true))
-    _SKYNET.fork(_FUNC.Update)
-    _SKYNET.fork(_FUNC.Recv)
-    _SKYNET.fork(_FUNC.Heartbeat)
+    _SKYNET.Loop(_FUNC.Update, _updateInterval)
+    _SKYNET.Loop(_FUNC.Recv, 0)
+    _SKYNET.Loop(_FUNC.Heartbeat, _heartbeatInterval)
     _SKYNET.DispatchCommand(_CMD)
     _SKYNET.Send(_SKYNET.self(), "Register", _ID.heartbeat, _SKYNET.self(), "Heartbeat")
+    _SKYNET.Send(_SKYNET.self(), "Register", _ID.handshake, _SKYNET.self(), "OnHandshake")
 end
 
 _SKYNET.start(_Start)

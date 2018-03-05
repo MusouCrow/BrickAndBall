@@ -90,6 +90,10 @@ namespace Game.Network {
             this.kcp.Send(buffer);
         }
 
+        public void Send(byte id, string str) {
+            this.kcp.Send(Encoding.UTF8.GetBytes(str));
+        }
+
         public bool Connect() {
             if (this.Connected) {
                 return false;

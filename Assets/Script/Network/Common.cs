@@ -63,5 +63,10 @@ namespace Game.Network {
             public int playFrame;
             public string content;
         }
+
+        [Serializable]
+        public struct Handshake {
+            public string deviceModel;
+        }
     }
 }

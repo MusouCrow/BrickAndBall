@@ -17,6 +17,7 @@ namespace Game.Network {
         public const int WAITTING_INTERVAL = 5;
         private static Networkmgr INSTANCE;
         private const int DT = 17;
+        private const int LEAST_COMPARE_FRAME = 65;
         private const string VERSION_CONTENT = "Version is old, please update.";
         private const string FULL_CONTENT = "Quota is full, please retry.";
 
@@ -161,12 +162,14 @@ namespace Game.Network {
                         this.client.Send(EventCode.Input, input);
                     }
                     
-                    var comparison = new Datas.Comparison() {
-                        playFrame = this.playFrame,
-                        content = Judge.Comparison
-                    };
+                    if (this.playFrame > LEAST_COMPARE_FRAME) {
+                        var comparison = new Datas.Comparison() {
+                            playFrame = this.playFrame,
+                            content = Judge.Comparison
+                        };
 
-                    this.client.Send(EventCode.Comparison, comparison);
+                        this.client.Send(EventCode.Comparison, comparison);
+                    }
                 }
             }
 
@@ -182,7 +185,9 @@ namespace Game.Network {
                 Networkmgr.Disconnect(exitCode);
             }
             else {
-                this.client.Send(EventCode.Handshake);
+                this.client.Send(EventCode.Handshake, new Datas.Handshake() {
+                    deviceModel = SystemInfo.deviceModel
+                });
             }
 
             this.addr = obj.addr;

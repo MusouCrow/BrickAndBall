@@ -31,12 +31,10 @@ function build() {
 }
 
 function clean() {
-:<<!
 	echo "====================="
 	echo "start clean skyent..."
 	cd $basepath/skynet
-	make clean
-!
+	git checkout . && git clean -xdf
 
 	echo "====================="
 	echo "start clean lualib..."

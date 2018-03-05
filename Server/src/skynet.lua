@@ -43,4 +43,20 @@ function _SKYNET.Log(...)
     print(...)
 end
 
+function _SKYNET.Loop(Func, sleepTime)
+    local LoopFunc = function()
+        while true do
+            local ret, text = pcall(Func)
+
+            if (not ret) then
+                _SKYNET.Log(text)
+            end
+
+            _ORIGIN_SKYNET.sleep(sleepTime)
+        end
+    end
+
+    _ORIGIN_SKYNET.fork(LoopFunc)
+end
+
 return _SKYNET
