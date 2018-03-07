@@ -34,7 +34,7 @@ function clean() {
 	echo "====================="
 	echo "start clean skyent..."
 	cd $basepath/skynet
-	git checkout . && git clean -xdf
+	make clean
 
 	echo "====================="
 	echo "start clean lualib..."
