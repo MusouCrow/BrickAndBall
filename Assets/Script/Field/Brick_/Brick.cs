@@ -15,8 +15,8 @@ namespace Game.Field.Brick_ {
 		private const float RANGE_Z = 2.3f;
 		private static Vector2 POWER_X = new Vector2(6, 9);
 		private static Vector2 POWER_Z = new Vector2(-5, 5);
-		private static Vector2 AI_MOTION_TIME = new Vector2(0.3f, 0.6f);
-		private static Vector2 AI_INTERAL_RANGE = new Vector2(0.4f, 0.6f);
+		private static Vector2 AI_MOTION_TIME = new Vector2(0.2f, 0.5f);
+		private static Vector2 AI_INTERAL_RANGE = new Vector2(0.3f, 0.6f);
 		private const float NET_MOTION_TIME = 0.25f;
 		private const float ACCELERATION_RATE = 1.5f;
 
@@ -50,6 +50,7 @@ namespace Game.Field.Brick_ {
 		private Vector3 position;
 		private Vector3 scale;
 		private Tweener movingTweener;
+		private float lateMovingValue;
 
 		public bool CanConroll {
 			get {
@@ -102,6 +103,10 @@ namespace Game.Field.Brick_ {
 		}
 
 		public void Reset() {
+			this.movingTweener.Kill();
+			this.movingTweener = null;
+			this.lateMovingValue = 0;
+
 			if (this.ResetEvent != null) {
 				this.ResetEvent();
 			}
@@ -112,7 +117,10 @@ namespace Game.Field.Brick_ {
 				this.movingTweener.Kill();
 			}
 
+			this.position.z = this.lateMovingValue;
+			this.lateMovingValue = inputData.movingValue;
 			this.movingTweener = this.MovePosition(2, inputData.movingValue, NET_MOTION_TIME);
+			this.AdjustPosition();
 			
 			if (inputData.willElaste) {
 				this.statemgr.Play("Elast");
@@ -147,10 +155,15 @@ namespace Game.Field.Brick_ {
 				this.AdjustPosition();
 			}
 			else {
+				/*
 				var value = Networkmgr.MovingValue;
 				value += newPos.z - oldPos.z;
 				Brick.HandleValueWithRange(ref value);
 				Networkmgr.MovingValue = value;
+				*/
+
+				Brick.HandleValueWithRange(ref newPos.z);
+				Networkmgr.MovingValue = newPos.z;
 			}
 		}
 

@@ -81,6 +81,7 @@ function _CMD.ReceiveComparison(fd, obj)
         for k, v in pairs(map) do
             if (lv and v ~= lv) then
                 _SKYNET.Log(obj.playFrame, _deviceMap[k], v, "!=", _deviceMap[lk], lv)
+                _SKYNET.Warn()
             end
 
             lk = k

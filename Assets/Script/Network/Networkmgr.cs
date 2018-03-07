@@ -74,14 +74,6 @@ namespace Game.Network {
             DOTween.Init();
             Networkmgr.LateUpdateEvent += () => DOTween.ManualUpdate(STDDT, STDDT);
         }
-        
-        /*
-        protected void OnGUI() {
-            if (this.online) {
-                GUILayout.TextField(this.playFrame.ToString());
-                //GUILayout.TextField(ViceCamera.MousePosition.z.ToString());
-            }
-        }*/
 
         protected void Update() {
             this.updateTimer += Mathf.CeilToInt(Time.deltaTime * 1000);

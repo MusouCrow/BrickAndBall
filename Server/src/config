@@ -17,3 +17,4 @@ heartbeat_interval = 300
 max_client = 64
 play_interval = 9
 version = 1
+--mail = "xxx@xxx.xxx" if it existed, will send a warning to it when the server has a problem, but you should have mailutils first.
