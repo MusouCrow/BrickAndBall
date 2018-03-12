@@ -35,6 +35,7 @@ function _CMD.NewRoom(leftFd, rightFd)
     local fds = {leftFd, rightFd}
 
     if (not _SKYNET.Call(_gate, "CheckAgent", fds)) then
+        _SKYNET.Send(_gate, "Kick", fds)
         return
     end
 
