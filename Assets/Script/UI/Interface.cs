@@ -58,11 +58,9 @@ namespace Game.UI {
 			ViceCamera.OnEndEvent += this.OnCameraEnd;
 			Interface.Instantiate(this.logo);
 			
-			/*
-			if (Application.platform != RuntimePlatform.Android) {
+			if (Application.platform == RuntimePlatform.OSXPlayer) {
 				Screen.SetResolution(225, 400, false);
 			}
-			*/
 			
 			this.timer = new Timer();
 		}
